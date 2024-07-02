@@ -2,5 +2,7 @@
 name = "zk-engine"
 version = "0.1.0"
 edition = "2021"
+description = "zkWASM with SuperNova Backend"
+license = "MIT"
 
 [dependencies]
