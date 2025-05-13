@@ -1,0 +1,107 @@
+
+[workspace]
+resolver = "2"
+members = [
+    "jolt-core",
+    "tracer",
+    "common",
+    "jolt-sdk",
+    "jolt-sdk/macros",
+    "zkEngine",
+    # "wasmi/crates/collections",
+    # "wasmi/crates/c_api/artifact",
+    # "wasmi/crates/c_api/macro",
+    # "wasmi/crates/tracer",
+    # "wasmi/crates/core",
+    # "wasmi/crates/wasmi",
+    # "wasmi/crates/wasi",
+    # "wasmi/crates/ir",
+    # "wasmi/crates/fuzz",
+    # "wasmi/crates/wast",
+    # "wasmi/fuzz",
+]
+
+[workspace.package]
+# name = "jolt"
+version = "0.1.0"
+authors = [
+    # author of original Spartan paper and code base
+    "Srinath Setty <srinath@microsoft.com>",
+    # authors who contributed to the Arkworks Spartan fork
+    "Zhenfei Zhang <zhenfei.zhang@hotmail.com>",
+    # authors who contributed to Lasso/Jolt
+    "Michael Zhu <mzhu@a16z.com>",
+    "Sam Ragsdale <sragsdale@a16z.com>",
+    "Noah Citron <ncitron@a16z.com>",
+    "Arasu Arun <arasu.arun5@gmail.com>",
+    "Quang Dao <dvquang85@gmail.com>",
+]
+edition = "2021"
+description = "The lookup singularity. Based on Spartan; built on Arkworks."
+documentation = "https://github.com/a16z/jolt/README.md"
+repository = "https://github.com/a16z/jolt"
+license-file = "LICENSE"
+keywords = ["SNARK", "cryptography", "proofs"]
+license = "MIT/Apache-2.0"
+categories = ["wasm", "no-std", "virtualization"]
+exclude = ["tests"]
+
+# [workspace.dependencies]
+# # Jolt dependencies
+# common = { path = "common" }
+
+# # Wasmi crates
+# wasmi_tracer = { path = "wasmi/crates/tracer" }
+# wasmi = { path = "wasmi/crates/wasmi", default-features = false }
+# wasmi_wasi = { path = "wasmi/crates/wasi", default-features = false }
+# wasmi_core = { path = "wasmi/crates/core", default-features = false }
+# wasmi_ir = { path = "wasmi/crates/ir", default-features = false }
+# wasmi_collections = { path = "wasmi/crates/collections", default-features = false }
+# wasmi_c_api_impl = { path = "wasmi/crates/c_api" }
+# wasmi_c_api_macros = { path = "wasmi/crates/c_api/macro" }
+# wasmi_fuzz = { path = "wasmi/crates/fuzz" }
+# wasmi_wast = { path = "wasmi/crates/wast" }
+
+# # wasm-tools dependencies
+# wat = { version = "1.228.0", default-features = false }
+# wast = { version = "228.0.0", default-features = false }
+# wasmparser = { version = "0.228.0", default-features = false }
+# wasm-smith = "0.228.0"
+# wasmprinter = { version = "0.228.0", default-features = false }
+
+# # Wasmtime dependencies
+# wasi-common = { version = "31.0.0", default-features = false }
+# wiggle = { version = "31.0.0", default-features = false }
+# wasmtime = { version = "31.0.0", default-features = false }
+
+
+# [features]
+# host = ["jolt-sdk/host"]
+# icicle = ["jolt-core/icicle"]
+
+
+[profile.test]
+opt-level = 3
+lto = "off"
+
+[profile.release]
+debug = 1
+codegen-units = 1
+lto = "fat"
+
+[profile.build-fast]
+inherits = "release"
+incremental = true
+lto = "off"
+
+[profile.guest]
+inherits = "release"
+debug = false
+
+[patch.crates-io]
+ark-ff = { git = "https://github.com/a16z/arkworks-algebra", branch = "v0.5.0-optimize-mul-u64" }
+ark-ec = { git = "https://github.com/a16z/arkworks-algebra", branch = "v0.5.0-optimize-mul-u64" }
+ark-serialize = { git = "https://github.com/a16z/arkworks-algebra", branch = "v0.5.0-optimize-mul-u64" }
+
+[workspace.metadata.cargo-machete]
+ignored = ["jolt-sdk"]
