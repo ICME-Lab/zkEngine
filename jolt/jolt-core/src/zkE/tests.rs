@@ -38,3 +38,7 @@ pub fn shifts_arith_wasm_program() -> WASMProgram {
 pub fn lt_wasm_program() -> WASMProgram {
     make_wasm_program("lt.wat")
 }
+
+pub fn poly_simple_wasm_program() -> WASMProgram {
+    make_wasm_program("poly-simple.wasm")
+}

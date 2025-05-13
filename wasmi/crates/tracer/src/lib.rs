@@ -7,7 +7,7 @@ use crate::{args::Args, display::DisplayFuncType};
 use anyhow::bail;
 use common::rv_trace::{ELFInstruction, RVTraceRow};
 use context::Context;
-use std::process;
+use std::{path, process};
 use utils::{
     get_invoked_func,
     print_execution_start,
@@ -118,6 +118,34 @@ pub fn decode(wasm_bytecode: &[u8]) -> (Vec<ELFInstruction>, Vec<(u64, u8)>) {
     (elf_instructions, vec![])
 }
 
+pub fn print_code_map(path: &str) {
+    use std::fs;
+
+    let wasm_bytecode = fs::read(path).unwrap();
+    let engine = wasmi::Engine::new(&wasmi::Config::default());
+    let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
+    let instructions = engine.instructions();
+    // println!("Instructions: {instructions:#?}");
+    println!("Instructions length: {}", instructions.len());
+    println!("Instructions ptr: {:#?}", instructions.as_ptr());
+    // println!(
+    //     "Instructions address: {:#?}",
+    //     instructions.as_ptr() as usize
+    // );
+    // println!("Instructions address: {:#?}", instructions.as_ptr() as u64);
+    // println!(
+    //     "Instructions address: {:#?}",
+    //     instructions.as_ptr() as u64 + 1
+    // );
+    for i in 0..instructions.len() {
+        let instruction = instructions[i];
+        let instruction_address = InstructionPtr::new(instructions.as_ptr())
+            .offset_from(InstructionPtr::new(instructions.as_ptr()))
+            as u64;
+        println!("Instruction {i}: {instruction:#?} at address {instruction_address:#?}");
+    }
+}
+
 #[cfg(test)]
 pub mod test_lib {
     use std::fs;
@@ -155,15 +183,6 @@ pub mod test_lib {
     #[test]
     fn test_lt() {
         test_wasm(lt_wasm_program)
-    }
-
-    #[test]
-    fn print_code_map() {
-        let wasm_bytecode = fs::read("./wasms/lt.wat").unwrap();
-        let engine = wasmi::Engine::new(&wasmi::Config::default());
-        let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
-        let instructions = engine.instructions();
-        println!("Instructions: {instructions:#?}");
     }
 
     // #[test]

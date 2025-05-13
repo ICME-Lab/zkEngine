@@ -33,7 +33,7 @@ mod tests {
         zkE::{
             tests::{
                 add_sub_mul_wasm_program, bitwise_arith_wasm_program, lt_wasm_program,
-                shifts_arith_wasm_program,
+                poly_simple_wasm_program, shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -75,5 +75,13 @@ mod tests {
     #[test]
     fn test_lt() {
         test_wasm_e2e_with(lt_wasm_program());
+    }
+
+    #[test]
+    fn test_poly_simple() {
+        // print out instructions
+        poly_simple_wasm_program().print_instructions();
+
+        // test_wasm_e2e_with(poly_simple_wasm_program());
     }
 }

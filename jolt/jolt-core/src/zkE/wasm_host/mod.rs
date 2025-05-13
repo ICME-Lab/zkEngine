@@ -53,6 +53,11 @@ impl WASMProgram {
         let wasm_bytecode = fs::read(&self.file_path).unwrap();
         wasmi_tracer::decode(&wasm_bytecode)
     }
+
+    #[cfg(test)]
+    pub fn print_instructions(&self) {
+        wasmi_tracer::print_code_map(&self.file_path);
+    }
 }
 
 impl From<&WASMProgram> for Args {
