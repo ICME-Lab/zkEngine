@@ -2,32 +2,42 @@ use super::*;
 use std::borrow::Borrow;
 use wasmi::{core::ValType, FuncType};
 
+const DEFAULT_FUNC: &str = "main";
+const DEFAULT_FILE_DIR: &str = "../../../jolt/wasms/";
+
+const DEFAULT_WASM_INPUTS: [&str; 4] = [
+    "1500", // amount staked
+    "3",    // duration boost (months)
+    "2",    // volume boost
+    "500",  // penalty
+];
+
+fn default_wasm_inputs() -> Vec<String> {
+    DEFAULT_WASM_INPUTS.iter().map(|s| s.to_string()).collect()
+}
+
+fn make_wasm_program(file_name: &str) -> Args {
+    Args::new(
+        &format!("{DEFAULT_FILE_DIR}{file_name}"),
+        "main",
+        default_wasm_inputs(),
+    )
+}
+
 pub fn add_sub_mul_32_wasm_program() -> Args {
-    let file_path = "./wasms/add_sub_mul_32.wat";
-    Args::new(file_path, "main", testing_func_args())
+    make_wasm_program("add_sub_mul_32.wat")
 }
 
 pub fn bitwise_arith_wasm_program() -> Args {
-    let file_path = "./wasms/bitwise_arith.wat";
-    Args::new(file_path, "main", testing_func_args())
+    make_wasm_program("bitwise_arith.wat")
 }
 
 pub fn shifts_arith_wasm_program() -> Args {
-    let file_path = "./wasms/shifts_arith.wat";
-    Args::new(file_path, "main", testing_func_args())
+    make_wasm_program("shifts_arith.wat")
 }
 
 pub fn lt_wasm_program() -> Args {
-    let file_path = "./wasms/lt.wat";
-    Args::new(file_path, "main", testing_func_args())
-}
-
-fn testing_func_args() -> Vec<String> {
-    let stake = "1500".to_string(); // Amount of LP tokens or liquidity staked by the user.
-    let duration_boost = "3".to_string(); // Boost multiplier based on how long the stake was held (e.g., 3 = 3 months).
-    let volume_boost = "2".to_string(); // Additional multiplier based on trading volume in the pool during the staking period.
-    let penalty = "500".to_string(); // Penalty applied for early withdrawal or performance issues (e.g., protocol downgrade).
-    vec![stake, duration_boost, volume_boost, penalty]
+    make_wasm_program("lt.wat")
 }
 
 fn assert_display(func_type: impl Borrow<FuncType>, expected: &str) {
