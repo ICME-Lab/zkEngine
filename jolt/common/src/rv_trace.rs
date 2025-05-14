@@ -86,104 +86,104 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
         // If any are empty a no_op is inserted.
 
         match val.instruction.opcode {
-            RV32IM::ADD
-            | RV32IM::SUB
-            | RV32IM::XOR
-            | RV32IM::OR
-            | RV32IM::AND
-            | RV32IM::SLL
-            | RV32IM::SRL
-            | RV32IM::SRA
-            | RV32IM::SLT
-            | RV32IM::SLTU
-            | RV32IM::MUL
-            | RV32IM::MULH
-            | RV32IM::MULHU
-            | RV32IM::MULHSU
-            | RV32IM::MULU
-            | RV32IM::DIV
-            | RV32IM::DIVU
-            | RV32IM::REM
-            | RV32IM::REMU => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
+            WASM::ADD
+            | WASM::SUB
+            | WASM::XOR
+            | WASM::OR
+            | WASM::AND
+            | WASM::SLL
+            | WASM::SRL
+            | WASM::SRA
+            | WASM::SLT
+            | WASM::SLTU
+            | WASM::MUL
+            | WASM::MULH
+            | WASM::MULHU
+            | WASM::MULHSU
+            | WASM::MULU
+            | WASM::DIV
+            | WASM::DIVU
+            | WASM::REM
+            | WASM::REMU => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
 
-            RV32IM::LUI | RV32IM::AUIPC | RV32IM::VIRTUAL_ADVICE => [
+            WASM::LUI | WASM::AUIPC | WASM::VIRTUAL_ADVICE => [
                 MemoryOp::noop_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT => [
+            WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT => [
                 rs1_read(),
                 MemoryOp::noop_read(),
                 MemoryOp::noop_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::ADDI
-            | RV32IM::SLLI
-            | RV32IM::SRLI
-            | RV32IM::SRAI
-            | RV32IM::ANDI
-            | RV32IM::ORI
-            | RV32IM::XORI
-            | RV32IM::SLTI
-            | RV32IM::SLTIU
-            | RV32IM::JALR
-            | RV32IM::VIRTUAL_MOVE
-            | RV32IM::VIRTUAL_MOVSIGN => [
+            WASM::ADDI
+            | WASM::SLLI
+            | WASM::SRLI
+            | WASM::SRAI
+            | WASM::ANDI
+            | WASM::ORI
+            | WASM::XORI
+            | WASM::SLTI
+            | WASM::SLTIU
+            | WASM::JALR
+            | WASM::VIRTUAL_MOVE
+            | WASM::VIRTUAL_MOVSIGN => [
                 rs1_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::LW => [
+            WASM::LW => [
                 rs1_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
                 MemoryOp::Read(rs1_offset()),
             ],
-            RV32IM::FENCE => [
+            WASM::FENCE => [
                 MemoryOp::noop_read(),
                 MemoryOp::noop_read(),
                 MemoryOp::noop_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::SB | RV32IM::SH | RV32IM::SW => [
+            WASM::SB | WASM::SH | WASM::SW => [
                 rs1_read(),
                 rs2_read(),
                 MemoryOp::noop_write(),
                 MemoryOp::Write(rs1_offset(), ram_write_value()),
             ],
 
-            // RV32IM::LB | RV32IM::LH | RV32IM::LBU | RV32IM::LHU => [
-            RV32IM::JAL => [
+            // WASM::LB | WASM::LH | WASM::LBU | WASM::LHU => [
+            WASM::JAL => [
                 MemoryOp::noop_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::BEQ
-            | RV32IM::BNE
-            | RV32IM::BLT
-            | RV32IM::BGE
-            | RV32IM::BLTU
-            | RV32IM::BGEU
-            | RV32IM::VIRTUAL_ASSERT_EQ
-            | RV32IM::VIRTUAL_ASSERT_LTE
-            | RV32IM::VIRTUAL_ASSERT_VALID_DIV0
-            | RV32IM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
-            | RV32IM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => [
+            WASM::BEQ
+            | WASM::BNE
+            | WASM::BLT
+            | WASM::BGE
+            | WASM::BLTU
+            | WASM::BGEU
+            | WASM::VIRTUAL_ASSERT_EQ
+            | WASM::VIRTUAL_ASSERT_LTE
+            | WASM::VIRTUAL_ASSERT_VALID_DIV0
+            | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => [
                 rs1_read(),
                 rs2_read(),
                 MemoryOp::noop_write(),
                 MemoryOp::noop_read(),
             ],
 
-            RV32IM::ECALL => [
+            WASM::ECALL => [
                 MemoryOp::noop_read(),
                 MemoryOp::noop_read(),
                 MemoryOp::noop_write(),
@@ -198,7 +198,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ELFInstruction {
     pub address: u64,
-    pub opcode: RV32IM,
+    pub opcode: WASM,
     pub rs1: Option<u64>,
     pub rs2: Option<u64>,
     pub rd: Option<u64>,
@@ -251,110 +251,110 @@ impl ELFInstruction {
 
         flags[CircuitFlags::LeftOperandIsPC as usize] = matches!(
             self.opcode,
-            RV32IM::JAL | RV32IM::LUI | RV32IM::AUIPC,
+            WASM::JAL | WASM::LUI | WASM::AUIPC,
         );
 
         flags[CircuitFlags::RightOperandIsImm as usize] = matches!(
             self.opcode,
-            RV32IM::ADDI
-            | RV32IM::XORI
-            | RV32IM::ORI
-            | RV32IM::ANDI
-            | RV32IM::SLLI
-            | RV32IM::SRLI
-            | RV32IM::SRAI
-            | RV32IM::SLTI
-            | RV32IM::SLTIU
-            | RV32IM::AUIPC
-            | RV32IM::JAL
-            | RV32IM::JALR
-            | RV32IM::SW
-            | RV32IM::LW
-            | RV32IM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT,
+            WASM::ADDI
+            | WASM::XORI
+            | WASM::ORI
+            | WASM::ANDI
+            | WASM::SLLI
+            | WASM::SRLI
+            | WASM::SRAI
+            | WASM::SLTI
+            | WASM::SLTIU
+            | WASM::AUIPC
+            | WASM::JAL
+            | WASM::JALR
+            | WASM::SW
+            | WASM::LW
+            | WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT,
         );
 
         flags[CircuitFlags::Load as usize] = matches!(
             self.opcode,
-            RV32IM::LW,
+            WASM::LW,
         );
 
         flags[CircuitFlags::Store as usize] = matches!(
             self.opcode,
-            RV32IM::SW,
+            WASM::SW,
         );
 
         flags[CircuitFlags::Jump as usize] = matches!(
             self.opcode,
-            RV32IM::JAL | RV32IM::JALR,
+            WASM::JAL | WASM::JALR,
         );
 
         flags[CircuitFlags::Branch as usize] = matches!(
             self.opcode,
-            RV32IM::BEQ | RV32IM::BNE | RV32IM::BLT | RV32IM::BGE | RV32IM::BLTU | RV32IM::BGEU,
+            WASM::BEQ | WASM::BNE | WASM::BLT | WASM::BGE | WASM::BLTU | WASM::BGEU,
         );
 
         // Stores, branches, jumps, and asserts do not store the lookup output to rd (they may update rd in other ways)
         flags[CircuitFlags::WriteLookupOutputToRD as usize] = !matches!(
             self.opcode,
-            RV32IM::SW
-            | RV32IM::LW
-            | RV32IM::BEQ
-            | RV32IM::BNE
-            | RV32IM::BLT
-            | RV32IM::BGE
-            | RV32IM::BLTU
-            | RV32IM::BGEU
-            | RV32IM::JAL
-            | RV32IM::JALR
-            | RV32IM::LUI
-            | RV32IM::VIRTUAL_ASSERT_EQ
-            | RV32IM::VIRTUAL_ASSERT_LTE
-            | RV32IM::VIRTUAL_ASSERT_VALID_DIV0
-            | RV32IM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
-            | RV32IM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
-            | RV32IM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT
+            WASM::SW
+            | WASM::LW
+            | WASM::BEQ
+            | WASM::BNE
+            | WASM::BLT
+            | WASM::BGE
+            | WASM::BLTU
+            | WASM::BGEU
+            | WASM::JAL
+            | WASM::JALR
+            | WASM::LUI
+            | WASM::VIRTUAL_ASSERT_EQ
+            | WASM::VIRTUAL_ASSERT_LTE
+            | WASM::VIRTUAL_ASSERT_VALID_DIV0
+            | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
+            | WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT
         );
 
         flags[CircuitFlags::ConcatLookupQueryChunks as usize] = matches!(
             self.opcode,
-            RV32IM::XOR
-            | RV32IM::XORI
-            | RV32IM::OR
-            | RV32IM::ORI
-            | RV32IM::AND
-            | RV32IM::ANDI
-            | RV32IM::SLL
-            | RV32IM::SRL
-            | RV32IM::SRA
-            | RV32IM::SLLI
-            | RV32IM::SRLI
-            | RV32IM::SRAI
-            | RV32IM::SLT
-            | RV32IM::SLTU
-            | RV32IM::SLTI
-            | RV32IM::SLTIU
-            | RV32IM::BEQ
-            | RV32IM::BNE
-            | RV32IM::BLT
-            | RV32IM::BGE
-            | RV32IM::BLTU
-            | RV32IM::BGEU
-            | RV32IM::VIRTUAL_ASSERT_EQ
-            | RV32IM::VIRTUAL_ASSERT_LTE
-            | RV32IM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
-            | RV32IM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
-            | RV32IM::VIRTUAL_ASSERT_VALID_DIV0,
+            WASM::XOR
+            | WASM::XORI
+            | WASM::OR
+            | WASM::ORI
+            | WASM::AND
+            | WASM::ANDI
+            | WASM::SLL
+            | WASM::SRL
+            | WASM::SRA
+            | WASM::SLLI
+            | WASM::SRLI
+            | WASM::SRAI
+            | WASM::SLT
+            | WASM::SLTU
+            | WASM::SLTI
+            | WASM::SLTIU
+            | WASM::BEQ
+            | WASM::BNE
+            | WASM::BLT
+            | WASM::BGE
+            | WASM::BLTU
+            | WASM::BGEU
+            | WASM::VIRTUAL_ASSERT_EQ
+            | WASM::VIRTUAL_ASSERT_LTE
+            | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
+            | WASM::VIRTUAL_ASSERT_VALID_DIV0,
         );
 
         flags[CircuitFlags::Virtual as usize] = self.virtual_sequence_remaining.is_some();
 
         flags[CircuitFlags::Assert as usize] = matches!(self.opcode,
-            RV32IM::VIRTUAL_ASSERT_EQ                        |
-            RV32IM::VIRTUAL_ASSERT_LTE                       |
-            RV32IM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT        |
-            RV32IM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER    |
-            RV32IM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER  |
-            RV32IM::VIRTUAL_ASSERT_VALID_DIV0
+            WASM::VIRTUAL_ASSERT_EQ                        |
+            WASM::VIRTUAL_ASSERT_LTE                       |
+            WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT        |
+            WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER    |
+            WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER  |
+            WASM::VIRTUAL_ASSERT_VALID_DIV0
         );
 
         // All instructions in virtual sequence are mapped from the same
@@ -403,7 +403,7 @@ impl RVTraceRow {
 #[derive(Debug, PartialEq, Eq, Clone, Copy, FromRepr, Serialize, Deserialize, Hash)]
 #[repr(u8)]
 #[allow(non_camel_case_types)]
-pub enum RV32IM {
+pub enum WASM {
     ADD,
     SUB,
     XOR,
@@ -478,10 +478,10 @@ pub enum RV32IM {
     ReturnImm32,
 }
 
-impl FromStr for RV32IM {
+impl FromStr for WASM {
     type Err = String;
 
-    fn from_str(s: &str) -> Result<RV32IM, String> {
+    fn from_str(s: &str) -> Result<WASM, String> {
         match s {
             "I32Add" => Ok(Self::ADD),
             "I32Sub" => Ok(Self::SUB),

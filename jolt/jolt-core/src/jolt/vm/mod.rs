@@ -389,18 +389,18 @@ where
         let bytecode_rows: Vec<BytecodeRow> = bytecode
             .into_iter()
             .flat_map(|instruction| match instruction.opcode {
-                tracer::RV32IM::MULH => MULHInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::MULHSU => MULHSUInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::DIV => DIVInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::REM => REMInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::REMU => REMUInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::SH => SHInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::SB => SBInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::LBU => LBUInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::LHU => LHUInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::LB => LBInstruction::<32>::virtual_sequence(instruction),
-                tracer::RV32IM::LH => LHInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::MULH => MULHInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::MULHSU => MULHSUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::DIV => DIVInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::REM => REMInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::REMU => REMUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::SH => SHInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::SB => SBInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::LBU => LBUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::LHU => LHUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::LB => LBInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::LH => LHInstruction::<32>::virtual_sequence(instruction),
                 _ => vec![instruction],
             })
             .map(|instruction| BytecodeRow::from_instruction::<Self::InstructionSet>(&instruction))

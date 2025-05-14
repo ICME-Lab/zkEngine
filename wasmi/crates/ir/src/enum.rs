@@ -1,4 +1,4 @@
-use common::rv_trace::{ELFInstruction, RV32IM};
+use common::rv_trace::{ELFInstruction, WASM};
 
 #[cfg(feature = "simd")]
 use crate::core::simd::{ImmLaneIdx16, ImmLaneIdx2, ImmLaneIdx4, ImmLaneIdx8};
@@ -322,7 +322,7 @@ impl Instruction {
 
             Self::ReturnImm32 { value } => ELFInstruction {
                 address: instruction_address,
-                opcode: RV32IM::from_str(&self.to_string()).unwrap(),
+                opcode: WASM::from_str(&self.to_string()).unwrap(),
                 rs1: None,
                 rs2: None,
                 rd: Some(value.0 as u16 as u32 as u64),
@@ -332,7 +332,7 @@ impl Instruction {
 
             Self::ReturnReg { value } => ELFInstruction {
                 address: instruction_address,
-                opcode: RV32IM::from_str(&self.to_string()).unwrap(),
+                opcode: WASM::from_str(&self.to_string()).unwrap(),
                 rs1: None,
                 rs2: None,
                 rd: Some(value.0 as u16 as u32 as u64),
@@ -347,7 +347,7 @@ impl Instruction {
 fn trace_r(inst: &Instruction, result: Reg, lhs: Reg, rhs: Reg, address: u64) -> ELFInstruction {
     ELFInstruction {
         address,
-        opcode: RV32IM::from_str(&inst.to_string()).unwrap(),
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
         rs1: Some(lhs.0 as u16 as u32 as u64),
         rs2: Some(rhs.0 as u16 as u32 as u64),
         rd: Some(result.0 as u16 as u32 as u64),

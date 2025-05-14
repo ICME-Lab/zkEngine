@@ -15,7 +15,7 @@ use common::constants::REGISTER_COUNT;
 use rand::{rngs::StdRng, SeedableRng};
 use rand_core::RngCore;
 use strum::{EnumCount, IntoEnumIterator};
-use tracer::{ELFInstruction, RVTraceRow, RegisterState, RV32IM};
+use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::{JoltInstruction, VirtualInstructionSequence};
 
@@ -57,7 +57,7 @@ macro_rules! jolt_instruction_test {
 /// 5. Verifies that the registers `r_x` and `r_y` have not been modified (not clobbered).
 /// 6. Ensures that the result of the instruction sequence is correctly written to the `rd` register.
 /// 7. Checks that no unintended modifications have been made to other registers.
-pub fn jolt_virtual_sequence_test<I: VirtualInstructionSequence>(opcode: RV32IM) {
+pub fn jolt_virtual_sequence_test<I: VirtualInstructionSequence>(opcode: WASM) {
     let mut rng = test_rng();
 
     for _ in 0..1000 {

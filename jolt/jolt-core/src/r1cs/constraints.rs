@@ -5,7 +5,7 @@ use crate::{
     field::JoltField,
     jolt::{
         instruction::{
-            add::ADDInstruction, mul::MULInstruction, mulhu::MULHUInstruction,
+            add::ADDInstruction, and::ANDInstruction, mul::MULInstruction, mulhu::MULHUInstruction,
             mulu::MULUInstruction, sll::SLLInstruction, sra::SRAInstruction, srl::SRLInstruction,
             sub::SUBInstruction,
             virtual_assert_halfword_alignment::AssertHalfwordAlignmentInstruction,
@@ -121,11 +121,20 @@ impl<const C: usize, F: JoltField> R1CSConstraints<C, F> for JoltRV32IMConstrain
 
         // For the `AssertHalfwordAlignmentInstruction` lookups, we add the `rs1` and `imm` values
         // to obtain the memory address being accessed.
+
+        // HACK:
         let add_operands =
-            JoltR1CSInputs::InstructionFlags(ADDInstruction::<WORD_SIZE>::default().into())
-                + JoltR1CSInputs::InstructionFlags(
-                    AssertHalfwordAlignmentInstruction::<32>::default().into(),
-                );
+            JoltR1CSInputs::InstructionFlags(ADDInstruction::<WORD_SIZE>::default().into());
+        // + JoltR1CSInputs::InstructionFlags(
+        //     AssertHalfwordAlignmentInstruction::<32>::default().into(),
+        // );
+
+        // let add_operands =
+        //     JoltR1CSInputs::InstructionFlags(ADDInstruction::<WORD_SIZE>::default().into())
+        //         + JoltR1CSInputs::InstructionFlags(
+        //             AssertHalfwordAlignmentInstruction::<32>::default().into(),
+        //         );
+
         cs.constrain_eq_conditional(add_operands, packed_query.clone(), x + y);
         // Converts from unsigned to twos-complement representation
         cs.constrain_eq_conditional(
@@ -133,21 +142,34 @@ impl<const C: usize, F: JoltField> R1CSConstraints<C, F> for JoltRV32IMConstrain
             packed_query.clone(),
             x - y + (0xffffffffi64 + 1),
         );
-        let is_mul = JoltR1CSInputs::InstructionFlags(MULInstruction::default().into())
-            + JoltR1CSInputs::InstructionFlags(MULUInstruction::default().into())
-            + JoltR1CSInputs::InstructionFlags(MULHUInstruction::default().into());
+
+        // HACK:
+        let is_mul =
+            JoltR1CSInputs::InstructionFlags(ANDInstruction::<WORD_SIZE>::default().into());
+        // let is_mul = JoltR1CSInputs::InstructionFlags(MULInstruction::default().into())
+        //     + JoltR1CSInputs::InstructionFlags(MULUInstruction::default().into())
+        //     + JoltR1CSInputs::InstructionFlags(MULHUInstruction::default().into());
+
         let product = cs.allocate_prod(
             JoltR1CSInputs::Aux(AuxVariable::Product),
             JoltR1CSInputs::RS1_Read,
             JoltR1CSInputs::RS2_Read,
         );
         cs.constrain_eq_conditional(is_mul, packed_query.clone(), product);
+
+        // HACK: Come back to this
         cs.constrain_eq_conditional(
-            JoltR1CSInputs::InstructionFlags(MOVSIGNInstruction::default().into())
-                + JoltR1CSInputs::InstructionFlags(MOVEInstruction::default().into()),
+            JoltR1CSInputs::InstructionFlags(ANDInstruction::<WORD_SIZE>::default().into())
+                + JoltR1CSInputs::InstructionFlags(ANDInstruction::<WORD_SIZE>::default().into()),
             packed_query.clone(),
             x,
         );
+        // cs.constrain_eq_conditional(
+        //     JoltR1CSInputs::InstructionFlags(MOVSIGNInstruction::default().into())
+        //         + JoltR1CSInputs::InstructionFlags(MOVEInstruction::default().into()),
+        //     packed_query.clone(),
+        //     x,
+        // );
 
         cs.constrain_eq_conditional(
             JoltR1CSInputs::OpFlags(CircuitFlags::Assert),
@@ -175,9 +197,14 @@ impl<const C: usize, F: JoltField> R1CSConstraints<C, F> for JoltRV32IMConstrain
         );
 
         // if is_shift ? chunks_query[i] == zip(chunks_x[i], chunks_y[C-1]) : chunks_query[i] == zip(chunks_x[i], chunks_y[i])
-        let is_shift = JoltR1CSInputs::InstructionFlags(SLLInstruction::default().into())
-            + JoltR1CSInputs::InstructionFlags(SRLInstruction::default().into())
-            + JoltR1CSInputs::InstructionFlags(SRAInstruction::default().into());
+        // TODO: add support for SRA and SRL
+        // HACK: this is a bit of a hack, but we need to add the `is_shift` flag
+        let is_shift =
+            JoltR1CSInputs::InstructionFlags(ANDInstruction::<WORD_SIZE>::default().into());
+
+        // let is_shift = JoltR1CSInputs::InstructionFlags(SLLInstruction::default().into());
+        // + JoltR1CSInputs::InstructionFlags(SRLInstruction::default().into())
+        // + JoltR1CSInputs::InstructionFlags(SRAInstruction::default().into());
         for i in 0..C {
             let relevant_chunk_y = cs.allocate_if_else(
                 JoltR1CSInputs::Aux(AuxVariable::RelevantYChunk(i)),

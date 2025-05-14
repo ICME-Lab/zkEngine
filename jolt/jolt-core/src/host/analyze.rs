@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::File, io, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
-use tracer::{ELFInstruction, JoltDevice, RVTraceRow, RV32IM};
+use tracer::{ELFInstruction, JoltDevice, RVTraceRow, WASM};
 
 use crate::{
     field::JoltField,
@@ -24,8 +24,8 @@ impl ProgramSummary {
         self.processed_trace.len()
     }
 
-    pub fn analyze<F: JoltField>(&self) -> Vec<(RV32IM, usize)> {
-        let mut counts = HashMap::<RV32IM, usize>::new();
+    pub fn analyze<F: JoltField>(&self) -> Vec<(WASM, usize)> {
+        let mut counts = HashMap::<WASM, usize>::new();
         for row in self.raw_trace.iter() {
             let op = row.instruction.opcode;
             if let Some(count) = counts.get(&op) {

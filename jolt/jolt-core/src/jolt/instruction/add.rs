@@ -25,9 +25,16 @@ impl<const WORD_SIZE: usize> JoltInstruction for ADDInstruction<WORD_SIZE> {
     }
 
     fn combine_lookups<F: JoltField>(&self, vals: &[F], C: usize, M: usize) -> F {
-        assert!(vals.len() == C / 2);
+        // HACK: Figure out the correct way to do this
+        let new_C = if WORD_SIZE == 64 {
+            assert!(vals.len() == C / 2);
+            C / 2
+        } else {
+            assert!(vals.len() == C / 4);
+            C / 4
+        };
         // The output is the identity of lower chunks
-        concatenate_lookups(vals, C / 2, log2(M) as usize)
+        concatenate_lookups(vals, new_C, log2(M) as usize)
     }
 
     fn g_poly_degree(&self, _: usize) -> usize {
@@ -148,7 +155,7 @@ mod test {
     #[test]
     fn add_instruction_32_e2e() {
         let mut rng = test_rng();
-        const C: usize = 4;
+        const C: usize = 8;
         const M: usize = 1 << 16;
         const WORD_SIZE: usize = 32;
 

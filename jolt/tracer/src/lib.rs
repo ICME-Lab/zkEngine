@@ -17,7 +17,7 @@ mod emulator;
 mod trace;
 
 pub use common::rv_trace::{
-    ELFInstruction, JoltDevice, MemoryState, RVTraceRow, RegisterState, RV32IM,
+    ELFInstruction, JoltDevice, MemoryState, RVTraceRow, RegisterState, WASM,
 };
 
 use crate::decode::decode_raw;
@@ -99,7 +99,7 @@ pub fn decode(elf: &[u8]) -> (Vec<ELFInstruction>, Vec<(u64, u8)>) {
                 // Unrecognized instruction, or from a ReadOnlyData section
                 instructions.push(ELFInstruction {
                     address,
-                    opcode: RV32IM::UNIMPL,
+                    opcode: WASM::UNIMPL,
                     rs1: None,
                     rs2: None,
                     rd: None,

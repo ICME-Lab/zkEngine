@@ -1,5 +1,5 @@
 use common::constants::virtual_register_index;
-use tracer::{ELFInstruction, RVTraceRow, RegisterState, RV32IM};
+use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::VirtualInstructionSequence;
 use crate::jolt::instruction::{
@@ -14,7 +14,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
     const SEQUENCE_LENGTH: usize = 8;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, RV32IM::DIV);
+        assert_eq!(trace_row.instruction.opcode, WASM::DIV);
         // DIV source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -63,7 +63,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_ADVICE,
+                opcode: WASM::VIRTUAL_ADVICE,
                 rs1: None,
                 rs2: None,
                 rd: v_q,
@@ -85,7 +85,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_ADVICE,
+                opcode: WASM::VIRTUAL_ADVICE,
                 rs1: None,
                 rs2: None,
                 rd: v_r,
@@ -108,7 +108,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
+                opcode: WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
                 rs1: v_r,
                 rs2: r_y,
                 rd: None,
@@ -131,7 +131,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_ASSERT_VALID_DIV0,
+                opcode: WASM::VIRTUAL_ASSERT_VALID_DIV0,
                 rs1: r_y,
                 rs2: v_q,
                 rd: None,
@@ -153,7 +153,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::MUL,
+                opcode: WASM::MUL,
                 rs1: v_q,
                 rs2: r_y,
                 rd: v_qy,
@@ -175,7 +175,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::ADD,
+                opcode: WASM::ADD,
                 rs1: v_qy,
                 rs2: v_r,
                 rd: v_0,
@@ -197,7 +197,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_ASSERT_EQ,
+                opcode: WASM::VIRTUAL_ASSERT_EQ,
                 rs1: v_0,
                 rs2: r_x,
                 rd: None,
@@ -218,7 +218,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_MOVE,
+                opcode: WASM::VIRTUAL_MOVE,
                 rs1: v_q,
                 rs2: None,
                 rd: trace_row.instruction.rd,
@@ -262,6 +262,6 @@ mod test {
 
     #[test]
     fn div_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<DIVInstruction<32>>(RV32IM::DIV);
+        jolt_virtual_sequence_test::<DIVInstruction<32>>(WASM::DIV);
     }
 }

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 #[cfg(test)]
 use std::collections::HashSet;
-use tracer::RV32IM;
+use tracer::WASM;
 
 use crate::{
     field::JoltField,
@@ -195,14 +195,14 @@ impl BytecodeRow {
         // whereas all other instructions operate on the raw bits
         // of `imm` (via lookup queries).
         let imm = match instruction.opcode {
-            RV32IM::LW
-            | RV32IM::SW
-            | RV32IM::BEQ
-            | RV32IM::BNE
-            | RV32IM::BLT
-            | RV32IM::BGE
-            | RV32IM::BLTU
-            | RV32IM::BGEU => instruction.imm.unwrap_or(0),
+            WASM::LW
+            | WASM::SW
+            | WASM::BEQ
+            | WASM::BNE
+            | WASM::BLT
+            | WASM::BGE
+            | WASM::BLTU
+            | WASM::BGEU => instruction.imm.unwrap_or(0),
             _ => instruction.imm.unwrap_or(0) & u32::MAX as i64,
         };
 

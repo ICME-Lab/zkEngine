@@ -1816,7 +1816,7 @@ fn normalize_register(value: usize) -> u64 {
 fn trace_r(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_r(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: None,
         rs1: Some(normalize_register(f.rs1)),
@@ -1829,7 +1829,7 @@ fn trace_r(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstr
 fn trace_i(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_i(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: Some(f.imm),
         rs1: Some(normalize_register(f.rs1)),
@@ -1842,7 +1842,7 @@ fn trace_i(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstr
 fn trace_s(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_s(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: Some(f.imm),
         rs1: Some(normalize_register(f.rs1)),
@@ -1855,7 +1855,7 @@ fn trace_s(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstr
 fn trace_b(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_b(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: Some(f.imm),
         rs1: Some(normalize_register(f.rs1)),
@@ -1868,7 +1868,7 @@ fn trace_b(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstr
 fn trace_u(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_u(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: Some(f.imm),
         rs1: None,
@@ -1882,7 +1882,7 @@ fn trace_u(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstr
 fn trace_j(inst: &Instruction, xlen: &Xlen, word: u32, address: u64) -> ELFInstruction {
     let f = parse_format_j(word);
     ELFInstruction {
-        opcode: RV32IM::from_str(inst.name).unwrap(),
+        opcode: WASM::from_str(inst.name).unwrap(),
         address: normalize_u64(address, xlen),
         imm: Some(f.imm),
         rs1: None,

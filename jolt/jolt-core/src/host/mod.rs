@@ -184,18 +184,18 @@ impl Program {
         let trace: Vec<_> = raw_trace
             .into_par_iter()
             .flat_map(|row| match row.instruction.opcode {
-                tracer::RV32IM::MULH => MULHInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::MULHSU => MULHSUInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::DIV => DIVInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::DIVU => DIVUInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::REM => REMInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::REMU => REMUInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::SH => SHInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::SB => SBInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::LBU => LBUInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::LHU => LHUInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::LB => LBInstruction::<32>::virtual_trace(row),
-                tracer::RV32IM::LH => LHInstruction::<32>::virtual_trace(row),
+                tracer::WASM::MULH => MULHInstruction::<32>::virtual_trace(row),
+                tracer::WASM::MULHSU => MULHSUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::DIV => DIVInstruction::<32>::virtual_trace(row),
+                tracer::WASM::DIVU => DIVUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::REM => REMInstruction::<32>::virtual_trace(row),
+                tracer::WASM::REMU => REMUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::SH => SHInstruction::<32>::virtual_trace(row),
+                tracer::WASM::SB => SBInstruction::<32>::virtual_trace(row),
+                tracer::WASM::LBU => LBUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::LHU => LHUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::LB => LBInstruction::<32>::virtual_trace(row),
+                tracer::WASM::LH => LHInstruction::<32>::virtual_trace(row),
                 _ => vec![row],
             })
             .map(|row| {

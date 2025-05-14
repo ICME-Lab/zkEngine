@@ -1,5 +1,5 @@
 use common::constants::virtual_register_index;
-use tracer::{ELFInstruction, RVTraceRow, RegisterState, RV32IM};
+use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::VirtualInstructionSequence;
 
@@ -14,7 +14,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
         let v_0 = Some(virtual_register_index(0));
 
         let (pow2, result) = match trace_row.instruction.opcode {
-            RV32IM::SLL => {
+            WASM::SLL => {
                 let x = trace_row.register_state.rs1_val.unwrap();
                 let y = trace_row.register_state.rs2_val.unwrap();
                 let shift = y as usize % WORD_SIZE;
@@ -23,7 +23,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
                 virtual_trace.push(RVTraceRow {
                     instruction: ELFInstruction {
                         address: trace_row.instruction.address,
-                        opcode: RV32IM::VIRTUAL_POW2,
+                        opcode: WASM::VIRTUAL_POW2,
                         rs1: trace_row.instruction.rs2,
                         rs2: None,
                         rd: v_0,
@@ -46,7 +46,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
                 let result = (x << shift) % (1 << WORD_SIZE);
                 (pow2, result)
             }
-            RV32IM::SLLI => {
+            WASM::SLLI => {
                 let x = trace_row.register_state.rs1_val.unwrap();
                 let shift = trace_row.instruction.imm.unwrap() as u64 as usize % WORD_SIZE;
 
@@ -54,7 +54,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
                 virtual_trace.push(RVTraceRow {
                     instruction: ELFInstruction {
                         address: trace_row.instruction.address,
-                        opcode: RV32IM::VIRTUAL_POW2I,
+                        opcode: WASM::VIRTUAL_POW2I,
                         rs1: None,
                         rs2: None,
                         rd: v_0,
@@ -83,7 +83,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::MUL,
+                opcode: WASM::MUL,
                 rs1: trace_row.instruction.rs1,
                 rs2: v_0,
                 rd: trace_row.instruction.rd,
@@ -117,6 +117,6 @@ mod test {
 
     #[test]
     fn sll_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<SLLVirtualSequence<32>>(RV32IM::SLL);
+        jolt_virtual_sequence_test::<SLLVirtualSequence<32>>(WASM::SLL);
     }
 }

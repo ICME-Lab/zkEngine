@@ -29,8 +29,15 @@ impl<const WORD_SIZE: usize> JoltInstruction for MULInstruction<WORD_SIZE> {
     }
 
     fn combine_lookups<F: JoltField>(&self, vals: &[F], C: usize, M: usize) -> F {
-        assert!(vals.len() == C / 2);
-        concatenate_lookups(vals, C / 2, log2(M) as usize)
+        // HACK: Figure out the correct way to do this
+        let new_C = if WORD_SIZE == 64 {
+            assert!(vals.len() == C / 2);
+            C / 2
+        } else {
+            assert!(vals.len() == C / 4);
+            C / 4
+        };
+        concatenate_lookups(vals, new_C, log2(M) as usize)
     }
 
     fn g_poly_degree(&self, _: usize) -> usize {

@@ -41,7 +41,14 @@ impl<const WORD_SIZE: usize> JoltInstruction for MULHUInstruction<WORD_SIZE> {
         C: usize,
         M: usize,
     ) -> Vec<(Box<dyn LassoSubtable<F>>, SubtableIndices)> {
-        assert_eq!(C * log2(M) as usize, 2 * WORD_SIZE);
+        if C * log2(M) as usize != 2 * WORD_SIZE && C * log2(M) as usize != 4 * WORD_SIZE {
+            panic!(
+                "Invalid parameters for MULHUInstruction expected {} || {}, got {}",
+                2 * WORD_SIZE,
+                4 * WORD_SIZE,
+                C * log2(M) as usize,
+            );
+        }
         vec![(
             Box::new(IdentitySubtable::new()),
             SubtableIndices::from(0..C / 2),

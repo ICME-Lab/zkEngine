@@ -1,5 +1,5 @@
 use common::constants::virtual_register_index;
-use tracer::{ELFInstruction, RVTraceRow, RegisterState, RV32IM};
+use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::VirtualInstructionSequence;
 use crate::jolt::instruction::{
@@ -14,7 +14,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
     const SEQUENCE_LENGTH: usize = 4;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, RV32IM::MULHSU);
+        assert_eq!(trace_row.instruction.opcode, WASM::MULHSU);
         // MULHSU source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -32,7 +32,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::VIRTUAL_MOVSIGN,
+                opcode: WASM::VIRTUAL_MOVSIGN,
                 rs1: r_x,
                 rs2: None,
                 rd: v_sx,
@@ -54,7 +54,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::MULHU,
+                opcode: WASM::MULHU,
                 rs1: r_x,
                 rs2: r_y,
                 rd: v_1,
@@ -76,7 +76,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::MULU,
+                opcode: WASM::MULU,
                 rs1: v_sx,
                 rs2: r_y,
                 rd: v_2,
@@ -98,7 +98,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: RV32IM::ADD,
+                opcode: WASM::ADD,
                 rs1: v_1,
                 rs2: v_2,
                 rd: trace_row.instruction.rd,
@@ -141,6 +141,6 @@ mod test {
 
     #[test]
     fn mulhsu_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<MULHSUInstruction<32>>(RV32IM::MULHSU);
+        jolt_virtual_sequence_test::<MULHSUInstruction<32>>(WASM::MULHSU);
     }
 }
