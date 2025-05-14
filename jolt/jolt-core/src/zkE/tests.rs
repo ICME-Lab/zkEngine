@@ -24,6 +24,10 @@ fn make_wasm_program(file_name: &str) -> WASMProgram {
 }
 
 pub fn add_sub_mul_wasm_program() -> WASMProgram {
+    make_wasm_program("add_sub_mul.wat")
+}
+
+pub fn add_sub_mul_32_wasm_program() -> WASMProgram {
     make_wasm_program("add_sub_mul_32.wat")
 }
 

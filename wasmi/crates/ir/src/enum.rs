@@ -316,29 +316,25 @@ impl Instruction {
             | Self::I32ShrS { result, lhs, rhs }
             | Self::I32ShrU { result, lhs, rhs }
             | Self::I32LtU { result, lhs, rhs }
-            | Self::I32LtS { result, lhs, rhs } => {
+            | Self::I32LtS { result, lhs, rhs }
+            | Self::I64Add { result, lhs, rhs }
+            | Self::I64Sub { result, lhs, rhs }
+            | Self::I64Mul { result, lhs, rhs }
+            | Self::I64BitXor { result, lhs, rhs }
+            | Self::I64BitAnd { result, lhs, rhs }
+            | Self::I64BitOr { result, lhs, rhs }
+            | Self::I64Shl { result, lhs, rhs }
+            | Self::I64ShrS { result, lhs, rhs }
+            | Self::I64ShrU { result, lhs, rhs }
+            | Self::I64LtU { result, lhs, rhs }
+            | Self::I64LtS { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
 
-            Self::ReturnImm32 { value } => ELFInstruction {
-                address: instruction_address,
-                opcode: WASM::from_str(&self.to_string()).unwrap(),
-                rs1: None,
-                rs2: None,
-                rd: Some(value.0 as u16 as u32 as u64),
-                imm: None,
-                virtual_sequence_remaining: None,
-            },
+            Self::ReturnImm32 { .. } | Self::ReturnReg { .. } | Self::ReturnI64Imm32 { .. } => {
+                trace_unimpl(self, instruction_address)
+            }
 
-            Self::ReturnReg { value } => ELFInstruction {
-                address: instruction_address,
-                opcode: WASM::from_str(&self.to_string()).unwrap(),
-                rs1: None,
-                rs2: None,
-                rd: Some(value.0 as u16 as u32 as u64),
-                imm: None,
-                virtual_sequence_remaining: None,
-            },
             _ => todo!("trace instruction: {self:?}"),
         }
     }
@@ -351,6 +347,18 @@ fn trace_r(inst: &Instruction, result: Reg, lhs: Reg, rhs: Reg, address: u64) ->
         rs1: Some(lhs.0 as u16 as u32 as u64),
         rs2: Some(rhs.0 as u16 as u32 as u64),
         rd: Some(result.0 as u16 as u32 as u64),
+        imm: None,
+        virtual_sequence_remaining: None,
+    }
+}
+
+fn trace_unimpl(inst: &Instruction, address: u64) -> ELFInstruction {
+    ELFInstruction {
+        address,
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
+        rs1: None,
+        rs2: None,
+        rd: None,
         imm: None,
         virtual_sequence_remaining: None,
     }
@@ -372,8 +380,21 @@ impl ToString for Instruction {
             Self::I32LtU { .. } => "I32LtU".to_string(),
             Self::I32LtS { .. } => "I32LtS".to_string(),
 
+            Self::I64Add { .. } => "I64Add".to_string(),
+            Self::I64Sub { .. } => "I64Sub".to_string(),
+            Self::I64Mul { .. } => "I64Mul".to_string(),
+            Self::I64BitXor { .. } => "I64BitXor".to_string(),
+            Self::I64BitAnd { .. } => "I64BitAnd".to_string(),
+            Self::I64BitOr { .. } => "I64BitOr".to_string(),
+            Self::I64Shl { .. } => "I64Shl".to_string(),
+            Self::I64ShrS { .. } => "I64ShrS".to_string(),
+            Self::I64ShrU { .. } => "I64ShrU".to_string(),
+            Self::I64LtU { .. } => "I64LtU".to_string(),
+            Self::I64LtS { .. } => "I32LtS".to_string(),
+
             Self::ReturnImm32 { .. } => "ReturnImm32".to_string(),
             Self::ReturnReg { .. } => "ReturnReg".to_string(),
+            Self::ReturnI64Imm32 { .. } => "ReturnI64Imm32".to_string(),
 
             _ => todo!("to_string instruction: {self:?}"),
         }

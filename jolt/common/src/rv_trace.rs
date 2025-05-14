@@ -93,6 +93,13 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32XOR
             | WASM::I32OR
             | WASM::I32AND
+            // i64
+            | WASM::I64ADD
+            | WASM::I64SUB
+            | WASM::I64MUL
+            | WASM::I64XOR
+            | WASM::I64OR
+            | WASM::I64AND
             | WASM::SLL
             | WASM::SRL
             | WASM::SRA
@@ -498,6 +505,11 @@ impl FromStr for WASM {
             "I32ShrS" => Ok(Self::SRA),
             "I32LtS" => Ok(Self::SLT),
             "I32LtU" => Ok(Self::SLTU),
+
+            "I64Add" => Ok(Self::I64ADD),
+            "I64Sub" => Ok(Self::I64SUB),
+            "I64Mul" => Ok(Self::I64MUL),
+
             "ADDI" => Ok(Self::ADDI),
             "XORI" => Ok(Self::XORI),
             "ORI" => Ok(Self::ORI),
@@ -539,7 +551,7 @@ impl FromStr for WASM {
             "UNIMPL" => Ok(Self::UNIMPL),
 
             // Temp instructions
-            "ReturnImm32" | "ReturnReg" => Ok(Self::UNIMPL), // HACK: This should have its own instruction
+            "ReturnImm32" | "ReturnReg" | "ReturnI64Imm32" => Ok(Self::UNIMPL), // HACK: This should have its own instruction
             _ => Err(format!("Could not match {s:?} instruction to RV32IM set.")),
         }
     }

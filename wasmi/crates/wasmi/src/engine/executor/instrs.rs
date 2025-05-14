@@ -170,9 +170,11 @@ impl<'engine> Executor<'engine> {
                     forward_return!(self.execute_return_imm32(store.inner_mut(), value))
                 }
                 Instr::ReturnI64Imm32 { value } => {
+                    self.tracer.visit_return();
                     forward_return!(self.execute_return_i64imm32(store.inner_mut(), value))
                 }
                 Instr::ReturnF64Imm32 { value } => {
+                    self.tracer.visit_return();
                     forward_return!(self.execute_return_f64imm32(store.inner_mut(), value))
                 }
                 Instr::ReturnSpan { values } => {
