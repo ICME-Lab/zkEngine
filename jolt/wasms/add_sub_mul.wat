@@ -6,24 +6,21 @@
     local.get 1
     local.get 2
     local.get 3
-    i64.xor
-    i64.or
-    i64.and
-    ;; i64.mul
-    ;; local.get 3
-    ;; i64.add
-    ;; i64.sub
-    ;; local.get 2
-    ;; i64.mul
-    ;; i64.add
-    ;; local.get 0
-    ;; local.get 2
-    ;; i64.mul
-    ;; local.get 0
-    ;; i64.sub
-    ;; i64.add
-    ;; local.get 0
-    ;; i64.mul
+    i64.sub
+    local.get 3
+    i64.add
+    i64.sub
+    local.get 2
+    i64.mul
+    i64.add
+    local.get 0
+    local.get 2
+    i64.mul
+    local.get 0
+    i64.sub
+    i64.add
+    local.get 0
+    i64.mul
   )
   (table (;0;) 1 1 funcref)
   (memory (;0;) 16)

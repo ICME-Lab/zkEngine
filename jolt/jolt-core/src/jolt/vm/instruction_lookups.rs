@@ -1257,12 +1257,12 @@ where
     }
 
     #[tracing::instrument(skip_all, name = "InstructionLookupsProof::compute_lookup_outputs")]
-    fn compute_lookup_outputs(instructions: &Vec<JoltTraceStep<InstructionSet>>) -> Vec<u32> {
+    fn compute_lookup_outputs(instructions: &Vec<JoltTraceStep<InstructionSet>>) -> Vec<u64> {
         instructions
             .par_iter()
             .map(|op| {
                 if let Some(instr) = &op.instruction_lookup {
-                    instr.lookup_entry() as u32
+                    instr.lookup_entry()
                 } else {
                     0
                 }

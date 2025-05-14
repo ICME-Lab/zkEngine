@@ -10,7 +10,7 @@
     local.get 1
     local.get 2
     local.get 3
-    i32.mul
+    i32.sub
     local.get 3
     i32.add
     i32.sub

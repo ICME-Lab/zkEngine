@@ -201,6 +201,7 @@ mod test {
         // Edge cases
         let u64_max: u64 = u64::MAX;
         let instructions = vec![
+            SUBInstruction::<WORD_SIZE>(2, 500),
             SUBInstruction::<WORD_SIZE>(100, 0),
             SUBInstruction::<WORD_SIZE>(0, 100),
             SUBInstruction::<WORD_SIZE>(1, 0),

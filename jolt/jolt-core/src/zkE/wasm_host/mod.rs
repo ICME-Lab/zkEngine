@@ -68,14 +68,17 @@ impl From<&WASMProgram> for Args {
 
 #[cfg(test)]
 mod tests {
-    use crate::zkE::tests::add_sub_mul_wasm_program;
+    use crate::{
+        jolt::instruction::JoltInstruction,
+        zkE::tests::{add_sub_mul_32_wasm_program, add_sub_mul_wasm_program},
+    };
 
     #[test]
     fn test_wasm_trace() {
         let wasm_program = add_sub_mul_wasm_program();
         let (wasm_bytecode, _init_memory) = wasm_program.decode();
         let (trace, _jolt_device) = wasm_program.trace();
-        println!("WASM Bytecode: {wasm_bytecode:#?}");
+        // println!("WASM Bytecode: {wasm_bytecode:#?}");
         println!("===========================");
         println!("WASM Trace Length: {}", trace.len());
         println!("WASM Trace: {trace:#?}");
