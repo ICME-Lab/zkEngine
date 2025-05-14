@@ -58,13 +58,13 @@ mod tests {
     }
 
     #[test]
-    fn test_add_sub_mul_32() {
-        test_wasm_e2e_with(add_sub_mul_32_wasm_program());
+    fn test_add_sub_mul() {
+        test_wasm_e2e_with(add_sub_mul_wasm_program());
     }
 
     #[test]
-    fn test_add_sub_mul() {
-        test_wasm_e2e_with(add_sub_mul_wasm_program());
+    fn test_add_sub_mul_32() {
+        test_wasm_e2e_with(add_sub_mul_32_wasm_program());
     }
 
     #[test]

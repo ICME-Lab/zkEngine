@@ -509,6 +509,9 @@ impl FromStr for WASM {
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
             "I64Mul" => Ok(Self::I64MUL),
+            "I64BitXor" => Ok(Self::I64XOR),
+            "I64BitOr" => Ok(Self::I64OR),
+            "I64BitAnd" => Ok(Self::I64AND),
 
             "ADDI" => Ok(Self::ADDI),
             "XORI" => Ok(Self::XORI),

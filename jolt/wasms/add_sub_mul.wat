@@ -6,9 +6,9 @@
     local.get 1
     local.get 2
     local.get 3
-    i64.add
-    i64.mul
-    i64.sub
+    i64.xor
+    i64.or
+    i64.and
     ;; i64.mul
     ;; local.get 3
     ;; i64.add
