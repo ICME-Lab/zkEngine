@@ -32,8 +32,8 @@ mod tests {
         utils::transcript::KeccakTranscript,
         zkE::{
             tests::{
-                add_sub_mul_wasm_program, bitwise_arith_wasm_program, lt_wasm_program,
-                poly_simple_wasm_program, shifts_arith_wasm_program,
+                add_sub_mul_32_wasm_program, add_sub_mul_wasm_program, bitwise_arith_wasm_program,
+                lt_wasm_program, poly_simple_wasm_program, shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -55,6 +55,11 @@ mod tests {
 
         // Verify
         WASMJoltVM::verify(preprocessing.shared, snark, commitments, program_io, None).unwrap();
+    }
+
+    #[test]
+    fn test_add_sub_mul_32() {
+        test_wasm_e2e_with(add_sub_mul_32_wasm_program());
     }
 
     #[test]
