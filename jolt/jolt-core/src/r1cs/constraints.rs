@@ -11,7 +11,7 @@ use crate::{
             virtual_assert_halfword_alignment::AssertHalfwordAlignmentInstruction,
             virtual_move::MOVEInstruction, virtual_movsign::MOVSIGNInstruction,
         },
-        vm::rv32i_vm::RV32I,
+        vm::rv32i_vm::{RV32I, WORD_SIZE},
     },
 };
 
@@ -121,14 +121,15 @@ impl<const C: usize, F: JoltField> R1CSConstraints<C, F> for JoltRV32IMConstrain
 
         // For the `AssertHalfwordAlignmentInstruction` lookups, we add the `rs1` and `imm` values
         // to obtain the memory address being accessed.
-        let add_operands = JoltR1CSInputs::InstructionFlags(ADDInstruction::default().into())
-            + JoltR1CSInputs::InstructionFlags(
-                AssertHalfwordAlignmentInstruction::<32>::default().into(),
-            );
+        let add_operands =
+            JoltR1CSInputs::InstructionFlags(ADDInstruction::<WORD_SIZE>::default().into())
+                + JoltR1CSInputs::InstructionFlags(
+                    AssertHalfwordAlignmentInstruction::<32>::default().into(),
+                );
         cs.constrain_eq_conditional(add_operands, packed_query.clone(), x + y);
         // Converts from unsigned to twos-complement representation
         cs.constrain_eq_conditional(
-            JoltR1CSInputs::InstructionFlags(SUBInstruction::default().into()),
+            JoltR1CSInputs::InstructionFlags(SUBInstruction::<WORD_SIZE>::default().into()),
             packed_query.clone(),
             x - y + (0xffffffffi64 + 1),
         );

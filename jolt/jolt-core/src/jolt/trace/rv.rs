@@ -14,7 +14,7 @@ use crate::jolt::{
         virtual_pow2::POW2Instruction, virtual_right_shift_padding::RightShiftPaddingInstruction,
         xor::XORInstruction,
     },
-    vm::rv32i_vm::RV32I,
+    vm::rv32i_vm::{RV32I, WORD_SIZE, WORD_SIZE_1},
 };
 use common::rv_trace::{ELFInstruction, RVTraceRow, RV32IM};
 
@@ -24,21 +24,28 @@ impl TryFrom<&ELFInstruction> for RV32I {
     #[rustfmt::skip] // keep matches pretty
     fn try_from(instruction: &ELFInstruction) -> Result<Self, Self::Error> {
         match instruction.opcode {
-            RV32IM::ADD  => Ok(ADDInstruction::default().into()),
-            RV32IM::SUB  => Ok(SUBInstruction::default().into()),
-            RV32IM::XOR  => Ok(XORInstruction::default().into()),
-            RV32IM::OR   => Ok(ORInstruction::default().into()),
-            RV32IM::AND  => Ok(ANDInstruction::default().into()),
+            RV32IM::ADD  => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::SUB  => Ok(SUBInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::XOR  => Ok(XORInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::OR   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::AND  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
+
+            RV32IM::I64ADD  => Ok(ADDInstruction::<WORD_SIZE_1>::default().into()),
+            RV32IM::I64SUB  => Ok(SUBInstruction::<WORD_SIZE_1>::default().into()),
+            RV32IM::I64XOR  => Ok(XORInstruction::<WORD_SIZE_1>::default().into()),
+            RV32IM::I64OR   => Ok(ORInstruction::<WORD_SIZE_1>::default().into()),
+            RV32IM::I64AND  => Ok(ANDInstruction::<WORD_SIZE_1>::default().into()),
+
             RV32IM::SLL  => Ok(SLLInstruction::default().into()),
             RV32IM::SRL  => Ok(SRLInstruction::default().into()),
             RV32IM::SRA  => Ok(SRAInstruction::default().into()),
             RV32IM::SLT  => Ok(SLTInstruction::default().into()),
             RV32IM::SLTU => Ok(SLTUInstruction::default().into()),
 
-            RV32IM::ADDI  => Ok(ADDInstruction::default().into()),
-            RV32IM::XORI  => Ok(XORInstruction::default().into()),
-            RV32IM::ORI   => Ok(ORInstruction::default().into()),
-            RV32IM::ANDI  => Ok(ANDInstruction::default().into()),
+            RV32IM::ADDI  => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::XORI  => Ok(XORInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::ORI   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::ANDI  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
             RV32IM::SLLI  => Ok(SLLInstruction::default().into()),
             RV32IM::SRLI  => Ok(SRLInstruction::default().into()),
             RV32IM::SRAI  => Ok(SRAInstruction::default().into()),
@@ -52,9 +59,9 @@ impl TryFrom<&ELFInstruction> for RV32I {
             RV32IM::BGE  => Ok(BGEInstruction::default().into()),
             RV32IM::BGEU => Ok(BGEUInstruction::default().into()),
 
-            RV32IM::JAL   => Ok(ADDInstruction::default().into()),
-            RV32IM::JALR  => Ok(ADDInstruction::default().into()),
-            RV32IM::AUIPC => Ok(ADDInstruction::default().into()),
+            RV32IM::JAL   => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::JALR  => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
+            RV32IM::AUIPC => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
             RV32IM::LUI => Ok(ADVICEInstruction::default().into()),
 
             RV32IM::MUL => Ok(MULInstruction::default().into()),
@@ -86,21 +93,28 @@ impl TryFrom<&RVTraceRow> for RV32I {
     #[rustfmt::skip] // keep matches pretty
     fn try_from(row: &RVTraceRow) -> Result<Self, Self::Error> {
         match row.instruction.opcode {
-            RV32IM::ADD => Ok(ADDInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            RV32IM::SUB => Ok(SUBInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            RV32IM::XOR => Ok(XORInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            RV32IM::OR  => Ok(ORInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            RV32IM::AND => Ok(ANDInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::ADD => Ok(ADDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::SUB => Ok(SUBInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::XOR => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::OR  => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::AND => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+
+            RV32IM::I64ADD => Ok(ADDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::I64SUB => Ok(SUBInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::I64XOR => Ok(XORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::I64OR  => Ok(ORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            RV32IM::I64AND => Ok(ANDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+
             RV32IM::SLL => Ok(SLLInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             RV32IM::SRL => Ok(SRLInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             RV32IM::SRA => Ok(SRAInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             RV32IM::SLT  => Ok(SLTInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             RV32IM::SLTU => Ok(SLTUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
-            RV32IM::ADDI  => Ok(ADDInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
-            RV32IM::XORI  => Ok(XORInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
-            RV32IM::ORI   => Ok(ORInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
-            RV32IM::ANDI  => Ok(ANDInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            RV32IM::ADDI  => Ok(ADDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            RV32IM::XORI  => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            RV32IM::ORI   => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            RV32IM::ANDI  => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             RV32IM::SLLI  => Ok(SLLInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             RV32IM::SRLI  => Ok(SRLInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             RV32IM::SRAI  => Ok(SRAInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
@@ -114,9 +128,9 @@ impl TryFrom<&RVTraceRow> for RV32I {
             RV32IM::BGE  => Ok(BGEInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             RV32IM::BGEU => Ok(BGEUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
-            RV32IM::JAL  => Ok(ADDInstruction(row.instruction.address, row.imm_u32() as u64).into()),
-            RV32IM::JALR => Ok(ADDInstruction(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
-            RV32IM::AUIPC => Ok(ADDInstruction(row.instruction.address, row.imm_u32() as u64).into()),
+            RV32IM::JAL  => Ok(ADDInstruction::<WORD_SIZE>(row.instruction.address, row.imm_u32() as u64).into()),
+            RV32IM::JALR => Ok(ADDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            RV32IM::AUIPC => Ok(ADDInstruction::<WORD_SIZE>(row.instruction.address, row.imm_u32() as u64).into()),
             RV32IM::LUI => Ok(ADVICEInstruction(row.imm_u32() as u64).into()),
 
             RV32IM::MUL => Ok(MULInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),

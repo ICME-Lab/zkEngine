@@ -106,4 +106,11 @@ mod test {
       Fr,
       256
     );
+
+    subtable_materialize_mle_parity_test!(
+      sra_sign_materialize_mle_parity_64,
+      SraSignSubtable<Fr, 64>,
+      Fr,
+      256
+    );
 }

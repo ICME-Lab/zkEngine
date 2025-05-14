@@ -113,4 +113,6 @@ mod test {
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity1_32, SllSubtable<Fr, 1, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity2_32, SllSubtable<Fr, 2, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity3_32, SllSubtable<Fr, 3, 32>, Fr, 1 << 16);
+
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity0_64, SllSubtable<Fr, 0, 64>, Fr, 1 << 16);
 }

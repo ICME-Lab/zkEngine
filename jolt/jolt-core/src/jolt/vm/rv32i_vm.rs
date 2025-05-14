@@ -114,7 +114,8 @@ macro_rules! subtable_enum {
     };
 }
 
-const WORD_SIZE: usize = 32;
+pub const WORD_SIZE: usize = 32;
+pub const WORD_SIZE_1: usize = 64;
 
 instruction_set!(
   RV32I,
@@ -123,6 +124,13 @@ instruction_set!(
   AND: ANDInstruction<WORD_SIZE>,
   OR: ORInstruction<WORD_SIZE>,
   XOR: XORInstruction<WORD_SIZE>,
+
+  I64ADD: ADDInstruction<WORD_SIZE_1>,
+  I64SUB: SUBInstruction<WORD_SIZE_1>,
+  I64AND: ANDInstruction<WORD_SIZE_1>,
+  I64OR: ORInstruction<WORD_SIZE_1>,
+  I64XOR: XORInstruction<WORD_SIZE_1>,
+
   BEQ: BEQInstruction<WORD_SIZE>,
   BGE: BGEInstruction<WORD_SIZE>,
   BGEU: BGEUInstruction<WORD_SIZE>,
@@ -162,11 +170,28 @@ subtable_enum!(
   SLL1: SllSubtable<F, 1, WORD_SIZE>,
   SLL2: SllSubtable<F, 2, WORD_SIZE>,
   SLL3: SllSubtable<F, 3, WORD_SIZE>,
+  I64SLL0: SllSubtable<F, 0, WORD_SIZE_1>,
+  I64SLL1: SllSubtable<F, 1, WORD_SIZE_1>,
+  I64SLL2: SllSubtable<F, 2, WORD_SIZE_1>,
+  I64SLL3: SllSubtable<F, 3, WORD_SIZE_1>,
+  I64SLL4: SllSubtable<F, 4, WORD_SIZE_1>,
+  I64SLL5: SllSubtable<F, 5, WORD_SIZE_1>,
+  I64SLL6: SllSubtable<F, 6, WORD_SIZE_1>,
+  I64SLL7: SllSubtable<F, 7, WORD_SIZE_1>,
   SRA_SIGN: SraSignSubtable<F, WORD_SIZE>,
+  I64SRA_SIGN: SraSignSubtable<F, WORD_SIZE_1>,
   SRL0: SrlSubtable<F, 0, WORD_SIZE>,
   SRL1: SrlSubtable<F, 1, WORD_SIZE>,
   SRL2: SrlSubtable<F, 2, WORD_SIZE>,
   SRL3: SrlSubtable<F, 3, WORD_SIZE>,
+  I64SRL0: SrlSubtable<F, 0, WORD_SIZE_1>,
+  I64SRL1: SrlSubtable<F, 1, WORD_SIZE_1>,
+  I64SRL2: SrlSubtable<F, 2, WORD_SIZE_1>,
+  I64SRL3: SrlSubtable<F, 3, WORD_SIZE_1>,
+  I64SRL4: SrlSubtable<F, 4, WORD_SIZE_1>,
+  I64SRL5: SrlSubtable<F, 5, WORD_SIZE_1>,
+  I64SRL6: SrlSubtable<F, 6, WORD_SIZE_1>,
+  I64SRL7: SrlSubtable<F, 7, WORD_SIZE_1>,
   XOR: XorSubtable<F>,
   LEFT_IS_ZERO: LeftIsZeroSubtable<F>,
   RIGHT_IS_ZERO: RightIsZeroSubtable<F>,

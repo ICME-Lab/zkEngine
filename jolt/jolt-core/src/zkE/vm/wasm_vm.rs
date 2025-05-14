@@ -10,7 +10,7 @@ use super::JoltWASM;
 
 pub enum WASMJoltVM {}
 
-pub const C: usize = 4;
+pub const C: usize = 8;
 pub const M: usize = 1 << 16;
 
 impl<F, PCS, ProofTranscript> JoltWASM<F, PCS, C, M, ProofTranscript> for WASMJoltVM
