@@ -24,11 +24,12 @@ impl TryFrom<&ELFInstruction> for RV32I {
     #[rustfmt::skip] // keep matches pretty
     fn try_from(instruction: &ELFInstruction) -> Result<Self, Self::Error> {
         match instruction.opcode {
-            WASM::ADD  => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
-            WASM::SUB  => Ok(SUBInstruction::<WORD_SIZE>::default().into()),
-            WASM::XOR  => Ok(XORInstruction::<WORD_SIZE>::default().into()),
-            WASM::OR   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
-            WASM::AND  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32ADD  => Ok(ADDInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32SUB  => Ok(SUBInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32MUL  => Ok(MULInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32XOR  => Ok(XORInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32OR   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32AND  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
 
             WASM::I64ADD  => Ok(ADDInstruction::<WORD_SIZE_1>::default().into()),
             WASM::I64SUB  => Ok(SUBInstruction::<WORD_SIZE_1>::default().into()),
@@ -93,11 +94,12 @@ impl TryFrom<&RVTraceRow> for RV32I {
     #[rustfmt::skip] // keep matches pretty
     fn try_from(row: &RVTraceRow) -> Result<Self, Self::Error> {
         match row.instruction.opcode {
-            WASM::ADD => Ok(ADDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            WASM::SUB => Ok(SUBInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            WASM::XOR => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            WASM::OR  => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            WASM::AND => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32ADD => Ok(ADDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32SUB => Ok(SUBInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32MUL => Ok(MULInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32XOR => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32OR  => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32AND => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
             WASM::I64ADD => Ok(ADDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64SUB => Ok(SUBInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
@@ -133,7 +135,6 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::AUIPC => Ok(ADDInstruction::<WORD_SIZE>(row.instruction.address, row.imm_u32() as u64).into()),
             // WASM::LUI => Ok(ADVICEInstruction(row.imm_u32() as u64).into()),
 
-            // WASM::MUL => Ok(MULInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             // WASM::MULU => Ok(MULUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             // WASM::MULHU => Ok(MULHUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 

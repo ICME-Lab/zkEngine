@@ -119,14 +119,16 @@ pub const WORD_SIZE_1: usize = 64;
 
 instruction_set!(
   RV32I,
-  ADD: ADDInstruction<WORD_SIZE>,
-  SUB: SUBInstruction<WORD_SIZE>,
-  AND: ANDInstruction<WORD_SIZE>,
-  OR: ORInstruction<WORD_SIZE>,
-  XOR: XORInstruction<WORD_SIZE>,
+  I32ADD: ADDInstruction<WORD_SIZE>,
+  I32SUB: SUBInstruction<WORD_SIZE>,
+  I32MUL: MULInstruction<WORD_SIZE>,
+  I32AND: ANDInstruction<WORD_SIZE>,
+  I32OR: ORInstruction<WORD_SIZE>,
+  I32XOR: XORInstruction<WORD_SIZE>,
 
   I64ADD: ADDInstruction<WORD_SIZE_1>,
   I64SUB: SUBInstruction<WORD_SIZE_1>,
+  I64MUL: MULInstruction<WORD_SIZE_1>,
   I64AND: ANDInstruction<WORD_SIZE_1>,
   I64OR: ORInstruction<WORD_SIZE_1>,
   I64XOR: XORInstruction<WORD_SIZE_1>

@@ -98,7 +98,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for MULHSUInstruction<WO
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::ADD,
+                opcode: WASM::I32ADD,
                 rs1: v_1,
                 rs2: v_2,
                 rd: trace_row.instruction.rd,

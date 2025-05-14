@@ -153,7 +153,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::MUL,
+                opcode: WASM::I32MUL,
                 rs1: v_q,
                 rs2: r_y,
                 rd: v_qy,
@@ -175,7 +175,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::ADD,
+                opcode: WASM::I32ADD,
                 rs1: v_qy,
                 rs2: v_r,
                 rd: v_0,

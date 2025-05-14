@@ -83,7 +83,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::MUL,
+                opcode: WASM::I32MUL,
                 rs1: trace_row.instruction.rs1,
                 rs2: v_0,
                 rd: trace_row.instruction.rd,

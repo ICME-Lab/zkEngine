@@ -85,18 +85,19 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
         // 6: byte_3
         // If any are empty a no_op is inserted.
 
+        // TODO: CHECK ALL INSTRUCTIONS IMPLEMENTED HERE
         match val.instruction.opcode {
-            WASM::ADD
-            | WASM::SUB
-            | WASM::XOR
-            | WASM::OR
-            | WASM::AND
+            WASM::I32ADD
+            | WASM::I32SUB
+            | WASM::I32MUL
+            | WASM::I32XOR
+            | WASM::I32OR
+            | WASM::I32AND
             | WASM::SLL
             | WASM::SRL
             | WASM::SRA
             | WASM::SLT
             | WASM::SLTU
-            | WASM::MUL
             | WASM::MULH
             | WASM::MULHU
             | WASM::MULHSU
@@ -317,11 +318,11 @@ impl ELFInstruction {
 
         flags[CircuitFlags::ConcatLookupQueryChunks as usize] = matches!(
             self.opcode,
-            WASM::XOR
+            WASM::I32XOR
             | WASM::XORI
-            | WASM::OR
+            | WASM::I32OR
             | WASM::ORI
-            | WASM::AND
+            | WASM::I32AND
             | WASM::ANDI
             | WASM::SLL
             | WASM::SRL
@@ -404,16 +405,20 @@ impl RVTraceRow {
 #[repr(u8)]
 #[allow(non_camel_case_types)]
 pub enum WASM {
-    ADD,
-    SUB,
-    XOR,
-    OR,
-    AND,
+    I32ADD,
+    I32SUB,
+    I32MUL,
+    I32AND,
+    I32OR,
+    I32XOR,
+
     I64ADD,
     I64SUB,
-    I64XOR,
-    I64OR,
+    I64MUL,
     I64AND,
+    I64OR,
+    I64XOR,
+
     SLL,
     SRL,
     SRA,
@@ -448,7 +453,6 @@ pub enum WASM {
     AUIPC,
     ECALL,
     EBREAK,
-    MUL,
     MULH,
     MULHU,
     MULHSU,
@@ -483,11 +487,12 @@ impl FromStr for WASM {
 
     fn from_str(s: &str) -> Result<WASM, String> {
         match s {
-            "I32Add" => Ok(Self::ADD),
-            "I32Sub" => Ok(Self::SUB),
-            "I32BitXor" => Ok(Self::XOR),
-            "I32BitOr" => Ok(Self::OR),
-            "I32BitAnd" => Ok(Self::AND),
+            "I32Add" => Ok(Self::I32ADD),
+            "I32Sub" => Ok(Self::I32SUB),
+            "I32Mul" => Ok(Self::I32MUL),
+            "I32BitXor" => Ok(Self::I32XOR),
+            "I32BitOr" => Ok(Self::I32OR),
+            "I32BitAnd" => Ok(Self::I32AND),
             "I32Shl" => Ok(Self::SLL),
             "I32ShrU" => Ok(Self::SRL),
             "I32ShrS" => Ok(Self::SRA),
@@ -522,7 +527,6 @@ impl FromStr for WASM {
             "AUIPC" => Ok(Self::AUIPC),
             "ECALL" => Ok(Self::ECALL),
             "EBREAK" => Ok(Self::EBREAK),
-            "I32Mul" => Ok(Self::MUL),
             "MULH" => Ok(Self::MULH),
             "MULHU" => Ok(Self::MULHU),
             "MULHSU" => Ok(Self::MULHSU),
