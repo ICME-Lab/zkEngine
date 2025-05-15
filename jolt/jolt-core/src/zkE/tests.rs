@@ -35,6 +35,10 @@ pub fn bitwise_arith_wasm_program() -> WASMProgram {
     make_wasm_program("bitwise_arith.wat")
 }
 
+pub fn bitwise_arith_32_wasm_program() -> WASMProgram {
+    make_wasm_program("bitwise_arith_32.wat")
+}
+
 pub fn shifts_arith_wasm_program() -> WASMProgram {
     make_wasm_program("shifts_arith.wat")
 }
@@ -44,5 +48,19 @@ pub fn lt_wasm_program() -> WASMProgram {
 }
 
 pub fn poly_simple_wasm_program() -> WASMProgram {
-    make_wasm_program("poly-simple.wasm")
+    let file_name = "poly-simple.wasm";
+    WASMProgram {
+        func: DEFAULT_FUNC.to_string(),
+        inputs: default_wasm_inputs()[..3].to_vec(),
+        file_path: format!("{DEFAULT_FILE_DIR}{file_name}"),
+    }
+}
+
+pub fn poly_mixed_wasm_program() -> WASMProgram {
+    let file_name = "poly_mixed.wasm";
+    WASMProgram {
+        func: DEFAULT_FUNC.to_string(),
+        inputs: vec!["42".to_string(), "17".to_string(), "19".to_string()],
+        file_path: format!("{DEFAULT_FILE_DIR}{file_name}"),
+    }
 }

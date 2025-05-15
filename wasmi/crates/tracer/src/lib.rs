@@ -125,24 +125,14 @@ pub fn print_code_map(path: &str) {
     let engine = wasmi::Engine::new(&wasmi::Config::default());
     let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
     let instructions = engine.instructions();
-    // println!("Instructions: {instructions:#?}");
+    let base_ptr = InstructionPtr::new(instructions.as_ptr());
+    let mut pc = InstructionPtr::new(instructions.as_ptr());
     println!("Instructions length: {}", instructions.len());
-    println!("Instructions ptr: {:#?}", instructions.as_ptr());
-    // println!(
-    //     "Instructions address: {:#?}",
-    //     instructions.as_ptr() as usize
-    // );
-    // println!("Instructions address: {:#?}", instructions.as_ptr() as u64);
-    // println!(
-    //     "Instructions address: {:#?}",
-    //     instructions.as_ptr() as u64 + 1
-    // );
-    for i in 0..instructions.len() {
-        let instruction = instructions[i];
-        let instruction_address = InstructionPtr::new(instructions.as_ptr())
-            .offset_from(InstructionPtr::new(instructions.as_ptr()))
-            as u64;
-        println!("Instruction {i}: {instruction:#?} at address {instruction_address:#?}");
+    for instruction in instructions.iter() {
+        assert_eq!(*instruction, *pc.get());
+        let instruction_address = pc.offset_from(base_ptr) as u64;
+        println!("Instruction: {instruction:#?} at address {instruction_address:#?}");
+        pc.add(1);
     }
 }
 

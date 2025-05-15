@@ -32,8 +32,9 @@ mod tests {
         utils::transcript::KeccakTranscript,
         zkE::{
             tests::{
-                add_sub_mul_32_wasm_program, add_sub_mul_wasm_program, bitwise_arith_wasm_program,
-                lt_wasm_program, poly_simple_wasm_program, shifts_arith_wasm_program,
+                add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
+                bitwise_arith_32_wasm_program, bitwise_arith_wasm_program, lt_wasm_program,
+                poly_mixed_wasm_program, poly_simple_wasm_program, shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -73,6 +74,11 @@ mod tests {
     }
 
     #[test]
+    fn test_bitwise_arith_32() {
+        test_wasm_e2e_with(bitwise_arith_32_wasm_program());
+    }
+
+    #[test]
     fn test_shifts_arith() {
         test_wasm_e2e_with(shifts_arith_wasm_program());
     }
@@ -84,9 +90,12 @@ mod tests {
 
     #[test]
     fn test_poly_simple() {
-        // print out instructions
-        poly_simple_wasm_program().print_instructions();
+        test_wasm_e2e_with(poly_simple_wasm_program());
+    }
 
-        // test_wasm_e2e_with(poly_simple_wasm_program());
+    #[test]
+    fn test_poly_mixed() {
+        poly_mixed_wasm_program().print_instructions();
+        // test_wasm_e2e_with(poly_mixed_wasm_program());
     }
 }
