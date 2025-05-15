@@ -204,7 +204,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SHInstruction<WORD_S
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::SLL,
+                opcode: WASM::I32SHL,
                 rs1: v_mask,
                 rs2: v_shift,
                 rd: v_mask,
@@ -226,7 +226,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SHInstruction<WORD_S
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::SLL,
+                opcode: WASM::I32SHL,
                 rs1: r_value,
                 rs2: v_shift,
                 rd: v_halfword,

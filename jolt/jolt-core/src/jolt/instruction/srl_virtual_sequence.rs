@@ -15,7 +15,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SRLVirtualSequence<W
         let v_pow2 = Some(virtual_register_index(4));
 
         let (pow2, result) = match trace_row.instruction.opcode {
-            WASM::SRL => {
+            WASM::I32SHRU => {
                 let x = trace_row.register_state.rs1_val.unwrap();
                 let y = trace_row.register_state.rs2_val.unwrap();
                 let shift = y as usize % WORD_SIZE;
@@ -116,6 +116,6 @@ mod test {
 
     #[test]
     fn srl_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<SRLVirtualSequence<32>>(WASM::SRL);
+        jolt_virtual_sequence_test::<SRLVirtualSequence<32>>(WASM::I32SHRU);
     }
 }

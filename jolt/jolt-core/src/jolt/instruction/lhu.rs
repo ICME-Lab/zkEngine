@@ -194,7 +194,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for LHUInstruction<WORD_
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::SLL,
+                opcode: WASM::I32SHL,
                 rs1: v_word,
                 rs2: v_shift,
                 rd,

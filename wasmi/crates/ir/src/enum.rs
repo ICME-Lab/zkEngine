@@ -396,11 +396,14 @@ impl ToString for Instruction {
             Self::I32BitXor { .. } => "I32BitXor".to_string(),
             Self::I32BitAnd { .. } => "I32BitAnd".to_string(),
             Self::I32BitOr { .. } => "I32BitOr".to_string(),
+
             Self::I32Shl { .. } => "I32Shl".to_string(),
             Self::I32ShrS { .. } => "I32ShrS".to_string(),
             Self::I32ShrU { .. } => "I32ShrU".to_string(),
+
             Self::I32LtU { .. } => "I32LtU".to_string(),
             Self::I32LtS { .. } => "I32LtS".to_string(),
+
             Self::I32MulImm16 { .. } => "I32MulImm".to_string(),
 
             Self::I64Add { .. } => "I64Add".to_string(),
@@ -409,13 +412,17 @@ impl ToString for Instruction {
             Self::I64BitXor { .. } => "I64BitXor".to_string(),
             Self::I64BitAnd { .. } => "I64BitAnd".to_string(),
             Self::I64BitOr { .. } => "I64BitOr".to_string(),
+
             Self::I64Shl { .. } => "I64Shl".to_string(),
             Self::I64ShrS { .. } => "I64ShrS".to_string(),
             Self::I64ShrU { .. } => "I64ShrU".to_string(),
+
             Self::I64LtU { .. } => "I64LtU".to_string(),
             Self::I64LtS { .. } => "I64LtS".to_string(),
+
             Self::I64MulImm16 { .. } => "I64MulImm".to_string(),
 
+            // returns
             Self::ReturnImm32 { .. } => "ReturnImm32".to_string(),
             Self::ReturnReg { .. } => "ReturnReg".to_string(),
             Self::ReturnI64Imm32 { .. } => "ReturnI64Imm32".to_string(),

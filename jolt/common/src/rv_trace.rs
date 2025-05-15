@@ -85,7 +85,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
         // 6: byte_3
         // If any are empty a no_op is inserted.
 
-        // TODO: CHECK ALL INSTRUCTIONS IMPLEMENTED HERE
+        // TODO: DOUBLE CHECK THAT ALL INSTRUCTIONS ARE HANDLED HERE.
         match val.instruction.opcode {
             WASM::I32ADD
             | WASM::I32SUB
@@ -93,6 +93,9 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32XOR
             | WASM::I32OR
             | WASM::I32AND
+            | WASM::I32SHL
+            | WASM::I32SHRU
+            | WASM::I32SHRS
             // i64
             | WASM::I64ADD
             | WASM::I64SUB
@@ -100,9 +103,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64XOR
             | WASM::I64OR
             | WASM::I64AND
-            | WASM::SLL
-            | WASM::SRL
-            | WASM::SRA
+
             | WASM::SLT
             | WASM::SLTU
             | WASM::MULH
@@ -334,9 +335,9 @@ impl ELFInstruction {
             | WASM::ORI
             | WASM::I32AND
             | WASM::ANDI
-            | WASM::SLL
-            | WASM::SRL
-            | WASM::SRA
+            | WASM::I32SHL
+            | WASM::I32SHRU
+            | WASM::I32SHRS
             | WASM::SLLI
             | WASM::SRLI
             | WASM::SRAI
@@ -422,6 +423,9 @@ pub enum WASM {
     I32OR,
     I32XOR,
     I32MULI,
+    I32SHL,
+    I32SHRU,
+    I32SHRS,
 
     I64ADD,
     I64SUB,
@@ -431,9 +435,6 @@ pub enum WASM {
     I64XOR,
     I64MULI,
 
-    SLL,
-    SRL,
-    SRA,
     SLT,
     SLTU,
     ADDI,
@@ -505,9 +506,10 @@ impl FromStr for WASM {
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
             "I32BitAnd" => Ok(Self::I32AND),
-            "I32Shl" => Ok(Self::SLL),
-            "I32ShrU" => Ok(Self::SRL),
-            "I32ShrS" => Ok(Self::SRA),
+            "I32Shl" => Ok(Self::I32SHL),
+            "I32ShrU" => Ok(Self::I32SHRU),
+            "I32ShrS" => Ok(Self::I32SHRS),
+
             "I32LtS" => Ok(Self::SLT),
             "I32LtU" => Ok(Self::SLTU),
             "I32MulImm" => Ok(Self::I32MULI),

@@ -14,7 +14,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SLLVirtualSequence<W
         let v_0 = Some(virtual_register_index(0));
 
         let (pow2, result) = match trace_row.instruction.opcode {
-            WASM::SLL => {
+            WASM::I32SHL => {
                 let x = trace_row.register_state.rs1_val.unwrap();
                 let y = trace_row.register_state.rs2_val.unwrap();
                 let shift = y as usize % WORD_SIZE;
@@ -117,6 +117,6 @@ mod test {
 
     #[test]
     fn sll_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<SLLVirtualSequence<32>>(WASM::SLL);
+        jolt_virtual_sequence_test::<SLLVirtualSequence<32>>(WASM::I32SHL);
     }
 }

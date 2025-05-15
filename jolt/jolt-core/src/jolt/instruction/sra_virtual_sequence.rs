@@ -23,7 +23,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SRAVirtualSequence<W
         let v_result = Some(virtual_register_index(5));
 
         let (x, shift, bitmask) = match trace_row.instruction.opcode {
-            WASM::SRA => {
+            WASM::I32SHRS => {
                 let x = trace_row.register_state.rs1_val.unwrap();
                 let y = trace_row.register_state.rs2_val.unwrap();
                 let shift = y as usize % WORD_SIZE;
@@ -351,6 +351,6 @@ mod test {
 
     #[test]
     fn sra_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<SRAVirtualSequence<32>>(WASM::SRA);
+        jolt_virtual_sequence_test::<SRAVirtualSequence<32>>(WASM::I32SHRS);
     }
 }
