@@ -16,13 +16,13 @@ impl<F: JoltField> LowBitSubtable<F> {
 }
 
 impl<F: JoltField> LassoSubtable<F> for LowBitSubtable<F> {
-    fn materialize(&self, M: usize) -> Vec<u32> {
+    fn materialize(&self, M: usize) -> Vec<u64> {
         // table[x] = x & 1
         let mut entries = Vec::with_capacity(M);
 
         // Materialize table entries in order from 0..M
         for idx in 0..M {
-            entries.push(idx as u32 & 1);
+            entries.push(idx as u64 & 1);
         }
         entries
     }

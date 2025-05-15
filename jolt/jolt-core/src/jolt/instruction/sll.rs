@@ -146,7 +146,6 @@ mod test {
     }
 
     #[test]
-    #[ignore]
     fn sll_instruction_64_e2e() {
         let mut rng = test_rng();
         const C: usize = 8;

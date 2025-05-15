@@ -23,7 +23,7 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize>
 impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtable<F>
     for SllSubtable<F, CHUNK_INDEX, WORD_SIZE>
 {
-    fn materialize(&self, M: usize) -> Vec<u32> {
+    fn materialize(&self, M: usize) -> Vec<u64> {
         // table[x | y] = (x << (y % WORD_SIZE)) & ((1 << (WORD_SIZE - suffix_length)) - 1)
         // where `suffix_length = operand_chunk_width * CHUNK_INDEX`
         let mut entries = Vec::with_capacity(M);
@@ -43,7 +43,7 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtab
 
             let row = (x as u64).checked_shl((y % WORD_SIZE) as u32).unwrap_or(0) & truncate_mask;
 
-            entries.push(row as u32);
+            entries.push(row as u64);
         }
         entries
     }

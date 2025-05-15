@@ -247,7 +247,7 @@ where
                 // Init leaves
                 (0..M).for_each(|i| {
                     let a = &F::from_u16(i as u16);
-                    let v: u32 = subtable[i];
+                    let v: u64 = subtable[i];
                     // let t = F::zero();
                     // Compute h(a,v,t) where t == 0
                     leaves[i] = v.field_mul(gamma) + *a - *tau;
@@ -617,7 +617,7 @@ pub struct InstructionLookupsPreprocessing<const C: usize, F: JoltField> {
     instruction_to_memory_indices: Vec<Vec<usize>>,
     memory_to_subtable_index: Vec<usize>,
     memory_to_dimension_index: Vec<usize>,
-    materialized_subtables: Vec<Vec<u32>>,
+    materialized_subtables: Vec<Vec<u64>>,
     num_memories: usize,
     _field: PhantomData<F>,
 }
@@ -682,7 +682,7 @@ impl<const C: usize, F: JoltField> InstructionLookupsPreprocessing<C, F> {
 
     /// Materializes all subtables used by this Jolt instance.
     #[tracing::instrument(skip_all)]
-    fn materialize_subtables<const M: usize, Subtables>() -> Vec<Vec<u32>>
+    fn materialize_subtables<const M: usize, Subtables>() -> Vec<Vec<u64>>
     where
         Subtables: JoltSubtableSet<F>,
     {
@@ -887,7 +887,7 @@ where
 
                 let mut final_cts_i = vec![0u32; M];
                 let mut read_cts_i = vec![0u32; m];
-                let mut subtable_lookups = vec![0u32; m];
+                let mut subtable_lookups = vec![0u64; m];
 
                 for (j, op) in ops.iter().enumerate() {
                     if let Some(instr) = &op.instruction_lookup {

@@ -17,9 +17,9 @@ impl<F: JoltField> IdentitySubtable<F> {
 }
 
 impl<F: JoltField> LassoSubtable<F> for IdentitySubtable<F> {
-    fn materialize(&self, M: usize) -> Vec<u32> {
+    fn materialize(&self, M: usize) -> Vec<u64> {
         // table[x] = x
-        (0..M).map(|i| i as u32).collect()
+        (0..M).map(|i| i as u64).collect()
     }
 
     fn evaluate_mle(&self, point: &[F]) -> F {

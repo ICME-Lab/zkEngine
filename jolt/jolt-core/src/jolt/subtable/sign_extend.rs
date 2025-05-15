@@ -18,7 +18,7 @@ impl<F: JoltField, const WIDTH: usize> SignExtendSubtable<F, WIDTH> {
 }
 
 impl<F: JoltField, const WIDTH: usize> LassoSubtable<F> for SignExtendSubtable<F, WIDTH> {
-    fn materialize(&self, M: usize) -> Vec<u32> {
+    fn materialize(&self, M: usize) -> Vec<u64> {
         // table[x] = x[b - WIDTH] * (2^{WIDTH} - 1)
         // Take the WIDTH-th bit of the input (counting from the LSB), then multiply by (2^{WIDTH} - 1)
         // Requires `log2(M) >= WIDTH`
@@ -32,7 +32,7 @@ impl<F: JoltField, const WIDTH: usize> LassoSubtable<F> for SignExtendSubtable<F
         for idx in 0..M {
             let sign_bit = ((idx >> (WIDTH - 1)) & 1) as u64;
             let sign_extension = sign_bit * ones;
-            let row = sign_extension as u32;
+            let row = sign_extension as u64;
             entries.push(row);
         }
         entries

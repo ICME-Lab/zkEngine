@@ -307,7 +307,7 @@ where
 {
     _instruction: PhantomData<Instruction>,
     _field: PhantomData<F>,
-    materialized_subtables: Vec<Vec<u32>>,
+    materialized_subtables: Vec<Vec<u64>>,
 }
 
 #[allow(clippy::type_complexity)]
