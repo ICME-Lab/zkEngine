@@ -106,13 +106,18 @@ mod test {
         subtable_materialize_mle_parity_test,
     };
 
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity0, SrlSubtable<Fr, 0, 32>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity1, SrlSubtable<Fr, 1, 32>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity2, SrlSubtable<Fr, 2, 32>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity3, SrlSubtable<Fr, 3, 32>, Fr, 1 << 10);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity0, SrlSubtable<Fr, 0, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity1, SrlSubtable<Fr, 1, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity2, SrlSubtable<Fr, 2, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity3, SrlSubtable<Fr, 3, 32>, Fr, 1 << 16);
 
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity0_64, SrlSubtable<Fr, 0, 64>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity1_64, SrlSubtable<Fr, 1, 64>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity2_64, SrlSubtable<Fr, 2, 64>, Fr, 1 << 10);
-    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity3_64, SrlSubtable<Fr, 3, 64>, Fr, 1 << 10);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity4, SrlSubtable<Fr, 4, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity5, SrlSubtable<Fr, 5, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity6, SrlSubtable<Fr, 6, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity7, SrlSubtable<Fr, 7, 32>, Fr, 1 << 16);
+
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity0_64, SrlSubtable<Fr, 0, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity1_64, SrlSubtable<Fr, 1, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity2_64, SrlSubtable<Fr, 2, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(srl_materialize_mle_parity3_64, SrlSubtable<Fr, 3, 64>, Fr, 1 << 16);
 }

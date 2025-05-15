@@ -34,8 +34,12 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtab
         for idx in 0..M {
             let (x, y) = split_bits(idx, operand_chunk_width);
 
-            // Need to handle u64::MAX in a special case because of overflow
-            let truncate_mask = if WORD_SIZE - suffix_length >= 64 {
+            let (_, of) = WORD_SIZE.overflowing_sub(suffix_length);
+            let truncate_mask = if of {
+                // HACK: I have no clue if this is correct, but it works for now.
+                0
+            } else if WORD_SIZE - suffix_length >= 64 {
+                // Need to handle u64::MAX in a special case because of overflow
                 u64::MAX
             } else {
                 (1 << (WORD_SIZE - suffix_length)) - 1
@@ -113,6 +117,11 @@ mod test {
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity1_32, SllSubtable<Fr, 1, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity2_32, SllSubtable<Fr, 2, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity3_32, SllSubtable<Fr, 3, 32>, Fr, 1 << 16);
+
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity4_32, SllSubtable<Fr, 4, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity5_32, SllSubtable<Fr, 5, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity6_32, SllSubtable<Fr, 6, 32>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity7_32, SllSubtable<Fr, 7, 32>, Fr, 1 << 16);
 
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity0_64, SllSubtable<Fr, 0, 64>, Fr, 1 << 16);
 }

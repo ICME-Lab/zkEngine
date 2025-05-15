@@ -215,7 +215,7 @@ where
 
                 let dim: &CompactPolynomial<u16, F> =
                     (&polynomials.dim[dim_index]).try_into().unwrap();
-                let E_poly: &CompactPolynomial<u32, F> =
+                let E_poly: &CompactPolynomial<u64, F> =
                     (&polynomials.E_polys[memory_index]).try_into().unwrap();
                 let read_cts: &CompactPolynomial<u32, F> =
                     (&polynomials.read_cts[memory_index]).try_into().unwrap();

@@ -21,6 +21,7 @@ use common::rv_trace::{ELFInstruction, RVTraceRow, WASM};
 impl TryFrom<&ELFInstruction> for RV32I {
     type Error = &'static str;
 
+    // TODO: DOUBLE CHECK ALL NECESSARY INSTRUCTIONS ARE IMPLEMENTED
     #[rustfmt::skip] // keep matches pretty
     fn try_from(instruction: &ELFInstruction) -> Result<Self, Self::Error> {
         match instruction.opcode {
@@ -30,6 +31,12 @@ impl TryFrom<&ELFInstruction> for RV32I {
             WASM::I32XOR  => Ok(XORInstruction::<WORD_SIZE>::default().into()),
             WASM::I32OR   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
             WASM::I32AND  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32SHL  => Ok(SLLInstruction::<WORD_SIZE>::default().into()),
+            // WASM::I32SHRU  => Ok(SRLInstruction::<WORD_SIZE>::default().into()),
+            // WASM::I32SHRS  => Ok(SRAInstruction::<WORD_SIZE>::default().into()),
+
+            // immediates
+            WASM::I32MULI => Ok(MULInstruction::<WORD_SIZE>::default().into()),
 
             WASM::I64ADD  => Ok(ADDInstruction::<WORD_SIZE_1>::default().into()),
             WASM::I64SUB  => Ok(SUBInstruction::<WORD_SIZE_1>::default().into()),
@@ -101,6 +108,9 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I32XOR => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I32OR  => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I32AND => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32SHL => Ok(SLLInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            // WASM::I32SHRU => Ok(SRLInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            // WASM::I32SHRS => Ok(SRAInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
             // immediates
             WASM::I32MULI => Ok(MULInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
