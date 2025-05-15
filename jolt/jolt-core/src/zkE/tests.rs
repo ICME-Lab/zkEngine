@@ -64,3 +64,12 @@ pub fn poly_mixed_wasm_program() -> WASMProgram {
         file_path: format!("{DEFAULT_FILE_DIR}{file_name}"),
     }
 }
+
+pub fn poly_bitshift_wasm_program() -> WASMProgram {
+    let file_name = "poly_bitshift.wasm";
+    WASMProgram {
+        func: DEFAULT_FUNC.to_string(),
+        inputs: vec!["42".to_string(), "17".to_string(), "19".to_string()],
+        file_path: format!("{DEFAULT_FILE_DIR}{file_name}"),
+    }
+}

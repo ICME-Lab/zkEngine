@@ -13,7 +13,7 @@ pub struct OutOfBoundsConst;
 #[derive(Debug)]
 pub struct Const16<T> {
     /// The underlying untyped value.
-    inner: AnyConst16,
+    pub(crate) inner: AnyConst16,
     /// The type marker to satisfy the Rust type system.
     marker: PhantomData<fn() -> T>,
 }
@@ -376,7 +376,7 @@ impl TryFrom<f64> for Const32<f64> {
 /// Upon use the small 16-bit value has to be sign-extended to
 /// the actual integer type, e.g. `i32` or `i64`.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct AnyConst16(i16);
+pub struct AnyConst16(pub(crate) i16);
 
 impl TryFrom<i32> for AnyConst16 {
     type Error = OutOfBoundsConst;

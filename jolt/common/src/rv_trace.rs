@@ -139,7 +139,10 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::SLTIU
             | WASM::JALR
             | WASM::VIRTUAL_MOVE
-            | WASM::VIRTUAL_MOVSIGN => [
+            | WASM::VIRTUAL_MOVSIGN
+            | WASM::I32MULI
+            | WASM::I64MULI
+             => [
                 rs1_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
@@ -418,6 +421,7 @@ pub enum WASM {
     I32AND,
     I32OR,
     I32XOR,
+    I32MULI,
 
     I64ADD,
     I64SUB,
@@ -425,6 +429,7 @@ pub enum WASM {
     I64AND,
     I64OR,
     I64XOR,
+    I64MULI,
 
     SLL,
     SRL,
@@ -505,6 +510,7 @@ impl FromStr for WASM {
             "I32ShrS" => Ok(Self::SRA),
             "I32LtS" => Ok(Self::SLT),
             "I32LtU" => Ok(Self::SLTU),
+            "I32MulImm" => Ok(Self::I32MULI),
 
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
@@ -512,6 +518,7 @@ impl FromStr for WASM {
             "I64BitXor" => Ok(Self::I64XOR),
             "I64BitOr" => Ok(Self::I64OR),
             "I64BitAnd" => Ok(Self::I64AND),
+            "I64MulImm" => Ok(Self::I64MULI),
 
             "ADDI" => Ok(Self::ADDI),
             "XORI" => Ok(Self::XORI),
