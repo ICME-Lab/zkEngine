@@ -41,7 +41,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SBInstruction<WORD_S
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::ADDI,
+                opcode: WASM::I32ADDI,
                 rs1: r_dest,
                 rs2: None,
                 rd: v_address,
@@ -65,7 +65,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SBInstruction<WORD_S
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::ANDI,
+                opcode: WASM::I32ANDI,
                 rs1: v_address,
                 rs2: None,
                 rd: v_word_address,

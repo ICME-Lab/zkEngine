@@ -364,7 +364,7 @@ impl From<ComparatorAndOffset> for UntypedVal {
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct ShiftAmount<T> {
     /// The underlying wrapped shift amount.
-    value: Const16<T>,
+    pub(crate) value: Const16<T>,
 }
 
 macro_rules! impl_from_shift_amount_for {

@@ -1,54 +1,54 @@
 (module
-  (type (;0;) (func (param i64 i64 i64 i64) (result i64)))
-  (func (;0;) (type 0) (param i64 i64 i64 i64) (result i64)
-    (local i64)
+  (type (;0;) (func (param i32 i32 i32 i32) (result i32)))
+  (func (;0;) (type 0) (param i32 i32 i32 i32) (result i32)
+    (local i32)
     local.get 0
     local.get 1
     local.get 2
     local.get 3
-    i64.mul
+    i32.mul
     local.get 3
-    i64.add
-    i64.sub
+    i32.add
+    i32.sub
     local.get 2
-    i64.mul
-    i64.add
+    i32.mul
+    i32.add
     local.get 0
     local.get 2
-    i64.mul
+    i32.mul
     local.get 0
-    i64.sub
-    i64.add
+    i32.sub
+    i32.add
     local.get 0
-    i64.mul
+    i32.mul
     local.get 3
-    i64.xor
+    i32.xor
     drop
     local.get 1
-    i64.const 100711 ;; random number larger than 2^16
-    i64.and
+    i32.const 100711 ;; random number larger than 2^16
+    i32.and
     local.get 0
-    i64.or
+    i32.or
     local.get 1
-    i64.xor
+    i32.xor
     local.get 3
-    i64.const 230521 ;; random number larger than 2^16
-    i64.and
-    i64.or
+    i32.const 230521 ;; random number larger than 2^16
+    i32.and
+    i32.or
     local.get 0
-    i64.shl
+    i32.shl
     local.get 1
-    i64.shr_s
+    i32.shr_s
     local.get 2
-    i64.shl
+    i32.shl
     local.get 3
-    i64.shr_u
-    i64.const 100711 ;; random number larger than 2^16
-    i64.and
+    i32.shr_u
+    i32.const 100711 ;; random number larger than 2^16
+    i32.and
     local.get 1
-    i64.shr_s
+    i32.shr_s
     local.get 2
-    i64.shl
+    i32.shl
   )
   (table (;0;) 1 1 funcref)
   (memory (;0;) 16)

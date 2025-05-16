@@ -96,6 +96,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32SHL
             | WASM::I32SHRU
             | WASM::I32SHRS
+
             // i64
             | WASM::I64ADD
             | WASM::I64SUB
@@ -103,6 +104,9 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64XOR
             | WASM::I64OR
             | WASM::I64AND
+            | WASM::I64SHL
+            | WASM::I64SHRU
+            | WASM::I64SHRS
 
             | WASM::SLT
             | WASM::SLTU
@@ -129,20 +133,24 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
                 MemoryOp::noop_read(),
             ],
 
-            WASM::ADDI
+            WASM::I32ADDI
+            | WASM::I32MULI
+            | WASM::I32XORI
+            | WASM::I32ANDI
+            | WASM::I32ORI
             | WASM::SLLI
             | WASM::SRLI
             | WASM::SRAI
-            | WASM::ANDI
-            | WASM::ORI
-            | WASM::XORI
             | WASM::SLTI
             | WASM::SLTIU
             | WASM::JALR
             | WASM::VIRTUAL_MOVE
             | WASM::VIRTUAL_MOVSIGN
-            | WASM::I32MULI
             | WASM::I64MULI
+            | WASM::I64ADDI
+            | WASM::I64XORI
+            | WASM::I64ANDI
+            | WASM::I64ORI
              => [
                 rs1_read(),
                 MemoryOp::noop_read(),
@@ -202,6 +210,14 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
                 MemoryOp::Write(rs1_offset(), ram_write_value()),
             ],
 
+            // HACK: Used for testing purposes for tracer
+            WASM::UNIMPL => [
+                MemoryOp::noop_read(),
+                MemoryOp::noop_read(),
+                MemoryOp::noop_write(),
+                MemoryOp::noop_read(),
+            ],
+
             _ => unreachable!("{val:?}"),
         }
     }
@@ -257,6 +273,7 @@ pub enum CircuitFlags {
 pub const NUM_CIRCUIT_FLAGS: usize = CircuitFlags::COUNT;
 
 impl ELFInstruction {
+    // TODO: CHECK ALL INSTRUCTIONS ARE HANDLED HERE.
     #[rustfmt::skip]
     pub fn to_circuit_flags(&self) -> [bool; NUM_CIRCUIT_FLAGS] {
         let mut flags = [false; NUM_CIRCUIT_FLAGS];
@@ -268,10 +285,18 @@ impl ELFInstruction {
 
         flags[CircuitFlags::RightOperandIsImm as usize] = matches!(
             self.opcode,
-            WASM::ADDI
-            | WASM::XORI
-            | WASM::ORI
-            | WASM::ANDI
+             WASM::I32MULI
+            | WASM::I32ADDI
+            | WASM::I32XORI
+            | WASM::I32ORI
+            | WASM::I32ANDI
+
+            | WASM::I64MULI
+            | WASM::I64ADDI
+            | WASM::I64XORI
+            | WASM::I64ORI
+            | WASM::I64ANDI
+
             | WASM::SLLI
             | WASM::SRLI
             | WASM::SRAI
@@ -330,14 +355,25 @@ impl ELFInstruction {
         flags[CircuitFlags::ConcatLookupQueryChunks as usize] = matches!(
             self.opcode,
             WASM::I32XOR
-            | WASM::XORI
+            | WASM::I32XORI
             | WASM::I32OR
-            | WASM::ORI
+            | WASM::I32ORI
             | WASM::I32AND
-            | WASM::ANDI
+            | WASM::I32ANDI
             | WASM::I32SHL
             | WASM::I32SHRU
             | WASM::I32SHRS
+
+            | WASM::I64XOR
+            | WASM::I64XORI
+            | WASM::I64OR
+            | WASM::I64ORI
+            | WASM::I64AND
+            | WASM::I64ANDI
+            | WASM::I64SHL
+            | WASM::I64SHRU
+            | WASM::I64SHRS
+            
             | WASM::SLLI
             | WASM::SRLI
             | WASM::SRAI
@@ -422,7 +458,13 @@ pub enum WASM {
     I32AND,
     I32OR,
     I32XOR,
+
     I32MULI,
+    I32ADDI,
+    I32XORI,
+    I32ANDI,
+    I32ORI,
+
     I32SHL,
     I32SHRU,
     I32SHRS,
@@ -433,14 +475,18 @@ pub enum WASM {
     I64AND,
     I64OR,
     I64XOR,
+    I64SHL,
+    I64SHRU,
+    I64SHRS,
+
     I64MULI,
+    I64ADDI,
+    I64XORI,
+    I64ANDI,
+    I64ORI,
 
     SLT,
     SLTU,
-    ADDI,
-    XORI,
-    ORI,
-    ANDI,
     SLLI,
     SRLI,
     SRAI,
@@ -506,13 +552,27 @@ impl FromStr for WASM {
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
             "I32BitAnd" => Ok(Self::I32AND),
-            "I32Shl" => Ok(Self::I32SHL),
-            "I32ShrU" => Ok(Self::I32SHRU),
-            "I32ShrS" => Ok(Self::I32SHRS),
+            "I32Shl" => Ok(Self::I32SHL), // todo
+            "I32ShrU" => Ok(Self::I32SHRU), // todo
+            "I32ShrS" => Ok(Self::I32SHRS), // todo
+            "I32Rotl" => Ok(Self::UNIMPL), // todo
+            "I32Rotr" => Ok(Self::UNIMPL), // todo
 
             "I32LtS" => Ok(Self::SLT),
             "I32LtU" => Ok(Self::SLTU),
+
             "I32MulImm" => Ok(Self::I32MULI),
+            "I32AddImm" => Ok(Self::I32ADDI),
+            "I32XorImm" => Ok(Self::I32XORI),
+            "I32AndImm" => Ok(Self::I32ANDI),
+            "I32OrImm" => Ok(Self::I32ORI),
+            "I32ShlBy" => Ok(Self::UNIMPL), // todo
+            "I32ShrUBy" => Ok(Self::UNIMPL), // todo
+            "I32ShrSBy" => Ok(Self::UNIMPL), // todo
+            "I32RotlBy" => Ok(Self::UNIMPL), // todo
+            "I32RotrBy" => Ok(Self::UNIMPL), // todo
+
+            "I32EqImm" => Ok(Self::UNIMPL), // todo
 
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
@@ -520,12 +580,25 @@ impl FromStr for WASM {
             "I64BitXor" => Ok(Self::I64XOR),
             "I64BitOr" => Ok(Self::I64OR),
             "I64BitAnd" => Ok(Self::I64AND),
-            "I64MulImm" => Ok(Self::I64MULI),
+            "I64Shl" => Ok(Self::I64SHL), // todo
+            "I64ShrU" => Ok(Self::I64SHRU), // todo
+            "I64ShrS" => Ok(Self::I64SHRS), // todo
+            "I64Rotl" => Ok(Self::UNIMPL), // todo
+            "I64Rotr" => Ok(Self::UNIMPL), // todo
 
-            "ADDI" => Ok(Self::ADDI),
-            "XORI" => Ok(Self::XORI),
-            "ORI" => Ok(Self::ORI),
-            "ANDI" => Ok(Self::ANDI),
+            "I64MulImm" => Ok(Self::I64MULI),
+            "I64AddImm" => Ok(Self::I64ADDI),
+            "I64XorImm" => Ok(Self::I64XORI),
+            "I64AndImm" => Ok(Self::I64ANDI),
+            "I64OrImm" => Ok(Self::I64ORI),
+            "I64ShlBy" => Ok(Self::UNIMPL), // todo
+            "I64ShrUBy" => Ok(Self::UNIMPL), // todo
+            "I64ShrSBy" => Ok(Self::UNIMPL), // todo
+            "I64RotlBy" => Ok(Self::UNIMPL), // todo
+            "I64RotrBy" => Ok(Self::UNIMPL), // todo
+
+            "I64EqImm" => Ok(Self::UNIMPL), // todo
+
             "SLLI" => Ok(Self::SLLI),
             "SRLI" => Ok(Self::SRLI),
             "SRAI" => Ok(Self::SRAI),

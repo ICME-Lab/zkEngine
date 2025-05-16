@@ -315,6 +315,8 @@ impl Instruction {
             | Self::I32Shl { result, lhs, rhs }
             | Self::I32ShrS { result, lhs, rhs }
             | Self::I32ShrU { result, lhs, rhs }
+            | Self::I32Rotl { result, lhs, rhs }
+            | Self::I32Rotr { result, lhs, rhs }
             | Self::I32LtU { result, lhs, rhs }
             | Self::I32LtS { result, lhs, rhs }
             | Self::I64Add { result, lhs, rhs }
@@ -326,20 +328,63 @@ impl Instruction {
             | Self::I64Shl { result, lhs, rhs }
             | Self::I64ShrS { result, lhs, rhs }
             | Self::I64ShrU { result, lhs, rhs }
+            | Self::I64Rotl { result, lhs, rhs }
+            | Self::I64Rotr { result, lhs, rhs }
             | Self::I64LtU { result, lhs, rhs }
             | Self::I64LtS { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
 
             // i32 immediates
-            Self::I32MulImm16 { result, lhs, rhs } => {
+            Self::I32MulImm16 { result, lhs, rhs }
+            | Self::I32AddImm16 { result, lhs, rhs }
+            | Self::I32BitXorImm16 { result, lhs, rhs }
+            | Self::I32BitAndImm16 { result, lhs, rhs }
+            | Self::I32BitOrImm16 { result, lhs, rhs }
+            | Self::I32EqImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
 
-            // i64 immediates
-            Self::I64MulImm16 { result, lhs, rhs } => {
+            // i32 immediate comparisons
+            Self::I32EqImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
+            Self::I32ShlBy { result, lhs, rhs }
+            | Self::I32ShrUBy { result, lhs, rhs }
+            | Self::I32ShrSBy { result, lhs, rhs }
+            | Self::I32RotlBy { result, lhs, rhs }
+            | Self::I32RotrBy { result, lhs, rhs } => trace_i(
+                self,
+                result,
+                lhs,
+                rhs.value.inner.0 as i64,
+                instruction_address,
+            ),
+
+            // i64 immediates
+            Self::I64MulImm16 { result, lhs, rhs }
+            | Self::I64AddImm16 { result, lhs, rhs }
+            | Self::I64BitXorImm16 { result, lhs, rhs }
+            | Self::I64BitAndImm16 { result, lhs, rhs }
+            | Self::I64BitOrImm16 { result, lhs, rhs }
+            | Self::I64EqImm16 { result, lhs, rhs } => {
+                trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
+            }
+            // immediate comparisons
+            Self::I64EqImm16 { result, lhs, rhs } => {
+                trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
+            }
+            Self::I64ShlBy { result, lhs, rhs }
+            | Self::I64ShrUBy { result, lhs, rhs }
+            | Self::I64ShrSBy { result, lhs, rhs }
+            | Self::I64RotlBy { result, lhs, rhs }
+            | Self::I64RotrBy { result, lhs, rhs } => trace_i(
+                self,
+                result,
+                lhs,
+                rhs.value.inner.0 as i64,
+                instruction_address,
+            ),
 
             Self::ReturnImm32 { .. } | Self::ReturnReg { .. } | Self::ReturnI64Imm32 { .. } => {
                 trace_unimpl(self, instruction_address)
@@ -374,6 +419,18 @@ fn trace_i(inst: &Instruction, result: Reg, lhs: Reg, rhs: i64, address: u64) ->
     }
 }
 
+fn trace_il(inst: &Instruction, result: Reg, lhs: i64, rhs: Reg, address: u64) -> ELFInstruction {
+    ELFInstruction {
+        address,
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
+        rs1: Some(rhs.0 as u16 as u32 as u64),
+        rs2: None,
+        rd: Some(result.0 as u16 as u32 as u64),
+        imm: Some(lhs),
+        virtual_sequence_remaining: None,
+    }
+}
+
 fn trace_unimpl(inst: &Instruction, address: u64) -> ELFInstruction {
     ELFInstruction {
         address,
@@ -400,11 +457,25 @@ impl ToString for Instruction {
             Self::I32Shl { .. } => "I32Shl".to_string(),
             Self::I32ShrS { .. } => "I32ShrS".to_string(),
             Self::I32ShrU { .. } => "I32ShrU".to_string(),
+            Self::I32Rotl { .. } => "I32Rotl".to_string(),
+            Self::I32Rotr { .. } => "I32Rotr".to_string(),
 
             Self::I32LtU { .. } => "I32LtU".to_string(),
             Self::I32LtS { .. } => "I32LtS".to_string(),
 
             Self::I32MulImm16 { .. } => "I32MulImm".to_string(),
+            Self::I32AddImm16 { .. } => "I32AddImm".to_string(),
+            Self::I32BitXorImm16 { .. } => "I32BitXorImm".to_string(),
+            Self::I32BitAndImm16 { .. } => "I32BitAndImm".to_string(),
+            Self::I32BitOrImm16 { .. } => "I32BitOrImm".to_string(),
+            Self::I32ShlBy { .. } => "I32ShlBy".to_string(),
+            Self::I32ShrUBy { .. } => "I32ShrUBy".to_string(),
+            Self::I32ShrSBy { .. } => "I32ShrSBy".to_string(),
+            Self::I32RotlBy { .. } => "I32RotlBy".to_string(),
+            Self::I32RotrBy { .. } => "I32RotrBy".to_string(),
+
+            // i32 immediate comparisons
+            Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
 
             Self::I64Add { .. } => "I64Add".to_string(),
             Self::I64Sub { .. } => "I64Sub".to_string(),
@@ -416,11 +487,24 @@ impl ToString for Instruction {
             Self::I64Shl { .. } => "I64Shl".to_string(),
             Self::I64ShrS { .. } => "I64ShrS".to_string(),
             Self::I64ShrU { .. } => "I64ShrU".to_string(),
+            Self::I64Rotl { .. } => "I64Rotl".to_string(),
+            Self::I64Rotr { .. } => "I64Rotr".to_string(),
 
             Self::I64LtU { .. } => "I64LtU".to_string(),
             Self::I64LtS { .. } => "I64LtS".to_string(),
 
             Self::I64MulImm16 { .. } => "I64MulImm".to_string(),
+            Self::I64AddImm16 { .. } => "I64AddImm".to_string(),
+            Self::I64BitXorImm16 { .. } => "I64BitXorImm".to_string(),
+            Self::I64BitAndImm16 { .. } => "I64BitAndImm".to_string(),
+            Self::I64ShlBy { .. } => "I64ShlBy".to_string(),
+            Self::I64ShrUBy { .. } => "I64ShrUBy".to_string(),
+            Self::I64ShrSBy { .. } => "I64ShrSBy".to_string(),
+            Self::I64RotlBy { .. } => "I64RotlBy".to_string(),
+            Self::I64RotrBy { .. } => "I64RotrBy".to_string(),
+
+            // i64 immediate comparisons
+            Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
             // returns
             Self::ReturnImm32 { .. } => "ReturnImm32".to_string(),
