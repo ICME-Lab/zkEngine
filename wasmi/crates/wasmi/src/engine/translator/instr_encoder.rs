@@ -848,40 +848,41 @@ impl InstrEncoder {
     /// - `Err(_)` if an error occurred.
     pub fn fuse_eqz<T: WasmInteger>(
         &mut self,
-        stack: &mut ValueStack,
-        lhs: Reg,
-        rhs: T,
+        _stack: &mut ValueStack,
+        _lhs: Reg,
+        _rhs: T,
     ) -> Result<bool, Error> {
-        if !rhs.eq_zero() {
-            // Case: `rhs` needs to be zero to apply this optimization.
-            return Ok(false);
-        }
-        let Some(last_instr) = self.last_instr else {
-            // If there is no last instruction there is no comparison instruction to negate.
-            return Ok(false);
-        };
-        let last_instruction = *self.instrs.get(last_instr);
-        let Some(result) = last_instruction.result() else {
-            // All negatable instructions have a single result register.
-            return Ok(false);
-        };
-        if matches!(stack.get_register_space(result), RegisterSpace::Local) {
-            // The instruction stores its result into a local variable which
-            // is an observable side effect which we are not allowed to mutate.
-            return Ok(false);
-        }
-        if result != lhs {
-            // The result of the instruction and the `lhs` are not equal
-            // thus indicating that we cannot fuse the instructions.
-            return Ok(false);
-        }
-        let Some(negated) = last_instruction.negate_cmp_instr() else {
-            // Last instruction is unable to be negated.
-            return Ok(false);
-        };
-        _ = mem::replace(self.instrs.get_mut(last_instr), negated);
-        stack.push_register(result)?;
-        Ok(true)
+        // if !rhs.eq_zero() {
+        //     // Case: `rhs` needs to be zero to apply this optimization.
+        //     return Ok(false);
+        // }
+        // let Some(last_instr) = self.last_instr else {
+        //     // If there is no last instruction there is no comparison instruction to negate.
+        //     return Ok(false);
+        // };
+        // let last_instruction = *self.instrs.get(last_instr);
+        // let Some(result) = last_instruction.result() else {
+        //     // All negatable instructions have a single result register.
+        //     return Ok(false);
+        // };
+        // if matches!(stack.get_register_space(result), RegisterSpace::Local) {
+        //     // The instruction stores its result into a local variable which
+        //     // is an observable side effect which we are not allowed to mutate.
+        //     return Ok(false);
+        // }
+        // if result != lhs {
+        //     // The result of the instruction and the `lhs` are not equal
+        //     // thus indicating that we cannot fuse the instructions.
+        //     return Ok(false);
+        // }
+        // let Some(negated) = last_instruction.negate_cmp_instr() else {
+        //     // Last instruction is unable to be negated.
+        //     return Ok(false);
+        // };
+        // _ = mem::replace(self.instrs.get_mut(last_instr), negated);
+        // stack.push_register(result)?;
+        // Ok(true)
+        Ok(false)
     }
 
     /// Tries to fuse a Wasm `i32.ne` instruction with 0 `rhs` value.
@@ -893,40 +894,41 @@ impl InstrEncoder {
     /// - `Err(_)` if an error occurred.
     pub fn fuse_nez<T: WasmInteger>(
         &mut self,
-        stack: &mut ValueStack,
-        lhs: Reg,
-        rhs: T,
+        _stack: &mut ValueStack,
+        _lhs: Reg,
+        _rhs: T,
     ) -> Result<bool, Error> {
-        if !rhs.eq_zero() {
-            // Case: `rhs` needs to be zero to apply this optimization.
-            return Ok(false);
-        }
-        let Some(last_instr) = self.last_instr else {
-            // If there is no last instruction there is no comparison instruction to negate.
-            return Ok(false);
-        };
-        let last_instruction = *self.instrs.get(last_instr);
-        let Some(result) = last_instruction.result() else {
-            // All negatable instructions have a single result register.
-            return Ok(false);
-        };
-        if matches!(stack.get_register_space(result), RegisterSpace::Local) {
-            // The instruction stores its result into a local variable which
-            // is an observable side effect which we are not allowed to mutate.
-            return Ok(false);
-        }
-        if result != lhs {
-            // The result of the instruction and the `lhs` are not equal
-            // thus indicating that we cannot fuse the instructions.
-            return Ok(false);
-        }
-        let Some(logicalized) = last_instruction.logicalize_cmp_instr() else {
-            // Last instruction is unable to be negated.
-            return Ok(false);
-        };
-        _ = mem::replace(self.instrs.get_mut(last_instr), logicalized);
-        stack.push_register(result)?;
-        Ok(true)
+        // if !rhs.eq_zero() {
+        //     // Case: `rhs` needs to be zero to apply this optimization.
+        //     return Ok(false);
+        // }
+        // let Some(last_instr) = self.last_instr else {
+        //     // If there is no last instruction there is no comparison instruction to negate.
+        //     return Ok(false);
+        // };
+        // let last_instruction = *self.instrs.get(last_instr);
+        // let Some(result) = last_instruction.result() else {
+        //     // All negatable instructions have a single result register.
+        //     return Ok(false);
+        // };
+        // if matches!(stack.get_register_space(result), RegisterSpace::Local) {
+        //     // The instruction stores its result into a local variable which
+        //     // is an observable side effect which we are not allowed to mutate.
+        //     return Ok(false);
+        // }
+        // if result != lhs {
+        //     // The result of the instruction and the `lhs` are not equal
+        //     // thus indicating that we cannot fuse the instructions.
+        //     return Ok(false);
+        // }
+        // let Some(logicalized) = last_instruction.logicalize_cmp_instr() else {
+        //     // Last instruction is unable to be negated.
+        //     return Ok(false);
+        // };
+        // _ = mem::replace(self.instrs.get_mut(last_instr), logicalized);
+        // stack.push_register(result)?;
+        // Ok(true)
+        Ok(false)
     }
 
     /// Tries to fuse a compare instruction with a Wasm `select` instruction.
@@ -937,32 +939,33 @@ impl InstrEncoder {
     /// - Returns `None` if fusion could not be applied.
     pub fn try_fuse_select(
         &mut self,
-        stack: &mut ValueStack,
-        select_result: Reg,
-        select_condition: Reg,
+        _stack: &mut ValueStack,
+        _select_result: Reg,
+        _select_condition: Reg,
     ) -> Option<Instruction> {
-        let Some(last_instr) = self.last_instr else {
-            // If there is no last instruction there is no comparison instruction to negate.
-            return None;
-        };
-        let last_instruction = *self.instrs.get(last_instr);
-        let Some(last_result) = last_instruction.result() else {
-            // All negatable instructions have a single result register.
-            return None;
-        };
-        if matches!(stack.get_register_space(last_result), RegisterSpace::Local) {
-            // The instruction stores its result into a local variable which
-            // is an observable side effect which we are not allowed to mutate.
-            return None;
-        }
-        if last_result != select_condition {
-            // The result of the last instruction and the select's `condition`
-            // are not equal thus indicating that we cannot fuse the instructions.
-            return None;
-        }
-        let fused_select = last_instruction.try_into_cmp_select_instr(select_result)?;
-        _ = mem::replace(self.instrs.get_mut(last_instr), fused_select);
-        Some(fused_select)
+        // let Some(last_instr) = self.last_instr else {
+        //     // If there is no last instruction there is no comparison instruction to negate.
+        //     return None;
+        // };
+        // let last_instruction = *self.instrs.get(last_instr);
+        // let Some(last_result) = last_instruction.result() else {
+        //     // All negatable instructions have a single result register.
+        //     return None;
+        // };
+        // if matches!(stack.get_register_space(last_result), RegisterSpace::Local) {
+        //     // The instruction stores its result into a local variable which
+        //     // is an observable side effect which we are not allowed to mutate.
+        //     return None;
+        // }
+        // if last_result != select_condition {
+        //     // The result of the last instruction and the select's `condition`
+        //     // are not equal thus indicating that we cannot fuse the instructions.
+        //     return None;
+        // }
+        // let fused_select = last_instruction.try_into_cmp_select_instr(select_result)?;
+        // _ = mem::replace(self.instrs.get_mut(last_instr), fused_select);
+        // Some(fused_select)
+        None
     }
 
     /// Create an [`Instruction::BranchCmpFallback`].
@@ -1048,72 +1051,73 @@ impl InstrEncoder {
     #[rustfmt::skip]
     fn try_fuse_branch_cmp_for_instr(
         &mut self,
-        stack: &mut ValueStack,
-        last_instr: Instr,
-        condition: Reg,
-        label: LabelRef,
-        negate: bool,
+        _stack: &mut ValueStack,
+        _last_instr: Instr,
+        _condition: Reg,
+        _label: LabelRef,
+        _negate: bool,
     ) -> Result<Option<Instruction>, Error> {
-        use Instruction as I;
-        let last_instruction = *self.instrs.get(last_instr);
-        let result = match last_instruction {
-            | I::I32BitAnd { result, .. } | I::I32BitAndImm16 { result, .. }
-            | I::I32BitOr { result, .. } | I::I32BitOrImm16 { result, .. }
-            | I::I32BitXor { result, .. } | I::I32BitXorImm16 { result, .. }
-            | I::I32And { result, .. } | I::I32AndImm16 { result, .. }
-            | I::I32Or { result, .. } | I::I32OrImm16 { result, .. }
-            | I::I32Xor { result, .. } | I::I32XorImm16 { result, .. }
-            | I::I32Nand { result, .. } | I::I32NandImm16 { result, .. }
-            | I::I32Nor { result, .. } | I::I32NorImm16 { result, .. }
-            | I::I32Xnor { result, .. } | I::I32XnorImm16 { result, .. }
-            | I::I32Eq { result, .. } | I::I32EqImm16 { result, .. }
-            | I::I32Ne { result, .. } | I::I32NeImm16 { result, .. }
-            | I::I32LtS { result, .. } | I::I32LtSImm16Lhs { result, .. } | I::I32LtSImm16Rhs { result, .. }
-            | I::I32LtU { result, .. } | I::I32LtUImm16Lhs { result, .. } | I::I32LtUImm16Rhs { result, .. }
-            | I::I32LeS { result, .. } | I::I32LeSImm16Lhs { result, .. } | I::I32LeSImm16Rhs { result, .. }
-            | I::I32LeU { result, .. } | I::I32LeUImm16Lhs { result, .. } | I::I32LeUImm16Rhs { result, .. }
-            | I::I64And { result, .. } | I::I64AndImm16 { result, .. }
-            | I::I64Or { result, .. } | I::I64OrImm16 { result, .. }
-            | I::I64Xor { result, .. } | I::I64XorImm16 { result, .. }
-            | I::I64Nand { result, .. } | I::I64NandImm16 { result, .. }
-            | I::I64Nor { result, .. } | I::I64NorImm16 { result, .. }
-            | I::I64Xnor { result, .. } | I::I64XnorImm16 { result, .. }
-            | I::I64Eq { result, .. } | I::I64EqImm16 { result, .. }
-            | I::I64Ne { result, .. } | I::I64NeImm16 { result, .. }
-            | I::I64LtS { result, .. } | I::I64LtSImm16Lhs { result, .. } | I::I64LtSImm16Rhs { result, .. }
-            | I::I64LtU { result, .. } | I::I64LtUImm16Lhs { result, .. } | I::I64LtUImm16Rhs { result, .. }
-            | I::I64LeS { result, .. } | I::I64LeSImm16Lhs { result, .. } | I::I64LeSImm16Rhs { result, .. }
-            | I::I64LeU { result, .. } | I::I64LeUImm16Lhs { result, .. } | I::I64LeUImm16Rhs { result, .. }
-            | I::F32Eq { result, .. }
-            | I::F32Ne { result, .. }
-            | I::F32Lt { result, .. }
-            | I::F32Le { result, .. }
-            | I::F64Eq { result, .. }
-            | I::F64Ne { result, .. }
-            | I::F64Lt { result, .. }
-            | I::F64Le { result, .. } => result,
-            _ => return Ok(None),
-        };
-        if matches!(stack.get_register_space(result), RegisterSpace::Local) {
-            // We need to filter out instructions that store their result
-            // into a local register slot because they introduce observable behavior
-            // which a fused cmp+branch instruction would remove.
-            return Ok(None);
-        }
-        if result != condition {
-            // We cannot fuse the instructions since the result of the compare instruction
-            // does not match the input of the conditional branch instruction.
-            return Ok(None);
-        }
-        let last_instruction = match negate {
-            true => match last_instruction.negate_cmp_instr() {
-                Some(negated) => negated,
-                None => return Ok(None),
-            },
-            false => last_instruction,
-        };
-        let offset = self.try_resolve_label_for(label, last_instr)?;
-        last_instruction.try_into_cmp_branch_instr(offset, stack)
+        // use Instruction as I;
+        // let last_instruction = *self.instrs.get(last_instr);
+        // let result = match last_instruction {
+        //     | I::I32BitAnd { result, .. } | I::I32BitAndImm16 { result, .. }
+        //     | I::I32BitOr { result, .. } | I::I32BitOrImm16 { result, .. }
+        //     | I::I32BitXor { result, .. } | I::I32BitXorImm16 { result, .. }
+        //     | I::I32And { result, .. } | I::I32AndImm16 { result, .. }
+        //     | I::I32Or { result, .. } | I::I32OrImm16 { result, .. }
+        //     | I::I32Xor { result, .. } | I::I32XorImm16 { result, .. }
+        //     | I::I32Nand { result, .. } | I::I32NandImm16 { result, .. }
+        //     | I::I32Nor { result, .. } | I::I32NorImm16 { result, .. }
+        //     | I::I32Xnor { result, .. } | I::I32XnorImm16 { result, .. }
+        //     | I::I32Eq { result, .. } | I::I32EqImm16 { result, .. }
+        //     | I::I32Ne { result, .. } | I::I32NeImm16 { result, .. }
+        //     | I::I32LtS { result, .. } | I::I32LtSImm16Lhs { result, .. } | I::I32LtSImm16Rhs { result, .. }
+        //     | I::I32LtU { result, .. } | I::I32LtUImm16Lhs { result, .. } | I::I32LtUImm16Rhs { result, .. }
+        //     | I::I32LeS { result, .. } | I::I32LeSImm16Lhs { result, .. } | I::I32LeSImm16Rhs { result, .. }
+        //     | I::I32LeU { result, .. } | I::I32LeUImm16Lhs { result, .. } | I::I32LeUImm16Rhs { result, .. }
+        //     | I::I64And { result, .. } | I::I64AndImm16 { result, .. }
+        //     | I::I64Or { result, .. } | I::I64OrImm16 { result, .. }
+        //     | I::I64Xor { result, .. } | I::I64XorImm16 { result, .. }
+        //     | I::I64Nand { result, .. } | I::I64NandImm16 { result, .. }
+        //     | I::I64Nor { result, .. } | I::I64NorImm16 { result, .. }
+        //     | I::I64Xnor { result, .. } | I::I64XnorImm16 { result, .. }
+        //     | I::I64Eq { result, .. } | I::I64EqImm16 { result, .. }
+        //     | I::I64Ne { result, .. } | I::I64NeImm16 { result, .. }
+        //     | I::I64LtS { result, .. } | I::I64LtSImm16Lhs { result, .. } | I::I64LtSImm16Rhs { result, .. }
+        //     | I::I64LtU { result, .. } | I::I64LtUImm16Lhs { result, .. } | I::I64LtUImm16Rhs { result, .. }
+        //     | I::I64LeS { result, .. } | I::I64LeSImm16Lhs { result, .. } | I::I64LeSImm16Rhs { result, .. }
+        //     | I::I64LeU { result, .. } | I::I64LeUImm16Lhs { result, .. } | I::I64LeUImm16Rhs { result, .. }
+        //     | I::F32Eq { result, .. }
+        //     | I::F32Ne { result, .. }
+        //     | I::F32Lt { result, .. }
+        //     | I::F32Le { result, .. }
+        //     | I::F64Eq { result, .. }
+        //     | I::F64Ne { result, .. }
+        //     | I::F64Lt { result, .. }
+        //     | I::F64Le { result, .. } => result,
+        //     _ => return Ok(None),
+        // };
+        // if matches!(stack.get_register_space(result), RegisterSpace::Local) {
+        //     // We need to filter out instructions that store their result
+        //     // into a local register slot because they introduce observable behavior
+        //     // which a fused cmp+branch instruction would remove.
+        //     return Ok(None);
+        // }
+        // if result != condition {
+        //     // We cannot fuse the instructions since the result of the compare instruction
+        //     // does not match the input of the conditional branch instruction.
+        //     return Ok(None);
+        // }
+        // let last_instruction = match negate {
+        //     true => match last_instruction.negate_cmp_instr() {
+        //         Some(negated) => negated,
+        //         None => return Ok(None),
+        //     },
+        //     false => last_instruction,
+        // };
+        // let offset = self.try_resolve_label_for(label, last_instr)?;
+        // last_instruction.try_into_cmp_branch_instr(offset, stack)
+        Ok(None)
     }
 
     /// Encode an unoptimized `branch_nez` instruction.
