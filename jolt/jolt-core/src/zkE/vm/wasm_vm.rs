@@ -81,16 +81,6 @@ mod tests {
     }
 
     #[test]
-    fn test_shifts_arith() {
-        test_wasm_e2e_with(shifts_arith_wasm_program());
-    }
-
-    #[test]
-    fn test_shifts_arith_32() {
-        test_wasm_e2e_with(shifts_arith_32_wasm_program());
-    }
-
-    #[test]
     fn test_poly_simple() {
         test_wasm_e2e_with(poly_simple_wasm_program());
     }
@@ -98,6 +88,16 @@ mod tests {
     #[test]
     fn test_poly_mixed() {
         test_wasm_e2e_with(poly_mixed_wasm_program());
+    }
+
+    #[test]
+    fn test_shifts_arith() {
+        test_wasm_e2e_with(shifts_arith_wasm_program());
+    }
+
+    #[test]
+    fn test_shifts_arith_32() {
+        test_wasm_e2e_with(shifts_arith_32_wasm_program());
     }
 
     #[test]

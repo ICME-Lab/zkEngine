@@ -105,13 +105,13 @@ mod test {
       sra_sign_materialize_mle_parity,
       SraSignSubtable<Fr, 32>,
       Fr,
-      256
+      1 << 16
     );
 
     subtable_materialize_mle_parity_test!(
       sra_sign_materialize_mle_parity_64,
       SraSignSubtable<Fr, 64>,
       Fr,
-      256
+      1 << 16
     );
 }

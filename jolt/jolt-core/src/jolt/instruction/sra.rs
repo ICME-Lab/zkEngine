@@ -51,10 +51,14 @@ impl<const WORD_SIZE: usize> JoltInstruction for SRAInstruction<WORD_SIZE> {
         let indices = (0..C).map(SubtableIndices::from);
         let mut subtables_and_indices: Vec<(Box<dyn LassoSubtable<F>>, SubtableIndices)> =
             subtables.into_iter().zip(indices).collect();
-
+        let sign_index = match WORD_SIZE {
+            32 => C / 2,
+            64 => 0,
+            _ => panic!("{WORD_SIZE}-bit word size is unsupported"),
+        };
         subtables_and_indices.push((
             Box::new(SraSignSubtable::<F, WORD_SIZE>::new()),
-            SubtableIndices::from(0),
+            SubtableIndices::from(sign_index),
         ));
 
         subtables_and_indices

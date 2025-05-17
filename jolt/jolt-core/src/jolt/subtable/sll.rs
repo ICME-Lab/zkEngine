@@ -34,9 +34,9 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtab
         for idx in 0..M {
             let (x, y) = split_bits(idx, operand_chunk_width);
 
-            let (_, of) = WORD_SIZE.overflowing_sub(suffix_length);
-            let truncate_mask = if of {
-                // HACK: I have no clue if this is correct, but it works for now.
+            let truncate_mask = if suffix_length > WORD_SIZE {
+                // bits shifted beyond MSB are ignored
+                // All input bits go out of range as suffix_length > WORD_SIZE
                 0
             } else if WORD_SIZE - suffix_length >= 64 {
                 // Need to handle u64::MAX in a special case because of overflow
@@ -117,11 +117,17 @@ mod test {
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity1_32, SllSubtable<Fr, 1, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity2_32, SllSubtable<Fr, 2, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity3_32, SllSubtable<Fr, 3, 32>, Fr, 1 << 16);
-
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity4_32, SllSubtable<Fr, 4, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity5_32, SllSubtable<Fr, 5, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity6_32, SllSubtable<Fr, 6, 32>, Fr, 1 << 16);
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity7_32, SllSubtable<Fr, 7, 32>, Fr, 1 << 16);
 
     subtable_materialize_mle_parity_test!(sll_materialize_mle_parity0_64, SllSubtable<Fr, 0, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity1_64, SllSubtable<Fr, 1, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity2_64, SllSubtable<Fr, 2, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity3_64, SllSubtable<Fr, 3, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity4_64, SllSubtable<Fr, 4, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity5_64, SllSubtable<Fr, 5, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity6_64, SllSubtable<Fr, 6, 64>, Fr, 1 << 16);
+    subtable_materialize_mle_parity_test!(sll_materialize_mle_parity7_64, SllSubtable<Fr, 7, 64>, Fr, 1 << 16);
 }

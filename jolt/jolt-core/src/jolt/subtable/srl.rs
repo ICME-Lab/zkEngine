@@ -30,15 +30,14 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtab
 
         let operand_chunk_width: usize = (log2(M) / 2) as usize;
         let suffix_length = operand_chunk_width * CHUNK_INDEX;
-
         for idx in 0..M {
             let (x, y) = split_bits(idx, operand_chunk_width);
-
-            let row = (x as u64)
-                .checked_shl(suffix_length as u32)
-                .unwrap_or(0)
-                .checked_shr((y % WORD_SIZE) as u32)
-                .unwrap_or(0);
+            let x = match WORD_SIZE {
+                32 => (x as u32).checked_shl(suffix_length as u32).unwrap_or(0) as u64,
+                64 => (x as u64).checked_shl(suffix_length as u32).unwrap_or(0),
+                _ => panic!("{WORD_SIZE}-bit word size is unsupported"),
+            };
+            let row = x.checked_shr((y % WORD_SIZE) as u32).unwrap_or(0);
 
             entries.push(row);
         }
@@ -84,11 +83,24 @@ impl<F: JoltField, const CHUNK_INDEX: usize, const WORD_SIZE: usize> LassoSubtab
             };
 
             // the most significant chunk might be shorter
-            let chunk_length = min(b, WORD_SIZE - b * CHUNK_INDEX);
 
-            let shift_x_by_k = (m..chunk_length)
-                .map(|j| F::from_u64(1_u64 << (b * CHUNK_INDEX + j - k)) * x[b - 1 - j])
-                .fold(F::zero(), |acc, val: F| acc + val);
+            let ws_sub_suffix_len = WORD_SIZE.checked_sub(b * CHUNK_INDEX);
+
+            let shift_x_by_k = match ws_sub_suffix_len {
+                Some(ws_sub_suffix_len) if ws_sub_suffix_len > 0 => {
+                    let chunk_length = min(b, ws_sub_suffix_len);
+                    (m..chunk_length)
+                        .map(|j| F::from_u64(1_u64 << (b * CHUNK_INDEX + j - k)) * x[b - 1 - j])
+                        .fold(F::zero(), |acc, val: F| acc + val)
+                }
+                _ => F::zero(),
+            };
+
+            // let chunk_length = min(b, WORD_SIZE - b * CHUNK_INDEX);
+
+            // let shift_x_by_k = (m..chunk_length)
+            //     .map(|j| F::from_u64(1_u64 << (b * CHUNK_INDEX + j - k)) * x[b - 1 - j])
+            //     .fold(F::zero(), |acc, val: F| acc + val);
 
             result += eq_term * shift_x_by_k;
         }
