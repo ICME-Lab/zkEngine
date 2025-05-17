@@ -549,6 +549,11 @@ impl FromStr for WASM {
             "I32Add" => Ok(Self::I32ADD),
             "I32Sub" => Ok(Self::I32SUB),
             "I32Mul" => Ok(Self::I32MUL),
+            "I32DivS" => Ok(Self::UNIMPL), // todo
+            "I32DivU" => Ok(Self::UNIMPL), // todo
+            "I32RemS" => Ok(Self::UNIMPL), // todo
+            "I32RemU" => Ok(Self::UNIMPL), // todo
+
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
             "I32BitAnd" => Ok(Self::I32AND),
@@ -563,9 +568,9 @@ impl FromStr for WASM {
 
             "I32MulImm" => Ok(Self::I32MULI),
             "I32AddImm" => Ok(Self::I32ADDI),
-            "I32XorImm" => Ok(Self::I32XORI),
-            "I32AndImm" => Ok(Self::I32ANDI),
-            "I32OrImm" => Ok(Self::I32ORI),
+            "I32BitXorImm" => Ok(Self::I32XORI),
+            "I32BitAndImm" => Ok(Self::I32ANDI),
+            "I32BitOrImm" => Ok(Self::I32ORI),
             "I32ShlBy" => Ok(Self::UNIMPL), // todo
             "I32ShrUBy" => Ok(Self::UNIMPL), // todo
             "I32ShrSBy" => Ok(Self::UNIMPL), // todo
@@ -577,6 +582,10 @@ impl FromStr for WASM {
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
             "I64Mul" => Ok(Self::I64MUL),
+            "I64DivS" => Ok(Self::UNIMPL), // todo
+            "I64DivU" => Ok(Self::UNIMPL), // todo
+            "I64RemS" => Ok(Self::UNIMPL), // todo
+            "I64RemU" => Ok(Self::UNIMPL), // todo
             "I64BitXor" => Ok(Self::I64XOR),
             "I64BitOr" => Ok(Self::I64OR),
             "I64BitAnd" => Ok(Self::I64AND),
@@ -588,9 +597,9 @@ impl FromStr for WASM {
 
             "I64MulImm" => Ok(Self::I64MULI),
             "I64AddImm" => Ok(Self::I64ADDI),
-            "I64XorImm" => Ok(Self::I64XORI),
-            "I64AndImm" => Ok(Self::I64ANDI),
-            "I64OrImm" => Ok(Self::I64ORI),
+            "I64BitXorImm" => Ok(Self::I64XORI),
+            "I64BitAndImm" => Ok(Self::I64ANDI),
+            "I64BitOrImm" => Ok(Self::I64ORI),
             "I64ShlBy" => Ok(Self::UNIMPL), // todo
             "I64ShrUBy" => Ok(Self::UNIMPL), // todo
             "I64ShrSBy" => Ok(Self::UNIMPL), // todo
@@ -598,6 +607,19 @@ impl FromStr for WASM {
             "I64RotrBy" => Ok(Self::UNIMPL), // todo
 
             "I64EqImm" => Ok(Self::UNIMPL), // todo
+
+            "BranchI32Ne" => Ok(Self::UNIMPL), // todo
+            "BranchI32NeImm" => Ok(Self::UNIMPL), // todo
+            "BranchI64Ne" => Ok(Self::UNIMPL), // todo
+            "BranchI64NeImm" => Ok(Self::UNIMPL), // todo
+
+            "I32WrapI64" => Ok(Self::UNIMPL), // todo
+
+            "Register" => Ok(Self::UNIMPL), // todo
+
+            "CallInternal" => Ok(Self::UNIMPL), // todo
+
+            "Trap" => Ok(Self::UNIMPL), // todo
 
             "SLLI" => Ok(Self::SLLI),
             "SRLI" => Ok(Self::SRLI),

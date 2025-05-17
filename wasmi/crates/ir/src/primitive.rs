@@ -73,7 +73,7 @@ impl_sign_for!(f32, f64);
 /// This defines how much the instruction pointer is offset
 /// upon taking the respective branch.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct BranchOffset16(i16);
+pub struct BranchOffset16(pub i16);
 
 impl From<i16> for BranchOffset16 {
     fn from(offset: i16) -> Self {

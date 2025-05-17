@@ -309,6 +309,10 @@ impl Instruction {
             Self::I32Add { result, lhs, rhs }
             | Self::I32Sub { result, lhs, rhs }
             | Self::I32Mul { result, lhs, rhs }
+            | Self::I32DivS { result, lhs, rhs }
+            | Self::I32DivU { result, lhs, rhs }
+            | Self::I32RemS { result, lhs, rhs }
+            | Self::I32RemU { result, lhs, rhs }
             | Self::I32BitXor { result, lhs, rhs }
             | Self::I32BitAnd { result, lhs, rhs }
             | Self::I32BitOr { result, lhs, rhs }
@@ -319,9 +323,14 @@ impl Instruction {
             | Self::I32Rotr { result, lhs, rhs }
             | Self::I32LtU { result, lhs, rhs }
             | Self::I32LtS { result, lhs, rhs }
+            // i64
             | Self::I64Add { result, lhs, rhs }
             | Self::I64Sub { result, lhs, rhs }
             | Self::I64Mul { result, lhs, rhs }
+            | Self::I64DivS { result, lhs, rhs }
+            | Self::I64DivU { result, lhs, rhs }
+            | Self::I64RemS { result, lhs, rhs }
+            | Self::I64RemU { result, lhs, rhs }
             | Self::I64BitXor { result, lhs, rhs }
             | Self::I64BitAnd { result, lhs, rhs }
             | Self::I64BitOr { result, lhs, rhs }
@@ -345,10 +354,6 @@ impl Instruction {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
 
-            // i32 immediate comparisons
-            Self::I32EqImm16 { result, lhs, rhs } => {
-                trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
-            }
             Self::I32ShlBy { result, lhs, rhs }
             | Self::I32ShrUBy { result, lhs, rhs }
             | Self::I32ShrSBy { result, lhs, rhs }
@@ -361,6 +366,27 @@ impl Instruction {
                 instruction_address,
             ),
 
+            // branches
+            Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
+                trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
+            }
+
+            // immediate branches
+            Self::BranchI32NeImm16 { lhs, rhs, offset } => trace_bi(
+                self,
+                lhs,
+                rhs.inner.0 as i64,
+                offset.0 as i32 as i64,
+                instruction_address,
+            ),
+            Self::BranchI64NeImm16 { lhs, rhs, offset } => trace_bi(
+                self,
+                lhs,
+                rhs.inner.0 as i64,
+                offset.0 as i32 as i64,
+                instruction_address,
+            ),
+
             // i64 immediates
             Self::I64MulImm16 { result, lhs, rhs }
             | Self::I64AddImm16 { result, lhs, rhs }
@@ -370,10 +396,7 @@ impl Instruction {
             | Self::I64EqImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
-            // immediate comparisons
-            Self::I64EqImm16 { result, lhs, rhs } => {
-                trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
-            }
+
             Self::I64ShlBy { result, lhs, rhs }
             | Self::I64ShrUBy { result, lhs, rhs }
             | Self::I64ShrSBy { result, lhs, rhs }
@@ -386,7 +409,21 @@ impl Instruction {
                 instruction_address,
             ),
 
+            Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),
+
+            Self::CallInternal { .. } => {
+                trace_unimpl(self, instruction_address)
+            }
+
+            Self::Register { .. } => {
+                trace_unimpl(self, instruction_address)
+            }
+
             Self::ReturnImm32 { .. } | Self::ReturnReg { .. } | Self::ReturnI64Imm32 { .. } => {
+                trace_unimpl(self, instruction_address)
+            }
+
+            Self::Trap { .. } => {
                 trace_unimpl(self, instruction_address)
             }
 
@@ -415,6 +452,31 @@ fn trace_i(inst: &Instruction, result: Reg, lhs: Reg, rhs: i64, address: u64) ->
         rs2: None,
         rd: Some(result.0 as u16 as u32 as u64),
         imm: Some(rhs),
+        virtual_sequence_remaining: None,
+    }
+}
+
+fn trace_b(inst: &Instruction, lhs: Reg, rhs: Reg, offset: i64, address: u64) -> ELFInstruction {
+    ELFInstruction {
+        address,
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
+        rs1: Some(lhs.0 as u16 as u32 as u64),
+        rs2: Some(rhs.0 as u16 as u32 as u64),
+        rd: None,
+        imm: Some(offset),
+        virtual_sequence_remaining: None,
+    }
+}
+
+// TODO: Add extra field for two immediate values
+fn trace_bi(inst: &Instruction, lhs: Reg, rhs: i64, offset: i64, address: u64) -> ELFInstruction {
+    ELFInstruction {
+        address,
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
+        rs1: Some(lhs.0 as u16 as u32 as u64),
+        rs2: None,
+        rd: None,
+        imm: Some(offset),
         virtual_sequence_remaining: None,
     }
 }
@@ -450,6 +512,11 @@ impl ToString for Instruction {
             Self::I32Add { .. } => "I32Add".to_string(),
             Self::I32Sub { .. } => "I32Sub".to_string(),
             Self::I32Mul { .. } => "I32Mul".to_string(),
+            Self::I32DivS { .. } => "I32DivS".to_string(),
+            Self::I32DivU { .. } => "I32DivU".to_string(),
+            Self::I32RemS { .. } => "I32RemS".to_string(),
+            Self::I32RemU { .. } => "I32RemU".to_string(),
+
             Self::I32BitXor { .. } => "I32BitXor".to_string(),
             Self::I32BitAnd { .. } => "I32BitAnd".to_string(),
             Self::I32BitOr { .. } => "I32BitOr".to_string(),
@@ -480,6 +547,11 @@ impl ToString for Instruction {
             Self::I64Add { .. } => "I64Add".to_string(),
             Self::I64Sub { .. } => "I64Sub".to_string(),
             Self::I64Mul { .. } => "I64Mul".to_string(),
+            Self::I64DivS { .. } => "I64DivS".to_string(),
+            Self::I64DivU { .. } => "I64DivU".to_string(),
+            Self::I64RemS { .. } => "I64RemS".to_string(),
+            Self::I64RemU { .. } => "I64RemU".to_string(),
+
             Self::I64BitXor { .. } => "I64BitXor".to_string(),
             Self::I64BitAnd { .. } => "I64BitAnd".to_string(),
             Self::I64BitOr { .. } => "I64BitOr".to_string(),
@@ -497,6 +569,7 @@ impl ToString for Instruction {
             Self::I64AddImm16 { .. } => "I64AddImm".to_string(),
             Self::I64BitXorImm16 { .. } => "I64BitXorImm".to_string(),
             Self::I64BitAndImm16 { .. } => "I64BitAndImm".to_string(),
+            Self::I64BitOrImm16 { .. } => "I64BitOrImm".to_string(),
             Self::I64ShlBy { .. } => "I64ShlBy".to_string(),
             Self::I64ShrUBy { .. } => "I64ShrUBy".to_string(),
             Self::I64ShrSBy { .. } => "I64ShrSBy".to_string(),
@@ -506,10 +579,24 @@ impl ToString for Instruction {
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
+            Self::BranchI32Ne { .. } => "BranchI32Ne".to_string(),
+            Self::BranchI64Ne { .. } => "BranchI64Ne".to_string(),
+            Self::BranchI32NeImm16 { .. } => "BranchI32NeImm".to_string(),
+            Self::BranchI64NeImm16 { .. } => "BranchI64NeImm".to_string(),
+
+            // conversions
+            Self::I32WrapI64 { .. } => "I32WrapI64".to_string(),
+
+            Self::CallInternal { .. } => "CallInternal".to_string(),
+
+            Self::Register { .. } => "Register".to_string(),
+
             // returns
             Self::ReturnImm32 { .. } => "ReturnImm32".to_string(),
             Self::ReturnReg { .. } => "ReturnReg".to_string(),
             Self::ReturnI64Imm32 { .. } => "ReturnI64Imm32".to_string(),
+
+            Self::Trap { .. } => "Trap".to_string(),
 
             _ => todo!("to_string instruction: {self:?}"),
         }
