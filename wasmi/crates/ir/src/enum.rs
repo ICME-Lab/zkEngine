@@ -366,7 +366,7 @@ impl Instruction {
                 instruction_address,
             ),
 
-            // branches
+            // fused branches
             Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
                 trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
             }

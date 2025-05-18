@@ -522,6 +522,7 @@ pub enum WASM {
     REMU,
     FENCE,
     UNIMPL,
+    
     // Virtual instructions
     VIRTUAL_MOVSIGN,
     VIRTUAL_MOVE,
@@ -558,8 +559,8 @@ impl FromStr for WASM {
             "I32BitOr" => Ok(Self::I32OR),
             "I32BitAnd" => Ok(Self::I32AND),
             "I32Shl" => Ok(Self::I32SHL), 
-            "I32ShrU" => Ok(Self::I32SHRU), // todo
-            "I32ShrS" => Ok(Self::I32SHRS), // todo
+            "I32ShrU" => Ok(Self::I32SHRU), 
+            "I32ShrS" => Ok(Self::I32SHRS), 
             "I32Rotl" => Ok(Self::UNIMPL), // todo
             "I32Rotr" => Ok(Self::UNIMPL), // todo
 
@@ -590,8 +591,8 @@ impl FromStr for WASM {
             "I64BitOr" => Ok(Self::I64OR),
             "I64BitAnd" => Ok(Self::I64AND),
             "I64Shl" => Ok(Self::I64SHL), 
-            "I64ShrU" => Ok(Self::I64SHRU), // todo
-            "I64ShrS" => Ok(Self::I64SHRS), // todo
+            "I64ShrU" => Ok(Self::I64SHRU), 
+            "I64ShrS" => Ok(Self::I64SHRS), 
             "I64Rotl" => Ok(Self::UNIMPL), // todo
             "I64Rotr" => Ok(Self::UNIMPL), // todo
 

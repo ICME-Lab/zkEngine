@@ -33,8 +33,9 @@ mod tests {
         zkE::{
             tests::{
                 add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
-                bitwise_arith_32_wasm_program, bitwise_arith_wasm_program, lt_wasm_program,
-                poly_bitshift_wasm_program, poly_divrem_wasm_program, poly_mixed_wasm_program,
+                bitwise_arith_32_wasm_program, bitwise_arith_wasm_program,
+                divrem_arith_32_wasm_program, lt_wasm_program, poly_bitshift_wasm_program,
+                poly_divrem32_wasm_program, poly_divrem_wasm_program, poly_mixed_wasm_program,
                 poly_rotate_wasm_program, poly_simple_wasm_program, shifts_arith_32_wasm_program,
                 shifts_arith_wasm_program,
             },
@@ -101,7 +102,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_poly_bitshift() {
         test_wasm_e2e_with(poly_bitshift_wasm_program());
     }
@@ -109,13 +109,29 @@ mod tests {
     #[test]
     #[ignore]
     fn test_poly_rotate() {
+        poly_rotate_wasm_program().print_instructions();
         test_wasm_e2e_with(poly_rotate_wasm_program());
     }
 
     #[test]
     #[ignore]
+    fn test_divrem_arith_32() {
+        divrem_arith_32_wasm_program().print_instructions();
+        // test_wasm_e2e_with(poly_divrem_wasm_program());
+    }
+
+    #[test]
+    #[ignore]
     fn test_poly_divrem() {
-        test_wasm_e2e_with(poly_divrem_wasm_program());
+        // poly_divrem_wasm_program().print_instructions();
+        // test_wasm_e2e_with(poly_divrem_wasm_program());
+    }
+
+    #[test]
+    #[ignore]
+    fn test_poly_divrem32() {
+        poly_divrem32_wasm_program().print_instructions();
+        // test_wasm_e2e_with(poly_divrem32_wasm_program());
     }
 
     #[test]

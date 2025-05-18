@@ -32,8 +32,8 @@ impl TryFrom<&ELFInstruction> for RV32I {
             WASM::I32OR   => Ok(ORInstruction::<WORD_SIZE>::default().into()),
             WASM::I32AND  => Ok(ANDInstruction::<WORD_SIZE>::default().into()),
             WASM::I32SHL  => Ok(SLLInstruction::<WORD_SIZE>::default().into()),
-            // WASM::I32SHRU  => Ok(SRLInstruction::<WORD_SIZE>::default().into()),
-            // WASM::I32SHRS  => Ok(SRAInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32SHRU  => Ok(SRLInstruction::<WORD_SIZE>::default().into()),
+            WASM::I32SHRS  => Ok(SRAInstruction::<WORD_SIZE>::default().into()),
 
             // immediates
             WASM::I32MULI => Ok(MULInstruction::<WORD_SIZE>::default().into()),
@@ -56,9 +56,9 @@ impl TryFrom<&ELFInstruction> for RV32I {
             WASM::I64ORI   => Ok(ORInstruction::<WORD_SIZE_1>::default().into()),
             WASM::I64ANDI  => Ok(ANDInstruction::<WORD_SIZE_1>::default().into()),
 
-            // WASM::I64SHL  => Ok(SLLInstruction::<WORD_SIZE_1>::default().into()),
-            // WASM::I64SHRU => Ok(SRLInstruction::<WORD_SIZE_1>::default().into()),
-            // WASM::I64SHRS => Ok(SRAInstruction::<WORD_SIZE_1>::default().into()),
+            WASM::I64SHL  => Ok(SLLInstruction::<WORD_SIZE_1>::default().into()),
+            WASM::I64SHRU => Ok(SRLInstruction::<WORD_SIZE_1>::default().into()),
+            WASM::I64SHRS => Ok(SRAInstruction::<WORD_SIZE_1>::default().into()),
 
             // WASM::SLL  => Ok(SLLInstruction::default().into()),
             // WASM::SRL  => Ok(SRLInstruction::default().into()),
@@ -121,8 +121,8 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I32OR  => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I32AND => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I32SHL => Ok(SLLInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::I32SHRU => Ok(SRLInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::I32SHRS => Ok(SRAInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32SHRU => Ok(SRLInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32SHRS => Ok(SRAInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
             // immediates
             WASM::I32MULI => Ok(MULInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
@@ -138,8 +138,8 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I64OR  => Ok(ORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64AND => Ok(ANDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64SHL => Ok(SLLInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::I64SHRU => Ok(SRLInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::I64SHRS => Ok(SRAInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I64SHRU => Ok(SRLInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I64SHRS => Ok(SRAInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             
             // immediates
             WASM::I64MULI => Ok(MULInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
