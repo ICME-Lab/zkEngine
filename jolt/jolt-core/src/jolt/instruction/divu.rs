@@ -2,12 +2,15 @@ use common::constants::virtual_register_index;
 use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::VirtualInstructionSequence;
-use crate::jolt::instruction::{
-    add::ADDInstruction, beq::BEQInstruction, mulu::MULUInstruction,
-    virtual_advice::ADVICEInstruction, virtual_assert_lte::ASSERTLTEInstruction,
-    virtual_assert_valid_div0::AssertValidDiv0Instruction,
-    virtual_assert_valid_unsigned_remainder::AssertValidUnsignedRemainderInstruction,
-    JoltInstruction,
+use crate::jolt::{
+    instruction::{
+        add::ADDInstruction, beq::BEQInstruction, mulu::MULUInstruction,
+        virtual_advice::ADVICEInstruction, virtual_assert_lte::ASSERTLTEInstruction,
+        virtual_assert_valid_div0::AssertValidDiv0Instruction,
+        virtual_assert_valid_unsigned_remainder::AssertValidUnsignedRemainderInstruction,
+        JoltInstruction,
+    },
+    vm::rv32i_vm::WORD_SIZE,
 };
 /// Perform unsigned division and return quotient
 pub struct DIVUInstruction<const WORD_SIZE: usize>;
@@ -16,7 +19,10 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
     const SEQUENCE_LENGTH: usize = 9;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, WASM::I32DIVU);
+        assert!(
+            trace_row.instruction.opcode == WASM::I32DIVU
+                || trace_row.instruction.opcode == WASM::I64DIVU
+        );
         // DIVU source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -43,10 +49,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
         let remainder = if y == 0 { x } else { x - quotient * y };
 
         let q = ADVICEInstruction::<WORD_SIZE>(quotient).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ADVICE,
+            64 => WASM::I64VIRTUAL_ADVICE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ADVICE,
+                opcode,
                 rs1: None,
                 rs2: None,
                 rd: v_q,
@@ -65,10 +76,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
         });
 
         let r = ADVICEInstruction::<WORD_SIZE>(remainder).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ADVICE,
+            64 => WASM::I64VIRTUAL_ADVICE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ADVICE,
+                opcode,
                 rs1: None,
                 rs2: None,
                 rd: v_r,
@@ -87,10 +103,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
         });
 
         let q_y = MULUInstruction::<WORD_SIZE>(q, y).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::MULU,
+            64 => WASM::I64MULU,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::MULU,
+                opcode,
                 rs1: v_q,
                 rs2: r_y,
                 rd: v_qy,
@@ -110,10 +131,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
 
         let is_valid = AssertValidUnsignedRemainderInstruction::<WORD_SIZE>(r, y).lookup_entry();
         assert_eq!(is_valid, 1);
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER,
+            64 => WASM::I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER,
+                opcode,
                 rs1: v_r,
                 rs2: r_y,
                 rd: None,
@@ -133,11 +159,16 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
 
         // TODO(moodlezoup): is this assert unnecessary?
         let lte = ASSERTLTEInstruction::<WORD_SIZE>(q_y, x).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_LTE,
+            64 => WASM::I64VIRTUAL_ASSERT_LTE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         assert_eq!(lte, 1);
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_LTE,
+                opcode,
                 rs1: v_qy,
                 rs2: r_x,
                 rd: None,
@@ -157,10 +188,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
 
         let is_valid = AssertValidDiv0Instruction::<WORD_SIZE>(y, q).lookup_entry();
         assert_eq!(is_valid, 1);
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_VALID_DIV0,
+            64 => WASM::I64VIRTUAL_ASSERT_VALID_DIV0,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_VALID_DIV0,
+                opcode,
                 rs1: r_y,
                 rs2: v_q,
                 rd: None,
@@ -179,10 +215,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
         });
 
         let add_0 = ADDInstruction::<WORD_SIZE>(q_y, r).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::I32ADD,
+            64 => WASM::I64ADD,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::I32ADD,
+                opcode,
                 rs1: v_qy,
                 rs2: v_r,
                 rd: v_0,
@@ -201,10 +242,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
         });
 
         let _assert_eq = BEQInstruction::<WORD_SIZE>(add_0, x).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_EQ,
+            64 => WASM::I64VIRTUAL_ASSERT_EQ,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_EQ,
+                opcode,
                 rs1: v_0,
                 rs2: r_x,
                 rd: None,
@@ -222,10 +268,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
             precompile_output_address: None,
         });
 
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_MOVE,
+            64 => WASM::I64VIRTUAL_MOVE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_MOVE,
+                opcode,
                 rs1: v_q,
                 rs2: None,
                 rd: trace_row.instruction.rd,
@@ -268,5 +319,10 @@ mod test {
     #[test]
     fn divu_virtual_sequence_32() {
         jolt_virtual_sequence_test::<DIVUInstruction<32>>(WASM::I32DIVU);
+    }
+
+    #[test]
+    fn divu_virtual_sequence_64() {
+        jolt_virtual_sequence_test::<DIVUInstruction<64>>(WASM::I64DIVU);
     }
 }

@@ -38,6 +38,10 @@ impl WASMProgram {
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32REMS => REMInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I64DIVU => DIVUInstruction::<64>::virtual_trace(row),
+                tracer::WASM::I64DIVS => DIVInstruction::<64>::virtual_trace(row),
+                tracer::WASM::I64REMU => REMUInstruction::<64>::virtual_trace(row),
+                tracer::WASM::I64REMS => REMInstruction::<64>::virtual_trace(row),
                 _ => vec![row],
             })
             .map(|row| {
