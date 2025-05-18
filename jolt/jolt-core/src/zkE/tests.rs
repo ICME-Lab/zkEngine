@@ -47,6 +47,10 @@ pub fn shifts_arith_32_wasm_program() -> WASMProgram {
     make_wasm_program("shifts_arith_32.wat")
 }
 
+pub fn divrem_arith_wasm_program() -> WASMProgram {
+    make_wasm_program("divrem_arith.wat")
+}
+
 pub fn divrem_arith_32_wasm_program() -> WASMProgram {
     make_wasm_program("divrem_arith_32.wat")
 }

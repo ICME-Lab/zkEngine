@@ -34,10 +34,10 @@ mod tests {
             tests::{
                 add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
                 bitwise_arith_32_wasm_program, bitwise_arith_wasm_program,
-                divrem_arith_32_wasm_program, lt_wasm_program, poly_bitshift_wasm_program,
-                poly_divrem32_wasm_program, poly_divrem_wasm_program, poly_mixed_wasm_program,
-                poly_rotate_wasm_program, poly_simple_wasm_program, shifts_arith_32_wasm_program,
-                shifts_arith_wasm_program,
+                divrem_arith_32_wasm_program, divrem_arith_wasm_program, lt_wasm_program,
+                poly_bitshift_wasm_program, poly_divrem32_wasm_program, poly_divrem_wasm_program,
+                poly_mixed_wasm_program, poly_rotate_wasm_program, poly_simple_wasm_program,
+                shifts_arith_32_wasm_program, shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -104,6 +104,11 @@ mod tests {
     #[test]
     fn test_poly_bitshift() {
         test_wasm_e2e_with(poly_bitshift_wasm_program());
+    }
+
+    #[test]
+    fn test_divrem_arith() {
+        test_wasm_e2e_with(divrem_arith_wasm_program());
     }
 
     #[test]
