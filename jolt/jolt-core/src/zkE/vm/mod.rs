@@ -376,6 +376,7 @@ where
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::I32REMS => REMInstruction::<32>::virtual_sequence(instruction),
                 _ => vec![instruction],
             })
             .map(|instruction| BytecodeRow::from_instruction::<Self::InstructionSet>(&instruction))

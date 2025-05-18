@@ -2,7 +2,7 @@
 //! the execution of WASM programs and decode their bytecode.
 use crate::jolt::{
     instruction::{
-        div::DIVInstruction, divu::DIVUInstruction, remu::REMUInstruction,
+        div::DIVInstruction, divu::DIVUInstruction, rem::REMInstruction, remu::REMUInstruction,
         VirtualInstructionSequence,
     },
     vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep},
@@ -37,6 +37,7 @@ impl WASMProgram {
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I32REMS => REMInstruction::<32>::virtual_trace(row),
                 _ => vec![row],
             })
             .map(|row| {

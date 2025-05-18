@@ -107,7 +107,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_divrem_arith_32() {
         test_wasm_e2e_with(divrem_arith_32_wasm_program());
     }

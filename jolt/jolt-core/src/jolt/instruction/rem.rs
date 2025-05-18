@@ -15,7 +15,8 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
     const SEQUENCE_LENGTH: usize = 7;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, WASM::REM);
+        println!("sanity check: REMInstruction::virtual_trace");
+        assert_eq!(trace_row.instruction.opcode, WASM::I32REMS);
         // REM source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -249,6 +250,6 @@ mod test {
 
     #[test]
     fn rem_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<REMInstruction<32>>(WASM::REM);
+        jolt_virtual_sequence_test::<REMInstruction<32>>(WASM::I32REMS);
     }
 }
