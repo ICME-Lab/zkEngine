@@ -1,7 +1,9 @@
 //! This module provides a wrapper around the `wasmi_tracer` library to trace
 //! the execution of WASM programs and decode their bytecode.
-
-use crate::jolt::vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep};
+use crate::jolt::{
+    instruction::{divu::DIVUInstruction, VirtualInstructionSequence},
+    vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep},
+};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use std::fs;
 use tracer::{ELFInstruction, JoltDevice};
@@ -28,6 +30,10 @@ impl WASMProgram {
         // Convert raw trace (Vec<RVTraceRow>) to JoltTraceStep
         let trace: Vec<_> = raw_trace
             .into_par_iter()
+            .flat_map(|row| match row.instruction.opcode {
+                tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_trace(row),
+                _ => vec![row],
+            })
             .map(|row| {
                 let instruction_lookup = RV32I::try_from(&row).ok();
                 JoltTraceStep {

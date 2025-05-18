@@ -372,6 +372,10 @@ where
 
         let bytecode_rows: Vec<BytecodeRow> = bytecode
             .into_iter()
+            .flat_map(|instruction| match instruction.opcode {
+                tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
+                _ => vec![instruction],
+            })
             .map(|instruction| BytecodeRow::from_instruction::<Self::InstructionSet>(&instruction))
             .collect();
         let bytecode_preprocessing = WASMBytecodePreprocessing::<F>::preprocess(bytecode_rows);
@@ -424,7 +428,7 @@ where
     fn prove(
         program_io: JoltDevice, // HACK
         mut trace: Vec<JoltTraceStep<Self::InstructionSet>>,
-        mut preprocessing: JoltProverPreprocessing<C, F, PCS, ProofTranscript>,
+        preprocessing: JoltProverPreprocessing<C, F, PCS, ProofTranscript>,
     ) -> (
         JoltProof<C, M, F, PCS, Self::InstructionSet, Self::Subtables, ProofTranscript>,
         JoltCommitments<PCS, ProofTranscript>,
@@ -433,7 +437,7 @@ where
     ) {
         icicle::icicle_init();
         let trace_length = trace.len();
-        let padded_trace_length = trace_length.next_power_of_two();
+        let _padded_trace_length = trace_length.next_power_of_two();
         println!("Trace length: {trace_length}");
 
         // F::initialize_lookup_tables(std::mem::take(&mut preprocessing.field));
@@ -589,7 +593,7 @@ where
 
     #[tracing::instrument(skip_all)]
     fn verify(
-        mut preprocessing: JoltVerifierPreprocessing<C, F, PCS, ProofTranscript>,
+        preprocessing: JoltVerifierPreprocessing<C, F, PCS, ProofTranscript>,
         proof: JoltProof<C, M, F, PCS, Self::InstructionSet, Self::Subtables, ProofTranscript>,
         commitments: JoltCommitments<PCS, ProofTranscript>,
         program_io: JoltDevice,

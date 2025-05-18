@@ -16,7 +16,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVUInstruction<WORD
     const SEQUENCE_LENGTH: usize = 9;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, WASM::DIVU);
+        assert_eq!(trace_row.instruction.opcode, WASM::I32DIVU);
         // DIVU source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -267,6 +267,6 @@ mod test {
 
     #[test]
     fn divu_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<DIVUInstruction<32>>(WASM::DIVU);
+        jolt_virtual_sequence_test::<DIVUInstruction<32>>(WASM::I32DIVU);
     }
 }

@@ -51,7 +51,6 @@ impl<F: JoltField> WASMBytecodePreprocessing<F> {
         let mut virtual_address_map: BTreeMap<(usize, usize), usize> = BTreeMap::new();
         let mut virtual_address = 1; // Account for no-op instruction prepended to bytecode
 
-        // TODO: Check we don't need WASM pc to be above address 0x8000_0000
         for instruction in bytecode.iter_mut() {
             assert_eq!(
                 virtual_address_map.insert(
@@ -435,7 +434,6 @@ where
         let mut final_cts: Vec<u32> = vec![0; preprocessing.code_size];
 
         for (step_index, step) in trace.iter_mut().enumerate() {
-            // TODO: Figure out exact reason for this compression
             // if !step.bytecode_row.address.is_zero() {
             //     assert!(step.bytecode_row.address >= RAM_START_ADDRESS as usize);
             //     assert!(step.bytecode_row.address % BYTES_PER_INSTRUCTION == 0);

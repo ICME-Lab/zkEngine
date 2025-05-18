@@ -108,16 +108,15 @@ mod tests {
 
     #[test]
     #[ignore]
-    fn test_poly_rotate() {
-        poly_rotate_wasm_program().print_instructions();
-        test_wasm_e2e_with(poly_rotate_wasm_program());
+    fn test_divrem_arith_32() {
+        test_wasm_e2e_with(poly_divrem_wasm_program());
     }
 
     #[test]
     #[ignore]
-    fn test_divrem_arith_32() {
-        divrem_arith_32_wasm_program().print_instructions();
-        // test_wasm_e2e_with(poly_divrem_wasm_program());
+    fn test_poly_rotate() {
+        poly_rotate_wasm_program().print_instructions();
+        test_wasm_e2e_with(poly_rotate_wasm_program());
     }
 
     #[test]

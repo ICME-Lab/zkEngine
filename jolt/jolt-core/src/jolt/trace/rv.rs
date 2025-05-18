@@ -86,23 +86,23 @@ impl TryFrom<&ELFInstruction> for RV32I {
             // WASM::LUI => Ok(ADVICEInstruction::default().into()),
 
             // WASM::MUL => Ok(MULInstruction::default().into()),
-            // WASM::MULU => Ok(MULUInstruction::default().into()),
+            WASM::MULU => Ok(MULUInstruction::<WORD_SIZE>::default().into()),
+            WASM::VIRTUAL_ASSERT_EQ => Ok(BEQInstruction::default().into()),
+            WASM::VIRTUAL_ASSERT_LTE => Ok(ASSERTLTEInstruction::default().into()),
+            WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => Ok(AssertValidUnsignedRemainderInstruction::default().into()),
+            WASM::VIRTUAL_ASSERT_VALID_DIV0 => Ok(AssertValidDiv0Instruction::default().into()),
+            WASM::VIRTUAL_ADVICE => Ok(ADVICEInstruction::default().into()),
+            WASM::VIRTUAL_MOVE => Ok(MOVEInstruction::default().into()),
             // WASM::MULHU => Ok(MULHUInstruction::default().into()),
 
-            // WASM::VIRTUAL_ADVICE => Ok(ADVICEInstruction::default().into()),
-            // WASM::VIRTUAL_MOVE => Ok(MOVEInstruction::default().into()),
             // WASM::VIRTUAL_MOVSIGN => Ok(MOVSIGNInstruction::default().into()),
-            // WASM::VIRTUAL_ASSERT_EQ => Ok(BEQInstruction::default().into()),
-            // WASM::VIRTUAL_ASSERT_LTE => Ok(ASSERTLTEInstruction::default().into()),
-            // WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => Ok(AssertValidUnsignedRemainderInstruction::default().into()),
-            // WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER => Ok(AssertValidSignedRemainderInstruction::default().into()),
-            // WASM::VIRTUAL_ASSERT_VALID_DIV0 => Ok(AssertValidDiv0Instruction::default().into()),
+
             // WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT => Ok(AssertHalfwordAlignmentInstruction::<32>::default().into()),
             // WASM::VIRTUAL_POW2 => Ok(POW2Instruction::<32>::default().into()),
             // WASM::VIRTUAL_POW2I => Ok(POW2Instruction::<32>::default().into()),
             // WASM::VIRTUAL_SRA_PAD => Ok(RightShiftPaddingInstruction::<32>::default().into()),
             // WASM::VIRTUAL_SRA_PADI => Ok(RightShiftPaddingInstruction::<32>::default().into()),
-
+                        // WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER => Ok(AssertValidSignedRemainderInstruction::default().into()),
             _ => Err("No corresponding RV32I instruction")
         }
     }
@@ -172,17 +172,19 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::AUIPC => Ok(ADDInstruction::<WORD_SIZE>(row.instruction.address, row.imm_u32() as u64).into()),
             // WASM::LUI => Ok(ADVICEInstruction(row.imm_u32() as u64).into()),
 
-            // WASM::MULU => Ok(MULUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             // WASM::MULHU => Ok(MULHUInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            
+            WASM::MULU => Ok(MULUInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::VIRTUAL_ADVICE => Ok(ADVICEInstruction(row.advice_value.unwrap()).into()),
+            WASM::VIRTUAL_ASSERT_EQ => Ok(BEQInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::VIRTUAL_ASSERT_LTE => Ok(ASSERTLTEInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => Ok(AssertValidUnsignedRemainderInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::VIRTUAL_ASSERT_VALID_DIV0 => Ok(AssertValidDiv0Instruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
 
-            // WASM::VIRTUAL_ADVICE => Ok(ADVICEInstruction(row.advice_value.unwrap()).into()),
             // WASM::VIRTUAL_MOVE => Ok(MOVEInstruction(row.register_state.rs1_val.unwrap()).into()),
             // WASM::VIRTUAL_MOVSIGN => Ok(MOVSIGNInstruction(row.register_state.rs1_val.unwrap()).into()),
-            // WASM::VIRTUAL_ASSERT_EQ => Ok(BEQInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::VIRTUAL_ASSERT_LTE => Ok(ASSERTLTEInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => Ok(AssertValidUnsignedRemainderInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+
             // WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER => Ok(AssertValidSignedRemainderInstruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // WASM::VIRTUAL_ASSERT_VALID_DIV0 => Ok(AssertValidDiv0Instruction(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             // WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT => Ok(AssertHalfwordAlignmentInstruction::<32>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             // WASM::VIRTUAL_POW2 => Ok(POW2Instruction::<32>(row.register_state.rs1_val.unwrap()).into()),
             // WASM::VIRTUAL_POW2I => Ok(POW2Instruction::<32>(row.imm_u64()).into()),

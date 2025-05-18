@@ -80,7 +80,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SRLVirtualSequence<W
         let divu = RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::DIVU,
+                opcode: WASM::I32DIVU,
                 rs1: trace_row.instruction.rs1,
                 rs2: v_pow2,
                 rd: trace_row.instruction.rd,

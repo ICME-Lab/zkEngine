@@ -138,9 +138,9 @@ instruction_set!(
 
   I64SHL: SLLInstruction<WORD_SIZE_1>,
   I64SHRU: SRLInstruction<WORD_SIZE_1>,
-  I64SHRS: SRAInstruction<WORD_SIZE_1>
+  I64SHRS: SRAInstruction<WORD_SIZE_1>,
 
-//   BEQ: BEQInstruction<WORD_SIZE>,
+  BEQ: BEQInstruction<WORD_SIZE>,
 //   BGE: BGEInstruction<WORD_SIZE>,
 //   BGEU: BGEUInstruction<WORD_SIZE>,
 //   BNE: BNEInstruction<WORD_SIZE>,
@@ -151,14 +151,14 @@ instruction_set!(
 //   SRL: SRLInstruction<WORD_SIZE>,
 //   MOVSIGN: MOVSIGNInstruction<WORD_SIZE>,
 //   MUL: MULInstruction<WORD_SIZE>,
-//   MULU: MULUInstruction<WORD_SIZE>,
-//   MULHU: MULHUInstruction<WORD_SIZE>,
-//   VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE>,
-//   VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE>,
-//   VIRTUAL_ASSERT_LTE: ASSERTLTEInstruction<WORD_SIZE>,
-//   VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>,
-//   VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER: AssertValidUnsignedRemainderInstruction<WORD_SIZE>,
-//   VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>,
+  MULU: MULUInstruction<WORD_SIZE>,
+  VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE>,
+  VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE>,
+  VIRTUAL_ASSERT_LTE: ASSERTLTEInstruction<WORD_SIZE>,
+  VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER: AssertValidUnsignedRemainderInstruction<WORD_SIZE>,
+  VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>
+  //   MULHU: MULHUInstruction<WORD_SIZE>,
+  //   VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>,
 //   VIRTUAL_ASSERT_HALFWORD_ALIGNMENT: AssertHalfwordAlignmentInstruction<WORD_SIZE>,
 //   VIRTUAL_POW2: POW2Instruction<WORD_SIZE>,
 //   VIRTUAL_SRA_PADDING: RightShiftPaddingInstruction<WORD_SIZE>
@@ -167,12 +167,12 @@ subtable_enum!(
   RV32ISubtables,
   AND: AndSubtable<F>,
 //   EQ_ABS: EqAbsSubtable<F>,
-//   EQ: EqSubtable<F>,
+  EQ: EqSubtable<F>,
 //   LEFT_MSB: LeftMSBSubtable<F>,
 //   RIGHT_MSB: RightMSBSubtable<F>,
   IDENTITY: IdentitySubtable<F>,
 //   LT_ABS: LtAbsSubtable<F>,
-//   LTU: LtuSubtable<F>,
+  LTU: LtuSubtable<F>,
   OR: OrSubtable<F>,
 //   SIGN_EXTEND_16: SignExtendSubtable<F, 16>,
   SLL0: SllSubtable<F, 0, WORD_SIZE>,
@@ -209,10 +209,10 @@ subtable_enum!(
   I64SRL5: SrlSubtable<F, 5, WORD_SIZE_1>,
   I64SRL6: SrlSubtable<F, 6, WORD_SIZE_1>,
   I64SRL7: SrlSubtable<F, 7, WORD_SIZE_1>,
-  XOR: XorSubtable<F>
-//   LEFT_IS_ZERO: LeftIsZeroSubtable<F>,
-//   RIGHT_IS_ZERO: RightIsZeroSubtable<F>,
-//   DIV_BY_ZERO: DivByZeroSubtable<F>,
+  XOR: XorSubtable<F>,
+  LEFT_IS_ZERO: LeftIsZeroSubtable<F>,
+  RIGHT_IS_ZERO: RightIsZeroSubtable<F>,
+  DIV_BY_ZERO: DivByZeroSubtable<F>
 //   LSB: LowBitSubtable<F>
 );
 
