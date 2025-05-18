@@ -267,6 +267,6 @@ mod test {
 
     // #[test]
     // fn div_virtual_sequence_64() {
-    //     jolt_virtual_sequence_test::<DIVInstruction<64>>(WASM::DIV);
+    //     jolt_virtual_sequence_test::<DIVInstruction<64>>(WASM::I64DIVS);
     // }
 }
