@@ -189,7 +189,7 @@ impl Program {
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::REM => REMInstruction::<32>::virtual_trace(row),
-                tracer::WASM::REMU => REMUInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::SH => SHInstruction::<32>::virtual_trace(row),
                 tracer::WASM::SB => SBInstruction::<32>::virtual_trace(row),
                 tracer::WASM::LBU => LBUInstruction::<32>::virtual_trace(row),

@@ -16,7 +16,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMUInstruction<WORD
     const SEQUENCE_LENGTH: usize = 8;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, WASM::REMU);
+        assert_eq!(trace_row.instruction.opcode, WASM::I32REMU);
         // REMU source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -242,6 +242,6 @@ mod test {
 
     #[test]
     fn remu_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<REMUInstruction<32>>(WASM::REMU);
+        jolt_virtual_sequence_test::<REMUInstruction<32>>(WASM::I32REMU);
     }
 }

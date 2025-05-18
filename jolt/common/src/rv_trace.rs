@@ -92,6 +92,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32MUL
             | WASM::I32DIVU
             | WASM::I32DIVS
+            | WASM::I32REMU
             | WASM::I32XOR
             | WASM::I32OR
             | WASM::I32AND
@@ -117,7 +118,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::MULHSU
             | WASM::MULU
             | WASM::REM
-            | WASM::REMU => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
+     => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
 
             WASM::LUI | WASM::AUIPC | WASM::VIRTUAL_ADVICE => [
                 MemoryOp::noop_read(),
@@ -457,6 +458,7 @@ pub enum WASM {
     I32MUL,
     I32DIVU,
     I32DIVS,
+    I32REMU,
     I32AND,
     I32OR,
     I32XOR,
@@ -519,7 +521,6 @@ pub enum WASM {
     MULHSU,
     MULU,
     REM,
-    REMU,
     FENCE,
     UNIMPL,
     
@@ -553,7 +554,7 @@ impl FromStr for WASM {
             "I32DivS" => Ok(Self::I32DIVS),
             "I32DivU" => Ok(Self::I32DIVU),
             "I32RemS" => Ok(Self::UNIMPL), // todo
-            "I32RemU" => Ok(Self::UNIMPL), // todo
+            "I32RemU" => Ok(Self::I32REMU), // todo
 
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
@@ -652,7 +653,6 @@ impl FromStr for WASM {
             "MULHSU" => Ok(Self::MULHSU),
             "MULU" => Ok(Self::MULU),
             "REM" => Ok(Self::REM),
-            "REMU" => Ok(Self::REMU),
             "FENCE" => Ok(Self::FENCE),
             "UNIMPL" => Ok(Self::UNIMPL),
 

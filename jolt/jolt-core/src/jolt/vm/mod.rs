@@ -394,7 +394,7 @@ where
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::REM => REMInstruction::<32>::virtual_sequence(instruction),
-                tracer::WASM::REMU => REMUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::SH => SHInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::SB => SBInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::LBU => LBUInstruction::<32>::virtual_sequence(instruction),
