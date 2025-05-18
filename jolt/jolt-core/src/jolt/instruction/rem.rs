@@ -15,8 +15,10 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
     const SEQUENCE_LENGTH: usize = 7;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        println!("sanity check: REMInstruction::virtual_trace");
-        assert_eq!(trace_row.instruction.opcode, WASM::I32REMS);
+        assert!(
+            trace_row.instruction.opcode == WASM::I32REMS
+                || trace_row.instruction.opcode == WASM::I64REMS
+        );
         // REM source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -62,10 +64,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
         };
 
         let q = ADVICEInstruction::<WORD_SIZE>(quotient).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ADVICE,
+            64 => WASM::I64VIRTUAL_ADVICE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ADVICE,
+                opcode,
                 rs1: None,
                 rs2: None,
                 rd: v_q,
@@ -84,10 +91,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
         });
 
         let r = ADVICEInstruction::<WORD_SIZE>(remainder).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ADVICE,
+            64 => WASM::I64VIRTUAL_ADVICE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ADVICE,
+                opcode,
                 rs1: None,
                 rs2: None,
                 rd: v_r,
@@ -107,10 +119,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
 
         let is_valid: u64 = AssertValidSignedRemainderInstruction::<WORD_SIZE>(r, y).lookup_entry();
         assert_eq!(is_valid, 1);
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
+            64 => WASM::I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
+                opcode,
                 rs1: v_r,
                 rs2: r_y,
                 rd: None,
@@ -129,10 +146,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
         });
 
         let q_y = MULInstruction::<WORD_SIZE>(q, y).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::I32MUL,
+            64 => WASM::I64MUL,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::I32MUL,
+                opcode,
                 rs1: v_q,
                 rs2: r_y,
                 rd: v_qy,
@@ -151,10 +173,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
         });
 
         let add_0: u64 = ADDInstruction::<WORD_SIZE>(q_y, r).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::I32ADD,
+            64 => WASM::I64ADD,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::I32ADD,
+                opcode,
                 rs1: v_qy,
                 rs2: v_r,
                 rd: v_0,
@@ -173,10 +200,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
         });
 
         let _assert_eq = BEQInstruction::<WORD_SIZE>(add_0, x).lookup_entry();
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_ASSERT_EQ,
+            64 => WASM::I64VIRTUAL_ASSERT_EQ,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_ASSERT_EQ,
+                opcode,
                 rs1: v_0,
                 rs2: r_x,
                 rd: None,
@@ -194,10 +226,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for REMInstruction<WORD_
             precompile_output_address: None,
         });
 
+        let opcode = match WORD_SIZE {
+            32 => WASM::VIRTUAL_MOVE,
+            64 => WASM::I64VIRTUAL_MOVE,
+            _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
+        };
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::VIRTUAL_MOVE,
+                opcode,
                 rs1: v_r,
                 rs2: None,
                 rd: trace_row.instruction.rd,
@@ -251,5 +288,10 @@ mod test {
     #[test]
     fn rem_virtual_sequence_32() {
         jolt_virtual_sequence_test::<REMInstruction<32>>(WASM::I32REMS);
+    }
+
+    #[test]
+    fn rem_virtual_sequence_64() {
+        jolt_virtual_sequence_test::<REMInstruction<64>>(WASM::I64REMS);
     }
 }

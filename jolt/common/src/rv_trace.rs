@@ -93,6 +93,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32DIVU
             | WASM::I32DIVS
             | WASM::I32REMU
+            | WASM::I32REMS
             | WASM::I32XOR
             | WASM::I32OR
             | WASM::I32AND
@@ -104,6 +105,10 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64ADD
             | WASM::I64SUB
             | WASM::I64MUL
+            | WASM::I64DIVU
+            | WASM::I64DIVS
+            | WASM::I64REMU
+            | WASM::I64REMS
             | WASM::I64XOR
             | WASM::I64OR
             | WASM::I64AND
@@ -117,10 +122,12 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::MULHU
             | WASM::MULHSU
             | WASM::MULU
-            | WASM::I32REMS
-     => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
+            | WASM::I64MULU => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
 
-            WASM::LUI | WASM::AUIPC | WASM::VIRTUAL_ADVICE => [
+            WASM::LUI 
+            | WASM::AUIPC 
+            | WASM::VIRTUAL_ADVICE 
+            | WASM::I64VIRTUAL_ADVICE => [
                 MemoryOp::noop_read(),
                 MemoryOp::noop_read(),
                 rd_write(),
@@ -147,6 +154,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::JALR
             | WASM::VIRTUAL_MOVE
             | WASM::VIRTUAL_MOVSIGN
+            | WASM::I64VIRTUAL_MOVE
             | WASM::I64MULI
             | WASM::I64ADDI
             | WASM::I64XORI
@@ -197,7 +205,12 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::VIRTUAL_ASSERT_LTE
             | WASM::VIRTUAL_ASSERT_VALID_DIV0
             | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
-            | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => [
+            | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
+            | WASM::I64VIRTUAL_ASSERT_EQ
+            | WASM::I64VIRTUAL_ASSERT_LTE
+            | WASM::I64VIRTUAL_ASSERT_VALID_DIV0
+            | WASM::I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER => [
                 rs1_read(),
                 rs2_read(),
                 MemoryOp::noop_write(),
@@ -351,6 +364,12 @@ impl ELFInstruction {
             | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
             | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
             | WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT
+
+            | WASM::I64VIRTUAL_ASSERT_EQ
+            | WASM::I64VIRTUAL_ASSERT_LTE
+            | WASM::I64VIRTUAL_ASSERT_VALID_DIV0
+            | WASM::I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
         );
 
         flags[CircuitFlags::ConcatLookupQueryChunks as usize] = matches!(
@@ -392,7 +411,12 @@ impl ELFInstruction {
             | WASM::VIRTUAL_ASSERT_LTE
             | WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
             | WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
-            | WASM::VIRTUAL_ASSERT_VALID_DIV0,
+            | WASM::VIRTUAL_ASSERT_VALID_DIV0
+            | WASM::I64VIRTUAL_ASSERT_EQ
+            | WASM::I64VIRTUAL_ASSERT_LTE
+            | WASM::I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER
+            | WASM::I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER
+            | WASM::I64VIRTUAL_ASSERT_VALID_DIV0,
         );
 
         flags[CircuitFlags::Virtual as usize] = self.virtual_sequence_remaining.is_some();
@@ -403,7 +427,12 @@ impl ELFInstruction {
             WASM::VIRTUAL_ASSERT_HALFWORD_ALIGNMENT        |
             WASM::VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER    |
             WASM::VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER  |
-            WASM::VIRTUAL_ASSERT_VALID_DIV0
+            WASM::VIRTUAL_ASSERT_VALID_DIV0|
+            WASM::I64VIRTUAL_ASSERT_EQ                        |
+            WASM::I64VIRTUAL_ASSERT_LTE                       |
+            WASM::I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER    |
+            WASM::I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER  |
+            WASM::I64VIRTUAL_ASSERT_VALID_DIV0
         );
 
         // All instructions in virtual sequence are mapped from the same
@@ -569,7 +598,7 @@ impl FromStr for WASM {
             "I32DivS" => Ok(Self::I32DIVS),
             "I32DivU" => Ok(Self::I32DIVU),
             "I32RemS" => Ok(Self::I32REMS),
-            "I32RemU" => Ok(Self::I32REMU), // todo
+            "I32RemU" => Ok(Self::I32REMU),
 
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
@@ -599,10 +628,10 @@ impl FromStr for WASM {
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
             "I64Mul" => Ok(Self::I64MUL),
-            "I64DivS" => Ok(Self::UNIMPL), // todo
-            "I64DivU" => Ok(Self::UNIMPL), // todo
-            "I64RemS" => Ok(Self::UNIMPL), // todo
-            "I64RemU" => Ok(Self::UNIMPL), // todo
+            "I64DivS" => Ok(Self::I64DIVS), // todo
+            "I64DivU" => Ok(Self::I64DIVU), 
+            "I64RemS" => Ok(Self::I64REMS),
+            "I64RemU" => Ok(Self::I64REMU), 
             "I64BitXor" => Ok(Self::I64XOR),
             "I64BitOr" => Ok(Self::I64OR),
             "I64BitAnd" => Ok(Self::I64AND),

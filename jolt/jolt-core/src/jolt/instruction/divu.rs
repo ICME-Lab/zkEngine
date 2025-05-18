@@ -2,15 +2,12 @@ use common::constants::virtual_register_index;
 use tracer::{ELFInstruction, RVTraceRow, RegisterState, WASM};
 
 use super::VirtualInstructionSequence;
-use crate::jolt::{
-    instruction::{
-        add::ADDInstruction, beq::BEQInstruction, mulu::MULUInstruction,
-        virtual_advice::ADVICEInstruction, virtual_assert_lte::ASSERTLTEInstruction,
-        virtual_assert_valid_div0::AssertValidDiv0Instruction,
-        virtual_assert_valid_unsigned_remainder::AssertValidUnsignedRemainderInstruction,
-        JoltInstruction,
-    },
-    vm::rv32i_vm::WORD_SIZE,
+use crate::jolt::instruction::{
+    add::ADDInstruction, beq::BEQInstruction, mulu::MULUInstruction,
+    virtual_advice::ADVICEInstruction, virtual_assert_lte::ASSERTLTEInstruction,
+    virtual_assert_valid_div0::AssertValidDiv0Instruction,
+    virtual_assert_valid_unsigned_remainder::AssertValidUnsignedRemainderInstruction,
+    JoltInstruction,
 };
 /// Perform unsigned division and return quotient
 pub struct DIVUInstruction<const WORD_SIZE: usize>;
