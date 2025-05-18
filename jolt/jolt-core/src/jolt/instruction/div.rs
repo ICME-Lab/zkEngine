@@ -14,7 +14,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for DIVInstruction<WORD_
     const SEQUENCE_LENGTH: usize = 8;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
-        assert_eq!(trace_row.instruction.opcode, WASM::DIV);
+        assert_eq!(trace_row.instruction.opcode, WASM::I32DIVS);
         // DIV source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
@@ -262,11 +262,11 @@ mod test {
 
     #[test]
     fn div_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<DIVInstruction<32>>(WASM::DIV);
+        jolt_virtual_sequence_test::<DIVInstruction<32>>(WASM::I32DIVS);
     }
 
-    #[test]
-    fn div_virtual_sequence_64() {
-        jolt_virtual_sequence_test::<DIVInstruction<64>>(WASM::DIV);
-    }
+    // #[test]
+    // fn div_virtual_sequence_64() {
+    //     jolt_virtual_sequence_test::<DIVInstruction<64>>(WASM::DIV);
+    // }
 }

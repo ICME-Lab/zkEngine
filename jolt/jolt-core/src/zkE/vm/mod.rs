@@ -374,6 +374,7 @@ where
             .into_iter()
             .flat_map(|instruction| match instruction.opcode {
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_sequence(instruction),
                 _ => vec![instruction],
             })
             .map(|instruction| BytecodeRow::from_instruction::<Self::InstructionSet>(&instruction))

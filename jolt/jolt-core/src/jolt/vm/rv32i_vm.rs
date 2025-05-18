@@ -156,9 +156,9 @@ instruction_set!(
   VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE>,
   VIRTUAL_ASSERT_LTE: ASSERTLTEInstruction<WORD_SIZE>,
   VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER: AssertValidUnsignedRemainderInstruction<WORD_SIZE>,
-  VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>
+  VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>,
+  VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>
   //   MULHU: MULHUInstruction<WORD_SIZE>,
-  //   VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>,
 //   VIRTUAL_ASSERT_HALFWORD_ALIGNMENT: AssertHalfwordAlignmentInstruction<WORD_SIZE>,
 //   VIRTUAL_POW2: POW2Instruction<WORD_SIZE>,
 //   VIRTUAL_SRA_PADDING: RightShiftPaddingInstruction<WORD_SIZE>
@@ -166,12 +166,12 @@ instruction_set!(
 subtable_enum!(
   RV32ISubtables,
   AND: AndSubtable<F>,
-//   EQ_ABS: EqAbsSubtable<F>,
+  EQ_ABS: EqAbsSubtable<F>,
   EQ: EqSubtable<F>,
-//   LEFT_MSB: LeftMSBSubtable<F>,
-//   RIGHT_MSB: RightMSBSubtable<F>,
+  LEFT_MSB: LeftMSBSubtable<F>,
+  RIGHT_MSB: RightMSBSubtable<F>,
   IDENTITY: IdentitySubtable<F>,
-//   LT_ABS: LtAbsSubtable<F>,
+  LT_ABS: LtAbsSubtable<F>,
   LTU: LtuSubtable<F>,
   OR: OrSubtable<F>,
 //   SIGN_EXTEND_16: SignExtendSubtable<F, 16>,

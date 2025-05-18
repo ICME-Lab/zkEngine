@@ -391,7 +391,7 @@ where
             .flat_map(|instruction| match instruction.opcode {
                 tracer::WASM::MULH => MULHInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::MULHSU => MULHSUInstruction::<32>::virtual_sequence(instruction),
-                tracer::WASM::DIV => DIVInstruction::<32>::virtual_sequence(instruction),
+                tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::REM => REMInstruction::<32>::virtual_sequence(instruction),
                 tracer::WASM::REMU => REMUInstruction::<32>::virtual_sequence(instruction),

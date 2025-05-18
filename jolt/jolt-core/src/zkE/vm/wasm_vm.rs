@@ -109,7 +109,7 @@ mod tests {
     #[test]
     #[ignore]
     fn test_divrem_arith_32() {
-        test_wasm_e2e_with(poly_divrem_wasm_program());
+        test_wasm_e2e_with(divrem_arith_32_wasm_program());
     }
 
     #[test]
@@ -122,13 +122,15 @@ mod tests {
     #[test]
     #[ignore]
     fn test_poly_divrem() {
-        // poly_divrem_wasm_program().print_instructions();
+        poly_divrem_wasm_program().print_instructions();
         // test_wasm_e2e_with(poly_divrem_wasm_program());
     }
 
     #[test]
     #[ignore]
     fn test_poly_divrem32() {
+        // FIXME: engine func here for codemap
+
         poly_divrem32_wasm_program().print_instructions();
         // test_wasm_e2e_with(poly_divrem32_wasm_program());
     }

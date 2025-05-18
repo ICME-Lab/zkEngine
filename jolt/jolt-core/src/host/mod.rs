@@ -186,7 +186,7 @@ impl Program {
             .flat_map(|row| match row.instruction.opcode {
                 tracer::WASM::MULH => MULHInstruction::<32>::virtual_trace(row),
                 tracer::WASM::MULHSU => MULHSUInstruction::<32>::virtual_trace(row),
-                tracer::WASM::DIV => DIVInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32DIVU => DIVUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::REM => REMInstruction::<32>::virtual_trace(row),
                 tracer::WASM::REMU => REMUInstruction::<32>::virtual_trace(row),
