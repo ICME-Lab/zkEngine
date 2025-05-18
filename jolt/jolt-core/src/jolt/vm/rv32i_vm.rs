@@ -140,7 +140,7 @@ instruction_set!(
   I64SHRU: SRLInstruction<WORD_SIZE_1>,
   I64SHRS: SRAInstruction<WORD_SIZE_1>,
 
-  BEQ: BEQInstruction<WORD_SIZE>,
+
 //   BGE: BGEInstruction<WORD_SIZE>,
 //   BGEU: BGEUInstruction<WORD_SIZE>,
 //   BNE: BNEInstruction<WORD_SIZE>,
@@ -151,13 +151,23 @@ instruction_set!(
 //   SRL: SRLInstruction<WORD_SIZE>,
 //   MOVSIGN: MOVSIGNInstruction<WORD_SIZE>,
 //   MUL: MULInstruction<WORD_SIZE>,
+  BEQ: BEQInstruction<WORD_SIZE>,
   MULU: MULUInstruction<WORD_SIZE>,
   VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE>,
   VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE>,
   VIRTUAL_ASSERT_LTE: ASSERTLTEInstruction<WORD_SIZE>,
   VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER: AssertValidUnsignedRemainderInstruction<WORD_SIZE>,
   VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>,
-  VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>
+  VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>,
+
+  I64BEQ: BEQInstruction<WORD_SIZE_1>,
+  I64MULU: MULUInstruction<WORD_SIZE_1>,
+  I64VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE_1>,
+  I64VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE_1>,
+  I64VIRTUAL_ASSERT_LTE: ASSERTLTEInstruction<WORD_SIZE_1>,
+  I64VIRTUAL_ASSERT_VALID_UNSIGNED_REMAINDER: AssertValidUnsignedRemainderInstruction<WORD_SIZE_1>,
+  I64VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE_1>,
+  I64VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE_1>
   //   MULHU: MULHUInstruction<WORD_SIZE>,
 //   VIRTUAL_ASSERT_HALFWORD_ALIGNMENT: AssertHalfwordAlignmentInstruction<WORD_SIZE>,
 //   VIRTUAL_POW2: POW2Instruction<WORD_SIZE>,
