@@ -132,6 +132,17 @@ impl Engine {
             .unwrap()
             .instrs()
     }
+
+    /// Returns a flat Vec of all [`Instruction`]s from all functions in the [`Engine`].
+    pub fn all_instructions(&self) -> Vec<Instruction> {
+        let code_map = self.code_map();
+        let funcs = code_map.funcs.lock();
+        funcs
+            .iter()
+            .filter_map(|(_engine_func, func_entity)| func_entity.get_compiled())
+            .flat_map(|compiled_ref| compiled_ref.instrs().iter().cloned())
+            .collect()
+    }
 }
 
 /// A weak reference to an [`Engine`].

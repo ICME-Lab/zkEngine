@@ -349,8 +349,7 @@ impl Instruction {
             | Self::I32AddImm16 { result, lhs, rhs }
             | Self::I32BitXorImm16 { result, lhs, rhs }
             | Self::I32BitAndImm16 { result, lhs, rhs }
-            | Self::I32BitOrImm16 { result, lhs, rhs }
-            | Self::I32EqImm16 { result, lhs, rhs } => {
+            | Self::I32BitOrImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
 
@@ -389,6 +388,8 @@ impl Instruction {
             ),
 
             // --- Comparisons ---
+            Self::I32Eq { .. } => trace_unimpl(self, instruction_address),
+            Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I32Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
 
@@ -418,13 +419,28 @@ impl Instruction {
 
             Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),
 
+            // --- Loads ---
+
+            // --- Stores ---
+            Self::Store32Offset16 { .. }
+            | Self::I32StoreOffset16Imm16 { .. }
+            | Self::I32Store16Offset16Imm { .. }
+            | Self::I64StoreOffset16Imm16 { .. } => trace_unimpl(self, instruction_address),
+
+            // --- Globals ---
+            Self::GlobalGet { .. } => trace_unimpl(self, instruction_address),
+            Self::GlobalSet { .. } => trace_unimpl(self, instruction_address),
+
             Self::CallInternal { .. } => trace_unimpl(self, instruction_address),
 
             Self::Register { .. } => trace_unimpl(self, instruction_address),
+            Self::Register2 { .. } => trace_unimpl(self, instruction_address),
+            Self::Register3 { .. } => trace_unimpl(self, instruction_address),
 
-            Self::ReturnImm32 { .. } | Self::ReturnReg { .. } | Self::ReturnI64Imm32 { .. } => {
-                trace_unimpl(self, instruction_address)
-            }
+            Self::Return
+            | Self::ReturnImm32 { .. }
+            | Self::ReturnReg { .. }
+            | Self::ReturnI64Imm32 { .. } => trace_unimpl(self, instruction_address),
 
             Self::Trap { .. } => trace_unimpl(self, instruction_address),
 
@@ -528,9 +544,6 @@ impl ToString for Instruction {
             Self::I32Rotl { .. } => "I32Rotl".to_string(),
             Self::I32Rotr { .. } => "I32Rotr".to_string(),
 
-            Self::I32LtU { .. } => "I32LtU".to_string(),
-            Self::I32LtS { .. } => "I32LtS".to_string(),
-
             Self::I32MulImm16 { .. } => "I32MulImm".to_string(),
             Self::I32AddImm16 { .. } => "I32AddImm".to_string(),
             Self::I32BitXorImm16 { .. } => "I32BitXorImm".to_string(),
@@ -541,9 +554,6 @@ impl ToString for Instruction {
             Self::I32ShrSBy { .. } => "I32ShrSBy".to_string(),
             Self::I32RotlBy { .. } => "I32RotlBy".to_string(),
             Self::I32RotrBy { .. } => "I32RotrBy".to_string(),
-
-            // i32 immediate comparisons
-            Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
 
             Self::I64Add { .. } => "I64Add".to_string(),
             Self::I64Sub { .. } => "I64Sub".to_string(),
@@ -563,9 +573,6 @@ impl ToString for Instruction {
             Self::I64Rotl { .. } => "I64Rotl".to_string(),
             Self::I64Rotr { .. } => "I64Rotr".to_string(),
 
-            Self::I64LtU { .. } => "I64LtU".to_string(),
-            Self::I64LtS { .. } => "I64LtS".to_string(),
-
             Self::I64MulImm16 { .. } => "I64MulImm".to_string(),
             Self::I64AddImm16 { .. } => "I64AddImm".to_string(),
             Self::I64BitXorImm16 { .. } => "I64BitXorImm".to_string(),
@@ -577,12 +584,20 @@ impl ToString for Instruction {
             Self::I64RotlBy { .. } => "I64RotlBy".to_string(),
             Self::I64RotrBy { .. } => "I64RotrBy".to_string(),
 
-            // i64 immediate comparisons
-            Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
-
             // --- Comparisons ---
+            Self::I32Eq { .. } => "I32Eq".to_string(),
+            Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
             Self::I32Ne { .. } => "I32Ne".to_string(),
             Self::I32NeImm16 { .. } => "I32NeImm".to_string(),
+
+            Self::I32LtU { .. } => "I32LtU".to_string(),
+            Self::I32LtS { .. } => "I32LtS".to_string(),
+
+            Self::I64LtU { .. } => "I64LtU".to_string(),
+            Self::I64LtS { .. } => "I64LtS".to_string(),
+
+            // i64 immediate comparisons
+            Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
             // branches
             Self::Branch { .. } => "Branch".to_string(),
@@ -594,11 +609,26 @@ impl ToString for Instruction {
             // conversions
             Self::I32WrapI64 { .. } => "I32WrapI64".to_string(),
 
+            // --- Loads ---
+
+            // --- Stores ---
+            Self::Store32Offset16 { .. } => "Store32Offset16".to_string(),
+            Self::I32StoreOffset16Imm16 { .. } => "I32StoreOffset16Imm".to_string(),
+            Self::I32Store16Offset16Imm { .. } => "I32Store16Offset16Imm".to_string(),
+            Self::I64StoreOffset16Imm16 { .. } => "I64StoreOffset16Imm".to_string(),
+
+            // --- Globals ---
+            Self::GlobalGet { .. } => "GlobalGet".to_string(),
+            Self::GlobalSet { .. } => "GlobalSet".to_string(),
+
             Self::CallInternal { .. } => "CallInternal".to_string(),
 
             Self::Register { .. } => "Register".to_string(),
+            Self::Register2 { .. } => "Register2".to_string(),
+            Self::Register3 { .. } => "Register3".to_string(),
 
             // returns
+            Self::Return { .. } => "Return".to_string(),
             Self::ReturnImm32 { .. } => "ReturnImm32".to_string(),
             Self::ReturnReg { .. } => "ReturnReg".to_string(),
             Self::ReturnI64Imm32 { .. } => "ReturnI64Imm32".to_string(),

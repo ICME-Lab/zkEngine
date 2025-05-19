@@ -69,7 +69,7 @@ impl ArenaIndex for EngineFunc {
 /// Datastructure to efficiently store information about compiled functions.
 #[derive(Debug)]
 pub struct CodeMap {
-    funcs: Mutex<Arena<EngineFunc, FuncEntity>>,
+    pub(crate) funcs: Mutex<Arena<EngineFunc, FuncEntity>>,
     features: WasmFeatures,
 }
 
@@ -422,7 +422,7 @@ impl CodeMap {
 ///
 /// Either an already compiled or still uncompiled function entity.
 #[derive(Debug)]
-enum FuncEntity {
+pub(crate) enum FuncEntity {
     /// The function entity has not yet been initialized.
     Uninit,
     /// An internal function that has not yet been compiled.

@@ -623,8 +623,6 @@ impl FromStr for WASM {
             "I32RotlBy" => Ok(Self::UNIMPL), // todo
             "I32RotrBy" => Ok(Self::UNIMPL), // todo
 
-            "I32EqImm" => Ok(Self::UNIMPL), // todo
-
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
             "I64Mul" => Ok(Self::I64MUL),
@@ -653,7 +651,8 @@ impl FromStr for WASM {
             "I64RotrBy" => Ok(Self::UNIMPL), // todo
 
             "I64EqImm" => Ok(Self::UNIMPL), // todo
-
+            "I32Eq" => Ok(Self::UNIMPL), // todo
+            "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32Ne" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
 
@@ -665,7 +664,14 @@ impl FromStr for WASM {
 
             "I32WrapI64" => Ok(Self::UNIMPL), // todo
 
+            "Store32Offset16" 
+            | "I32StoreOffset16Imm" 
+            | "I32Store16Offset16Imm" 
+            | "I64StoreOffset16Imm" => Ok(Self::UNIMPL), // todo
+
             "Register" => Ok(Self::UNIMPL), // todo
+            "Register2" => Ok(Self::UNIMPL), // todo
+            "Register3" => Ok(Self::UNIMPL), // todo
 
             "CallInternal" => Ok(Self::UNIMPL), // todo
 
@@ -703,8 +709,13 @@ impl FromStr for WASM {
             "FENCE" => Ok(Self::FENCE),
             "UNIMPL" => Ok(Self::UNIMPL),
 
+
+
             // Temp instructions
-            "ReturnImm32" | "ReturnReg" | "ReturnI64Imm32" => Ok(Self::UNIMPL), // HACK: This should have its own instruction
+            "GlobalGet" => Ok(Self::UNIMPL), // todo
+            "GlobalSet" => Ok(Self::UNIMPL), // todo
+
+            "Return" |"ReturnImm32" | "ReturnReg" | "ReturnI64Imm32"  => Ok(Self::UNIMPL), // HACK: This should have its own instruction
             _ => Err(format!("Could not match {s:?} instruction to RV32IM set.")),
         }
     }
