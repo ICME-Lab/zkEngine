@@ -654,6 +654,10 @@ impl FromStr for WASM {
 
             "I64EqImm" => Ok(Self::UNIMPL), // todo
 
+            "I32Ne" => Ok(Self::UNIMPL), // todo
+            "I32NeImm" => Ok(Self::UNIMPL), // todo
+
+            "Branch" => Ok(Self::UNIMPL), // todo
             "BranchI32Ne" => Ok(Self::UNIMPL), // todo
             "BranchI32NeImm" => Ok(Self::UNIMPL), // todo
             "BranchI64Ne" => Ok(Self::UNIMPL), // todo

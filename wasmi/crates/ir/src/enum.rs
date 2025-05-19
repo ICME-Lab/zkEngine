@@ -306,6 +306,7 @@ impl Instruction {
 
     pub fn trace(&self, instruction_address: u64) -> ELFInstruction {
         match *self {
+            // --- Binary ---
             Self::I32Add { result, lhs, rhs }
             | Self::I32Sub { result, lhs, rhs }
             | Self::I32Mul { result, lhs, rhs }
@@ -323,7 +324,6 @@ impl Instruction {
             | Self::I32Rotr { result, lhs, rhs }
             | Self::I32LtU { result, lhs, rhs }
             | Self::I32LtS { result, lhs, rhs }
-            // i64
             | Self::I64Add { result, lhs, rhs }
             | Self::I64Sub { result, lhs, rhs }
             | Self::I64Mul { result, lhs, rhs }
@@ -366,27 +366,6 @@ impl Instruction {
                 instruction_address,
             ),
 
-            // fused branches
-            Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
-                trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
-            }
-
-            // immediate branches
-            Self::BranchI32NeImm16 { lhs, rhs, offset } => trace_bi(
-                self,
-                lhs,
-                rhs.inner.0 as i64,
-                offset.0 as i32 as i64,
-                instruction_address,
-            ),
-            Self::BranchI64NeImm16 { lhs, rhs, offset } => trace_bi(
-                self,
-                lhs,
-                rhs.inner.0 as i64,
-                offset.0 as i32 as i64,
-                instruction_address,
-            ),
-
             // i64 immediates
             Self::I64MulImm16 { result, lhs, rhs }
             | Self::I64AddImm16 { result, lhs, rhs }
@@ -409,23 +388,45 @@ impl Instruction {
                 instruction_address,
             ),
 
+            // --- Comparisons ---
+            Self::I32Ne { .. } => trace_unimpl(self, instruction_address),
+            Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
+
+            // --- Branches ---
+            Self::Branch { .. } => trace_unimpl(self, instruction_address),
+
+            // fused branches
+            Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
+                trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
+            }
+
+            // immediate branches
+            Self::BranchI32NeImm16 { lhs, rhs, offset } => trace_bi(
+                self,
+                lhs,
+                rhs.inner.0 as i64,
+                offset.0 as i32 as i64,
+                instruction_address,
+            ),
+            Self::BranchI64NeImm16 { lhs, rhs, offset } => trace_bi(
+                self,
+                lhs,
+                rhs.inner.0 as i64,
+                offset.0 as i32 as i64,
+                instruction_address,
+            ),
+
             Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),
 
-            Self::CallInternal { .. } => {
-                trace_unimpl(self, instruction_address)
-            }
+            Self::CallInternal { .. } => trace_unimpl(self, instruction_address),
 
-            Self::Register { .. } => {
-                trace_unimpl(self, instruction_address)
-            }
+            Self::Register { .. } => trace_unimpl(self, instruction_address),
 
             Self::ReturnImm32 { .. } | Self::ReturnReg { .. } | Self::ReturnI64Imm32 { .. } => {
                 trace_unimpl(self, instruction_address)
             }
 
-            Self::Trap { .. } => {
-                trace_unimpl(self, instruction_address)
-            }
+            Self::Trap { .. } => trace_unimpl(self, instruction_address),
 
             _ => todo!("trace instruction: {self:?}"),
         }
@@ -579,6 +580,12 @@ impl ToString for Instruction {
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
+            // --- Comparisons ---
+            Self::I32Ne { .. } => "I32Ne".to_string(),
+            Self::I32NeImm16 { .. } => "I32NeImm".to_string(),
+
+            // branches
+            Self::Branch { .. } => "Branch".to_string(),
             Self::BranchI32Ne { .. } => "BranchI32Ne".to_string(),
             Self::BranchI64Ne { .. } => "BranchI64Ne".to_string(),
             Self::BranchI32NeImm16 { .. } => "BranchI32NeImm".to_string(),

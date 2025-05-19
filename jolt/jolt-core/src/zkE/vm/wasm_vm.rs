@@ -126,8 +126,7 @@ mod tests {
     #[test]
     #[ignore]
     fn test_poly_divrem() {
-        poly_divrem_wasm_program().print_instructions();
-        // test_wasm_e2e_with(poly_divrem_wasm_program());
+        test_wasm_e2e_with(poly_divrem_wasm_program());
     }
 
     #[test]
@@ -135,8 +134,7 @@ mod tests {
     fn test_poly_divrem32() {
         // FIXME: engine func here for codemap
 
-        poly_divrem32_wasm_program().print_instructions();
-        // test_wasm_e2e_with(poly_divrem32_wasm_program());
+        test_wasm_e2e_with(poly_divrem32_wasm_program());
     }
 
     #[test]
