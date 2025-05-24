@@ -592,6 +592,8 @@ impl FromStr for WASM {
 
     fn from_str(s: &str) -> Result<WASM, String> {
         match s {
+            // --- Binary ---
+            // i32
             "I32Add" => Ok(Self::I32ADD),
             "I32Sub" => Ok(Self::I32SUB),
             "I32Mul" => Ok(Self::I32MUL),
@@ -599,7 +601,6 @@ impl FromStr for WASM {
             "I32DivU" => Ok(Self::I32DIVU),
             "I32RemS" => Ok(Self::I32REMS),
             "I32RemU" => Ok(Self::I32REMU),
-
             "I32BitXor" => Ok(Self::I32XOR),
             "I32BitOr" => Ok(Self::I32OR),
             "I32BitAnd" => Ok(Self::I32AND),
@@ -608,10 +609,7 @@ impl FromStr for WASM {
             "I32ShrS" => Ok(Self::I32SHRS), 
             "I32Rotl" => Ok(Self::UNIMPL), // todo
             "I32Rotr" => Ok(Self::UNIMPL), // todo
-
-            "I32LtS" => Ok(Self::SLT),
-            "I32LtU" => Ok(Self::SLTU),
-
+            // i32 Immediates
             "I32MulImm" => Ok(Self::I32MULI),
             "I32AddImm" => Ok(Self::I32ADDI),
             "I32BitXorImm" => Ok(Self::I32XORI),
@@ -622,7 +620,7 @@ impl FromStr for WASM {
             "I32ShrSBy" => Ok(Self::UNIMPL), // todo
             "I32RotlBy" => Ok(Self::UNIMPL), // todo
             "I32RotrBy" => Ok(Self::UNIMPL), // todo
-
+            // i64
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
             "I64Mul" => Ok(Self::I64MUL),
@@ -638,7 +636,7 @@ impl FromStr for WASM {
             "I64ShrS" => Ok(Self::I64SHRS), 
             "I64Rotl" => Ok(Self::UNIMPL), // todo
             "I64Rotr" => Ok(Self::UNIMPL), // todo
-
+            // i64 Immediates
             "I64MulImm" => Ok(Self::I64MULI),
             "I64AddImm" => Ok(Self::I64ADDI),
             "I64BitXorImm" => Ok(Self::I64XORI),
@@ -650,31 +648,49 @@ impl FromStr for WASM {
             "I64RotlBy" => Ok(Self::UNIMPL), // todo
             "I64RotrBy" => Ok(Self::UNIMPL), // todo
 
+            // --- Comparisons ---
+            // i32
+            "I32LtS" => Ok(Self::SLT),
+            "I32LtU" => Ok(Self::SLTU),
+            // i64
             "I64EqImm" => Ok(Self::UNIMPL), // todo
             "I32Eq" => Ok(Self::UNIMPL), // todo
             "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32Ne" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
 
+            // --- Branches ---
             "Branch" => Ok(Self::UNIMPL), // todo
             "BranchI32Ne" => Ok(Self::UNIMPL), // todo
             "BranchI32NeImm" => Ok(Self::UNIMPL), // todo
             "BranchI64Ne" => Ok(Self::UNIMPL), // todo
             "BranchI64NeImm" => Ok(Self::UNIMPL), // todo
 
+            // --- Conversions ---
             "I32WrapI64" => Ok(Self::UNIMPL), // todo
 
+            // --- Store ---
             "Store32Offset16" 
             | "I32StoreOffset16Imm" 
             | "I32Store16Offset16Imm" 
             | "I64StoreOffset16Imm" => Ok(Self::UNIMPL), // todo
 
+            // --- Registers ---
             "Register" => Ok(Self::UNIMPL), // todo
             "Register2" => Ok(Self::UNIMPL), // todo
             "Register3" => Ok(Self::UNIMPL), // todo
 
+            // --- Calls ---
             "CallInternal" => Ok(Self::UNIMPL), // todo
 
+            // --- Globals ---
+            "GlobalGet" => Ok(Self::UNIMPL), // todo
+            "GlobalSet" => Ok(Self::UNIMPL), // todo
+
+            // --- Returns ---
+            "Return" |"ReturnImm32" | "ReturnReg" | "ReturnI64Imm32"  => Ok(Self::UNIMPL), // HACK: This should have its own instruction
+
+            // --- Traps ---
             "Trap" => Ok(Self::UNIMPL), // todo
 
             "SLLI" => Ok(Self::SLLI),
@@ -708,14 +724,6 @@ impl FromStr for WASM {
             "MULU" => Ok(Self::MULU),
             "FENCE" => Ok(Self::FENCE),
             "UNIMPL" => Ok(Self::UNIMPL),
-
-
-
-            // Temp instructions
-            "GlobalGet" => Ok(Self::UNIMPL), // todo
-            "GlobalSet" => Ok(Self::UNIMPL), // todo
-
-            "Return" |"ReturnImm32" | "ReturnReg" | "ReturnI64Imm32"  => Ok(Self::UNIMPL), // HACK: This should have its own instruction
             _ => Err(format!("Could not match {s:?} instruction to RV32IM set.")),
         }
     }

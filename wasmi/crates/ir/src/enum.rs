@@ -368,8 +368,7 @@ impl Instruction {
             | Self::I64AddImm16 { result, lhs, rhs }
             | Self::I64BitXorImm16 { result, lhs, rhs }
             | Self::I64BitAndImm16 { result, lhs, rhs }
-            | Self::I64BitOrImm16 { result, lhs, rhs }
-            | Self::I64EqImm16 { result, lhs, rhs } => {
+            | Self::I64BitOrImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
             Self::I64ShlBy { result, lhs, rhs }
@@ -385,10 +384,16 @@ impl Instruction {
             ),
 
             // --- Comparisons ---
+            // i32
             Self::I32Eq { .. } => trace_unimpl(self, instruction_address),
             Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I32Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
+            // i64
+            Self::I64Eq { .. } => trace_unimpl(self, instruction_address),
+            Self::I64EqImm16 { .. } => trace_unimpl(self, instruction_address),
+            Self::I64Ne { .. } => trace_unimpl(self, instruction_address),
+            Self::I64NeImm16 { .. } => trace_unimpl(self, instruction_address),
 
             // --- Branches ---
             Self::Branch { .. } => trace_unimpl(self, instruction_address),
