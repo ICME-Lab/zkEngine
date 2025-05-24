@@ -5,7 +5,7 @@ use super::{cache::CachedInstance, InstructionPtr, Stack};
 use crate::{
     core::{hint, wasm, ReadAs, TrapCode, UntypedVal, WriteAs},
     engine::{
-        code_map::CodeMap,
+        code_map::{CodeMap, ContiguousCodeMap},
         executor::stack::{CallFrame, FrameRegisters, ValueStack},
         utils::unreachable_unchecked,
         DedupFuncType,
@@ -103,6 +103,11 @@ struct Executor<'engine> {
     ///
     /// [`Engine`]: crate::Engine
     code_map: &'engine CodeMap,
+    /// Code map with all compiled instructions stored contiguously in memory.
+    contiguous_code_map: ContiguousCodeMap,
+    /// For tracing purposes we require the func_index to get the pc() of contiguous code map
+    func_index: u32,
+    /// The tracer used to capture the execution trace.
     pub tracer: Rc<Tracer>,
 }
 
@@ -119,17 +124,21 @@ impl<'engine> Executor<'engine> {
             .calls
             .peek()
             .expect("must have call frame on the call stack");
+        let func_index = frame.index;
         // Safety: We are using the frame's own base offset as input because it is
         //         guaranteed by the Wasm validation and translation phase to be
         //         valid for all register indices used by the associated function body.
         let sp = unsafe { stack.values.stack_ptr_at(frame.base_offset()) };
         let ip = frame.instr_ptr();
+        let contiguous_code_map = code_map.into();
         Self {
             sp,
             ip,
             cache,
             stack,
             code_map,
+            contiguous_code_map,
+            func_index,
             tracer,
         }
     }
@@ -2445,15 +2454,27 @@ impl<'engine> Executor<'engine> {
 }
 
 impl Executor<'_> {
+    fn local_pc_offset(&self) -> usize {
+        let compiled_func = self
+            .code_map
+            .get(None, EngineFunc::from_u32(self.func_index))
+            .unwrap();
+        let base_ptr = InstructionPtr::new(compiled_func.instrs().as_ptr());
+        self.ip.offset_from(base_ptr) as usize
+    }
+
     fn pc(&self) -> usize {
         const ACCOUNT_FOR_NOOP: usize = 1;
-        let compiled_func = self.code_map.get(None, EngineFunc::from_u32(0)).unwrap();
-        let base_ptr = InstructionPtr::new(compiled_func.instrs().as_ptr());
-
+        let start_index = *self
+            .contiguous_code_map
+            .func_spans
+            .get(&self.func_index)
+            .expect("func spans should have an entry for the current function");
+        let local_offset = self.local_pc_offset();
         // # Note
         //
         // We add `ACCOUNT_FOR_NOOP` to the instruction address to account for the fact that we prepend a NOOP instruction to the bytecode.
-        self.ip.offset_from(base_ptr) as usize + ACCOUNT_FOR_NOOP
+        start_index + local_offset + ACCOUNT_FOR_NOOP
     }
 }
 

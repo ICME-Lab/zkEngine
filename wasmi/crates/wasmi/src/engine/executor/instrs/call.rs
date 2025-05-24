@@ -183,6 +183,7 @@ impl Executor<'_> {
         &mut self,
         results: RegSpan,
         func: CompiledFuncRef,
+        index: u32,
     ) -> Result<CallFrame, Error> {
         // We have to reinstantiate the `self.sp` [`FrameRegisters`] since we just called
         // [`ValueStack::alloc_call_frame`] which might invalidate all live [`FrameRegisters`].
@@ -196,7 +197,7 @@ impl Executor<'_> {
             self.sp = unsafe { this.stack_ptr_at(caller.base_offset()) };
         })?;
         let instr_ptr = InstructionPtr::new(func.instrs().as_ptr());
-        let frame = CallFrame::new(instr_ptr, offsets, results);
+        let frame = CallFrame::new(instr_ptr, offsets, results, index);
         if <C as CallContext>::HAS_PARAMS {
             self.copy_call_params(&mut uninit_params);
         }
@@ -265,11 +266,11 @@ impl Executor<'_> {
         &mut self,
         store: &mut StoreInner,
         results: RegSpan,
-        func: EngineFunc,
+        engine_func: EngineFunc,
         mut instance: Option<Instance>,
     ) -> Result<(), Error> {
-        let func = self.code_map.get(Some(store.fuel_mut()), func)?;
-        let mut called = self.dispatch_compiled_func::<C>(results, func)?;
+        let func = self.code_map.get(Some(store.fuel_mut()), engine_func)?;
+        let mut called = self.dispatch_compiled_func::<C>(results, func, engine_func.0)?;
         match <C as CallContext>::KIND {
             CallKind::Nested => {
                 // We need to update the instruction pointer of the caller call frame.

@@ -24,11 +24,12 @@ use core::{
     slice,
 };
 use spin::Mutex;
+use std::{collections::HashMap, vec::Vec};
 use wasmparser::{FuncToValidate, ValidatorResources, WasmFeatures};
 
 /// A reference to a compiled function stored in the [`CodeMap`] of an [`Engine`](crate::Engine).
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct EngineFunc(u32);
+pub struct EngineFunc(pub u32);
 
 impl From<EngineFunc> for InternalFunc {
     fn from(value: EngineFunc) -> Self {
@@ -63,6 +64,40 @@ impl ArenaIndex for EngineFunc {
             panic!("out of bounds compiled func index: {index}")
         };
         Self(index)
+    }
+}
+
+#[derive(Debug)]
+/// A variant of [`CodeMap`] that stores compiled functions contiguously.
+/// Datastructure to efficiently store information about compiled functions.
+pub struct ContiguousCodeMap {
+    pub instrs: Vec<Instruction>,
+    pub func_spans: HashMap<u32, usize>, // HashMap(EngineFunc.0, starting_index)
+}
+
+impl From<&CodeMap> for ContiguousCodeMap {
+    fn from(code_map: &CodeMap) -> Self {
+        let mut instrs = Vec::new();
+        let mut func_spans = HashMap::new();
+        let funcs = code_map.funcs.lock();
+        for (func, entity) in funcs.iter() {
+            match entity {
+                FuncEntity::Compiled(compiled) => {
+                    let start = instrs.len();
+                    instrs.extend_from_slice(&compiled.instrs.as_ref());
+                    func_spans.insert(func.0, start);
+                }
+                _ => continue, // Skip uncompiled or failed functions
+            }
+        }
+        Self { instrs, func_spans }
+    }
+}
+
+impl ContiguousCodeMap {
+    /// Returns the instructions of the function identified by `func`.
+    pub fn instrs(&self) -> &[Instruction] {
+        &self.instrs
     }
 }
 

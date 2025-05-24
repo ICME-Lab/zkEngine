@@ -599,14 +599,14 @@ impl ToString for Instruction {
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
-            // branches
+            // --- Branches ---
             Self::Branch { .. } => "Branch".to_string(),
             Self::BranchI32Ne { .. } => "BranchI32Ne".to_string(),
             Self::BranchI64Ne { .. } => "BranchI64Ne".to_string(),
             Self::BranchI32NeImm16 { .. } => "BranchI32NeImm".to_string(),
             Self::BranchI64NeImm16 { .. } => "BranchI64NeImm".to_string(),
 
-            // conversions
+            // --- Conversions ---
             Self::I32WrapI64 { .. } => "I32WrapI64".to_string(),
 
             // --- Loads ---

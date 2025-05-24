@@ -28,7 +28,7 @@ pub(crate) use self::{
     },
 };
 use self::{
-    code_map::{CodeMap, CompiledFuncEntity},
+    code_map::{CodeMap, CompiledFuncEntity, ContiguousCodeMap},
     func_types::FuncTypeRegistry,
     resumable::ResumableCallBase,
 };
@@ -126,22 +126,7 @@ impl Engine {
 
     /// Returns the Vec<[`Instruction`]> of the [`Engine`].
     pub fn instructions(&self) -> &[Instruction] {
-        // HACK: Not sure if using `EngineFunc::from_u32(0)` will always get the full bytecode.
-        self.code_map()
-            .get(None, EngineFunc::from_u32(0))
-            .unwrap()
-            .instrs()
-    }
-
-    /// Returns a flat Vec of all [`Instruction`]s from all functions in the [`Engine`].
-    pub fn all_instructions(&self) -> Vec<Instruction> {
-        let code_map = self.code_map();
-        let funcs = code_map.funcs.lock();
-        funcs
-            .iter()
-            .filter_map(|(_engine_func, func_entity)| func_entity.get_compiled())
-            .flat_map(|compiled_ref| compiled_ref.instrs().iter().cloned())
-            .collect()
+        self.inner.contiguous_code_map.instrs()
     }
 }
 
@@ -460,6 +445,8 @@ pub struct EngineInner {
     config: Config,
     /// Stores information about all compiled functions.
     code_map: CodeMap,
+    /// Contiguous code map
+    contiguous_code_map: ContiguousCodeMap,
     /// Deduplicated function types.
     ///
     /// # Note
@@ -582,9 +569,12 @@ impl EngineInner {
     /// Creates a new [`EngineInner`] with the given [`Config`].
     fn new(config: &Config) -> Self {
         let engine_idx = EngineIdx::new();
+        let code_map = CodeMap::new(&config);
+        let contiguous_code_map = (&code_map).into();
         Self {
             config: config.clone(),
-            code_map: CodeMap::new(config),
+            code_map,
+            contiguous_code_map,
             func_types: RwLock::new(FuncTypeRegistry::new(engine_idx)),
             allocs: Mutex::new(ReusableAllocationStack::default()),
             stacks: Mutex::new(EngineStacks::new(config)),

@@ -208,16 +208,24 @@ pub struct CallFrame {
     /// - This flag is private to the [`CallStack`] and shall not be observable
     ///   from the outside.
     changed_instance: bool,
+    /// EngineFunc index
+    pub index: u32,
 }
 
 impl CallFrame {
     /// Creates a new [`CallFrame`].
-    pub fn new(instr_ptr: InstructionPtr, offsets: StackOffsets, results: RegSpan) -> Self {
+    pub fn new(
+        instr_ptr: InstructionPtr,
+        offsets: StackOffsets,
+        results: RegSpan,
+        index: u32,
+    ) -> Self {
         Self {
             instr_ptr,
             offsets,
             results,
             changed_instance: false,
+            index,
         }
     }
 

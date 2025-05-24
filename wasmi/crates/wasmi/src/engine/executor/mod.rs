@@ -1,3 +1,5 @@
+use std::println;
+
 pub(crate) use self::stack::{FrameRegisters, Stack};
 pub use self::{
     instr_ptr::InstructionPtr,
@@ -274,6 +276,7 @@ impl<'engine> EngineExecutor<'engine> {
                         InstructionPtr::new(compiled_func.instrs().as_ptr()),
                         offsets,
                         RegSpan::new(Reg::from(0)),
+                        engine_func.0,
                     ),
                     Some(instance),
                 )?;

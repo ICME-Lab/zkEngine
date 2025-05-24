@@ -578,14 +578,16 @@ mod tests {
         jolt::vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep},
         poly::commitment::hyperkzg::HyperKZG,
         utils::transcript::KeccakTranscript,
-        zkE::tests::{poly_divrem32_wasm_program, poly_divrem_wasm_program},
+        zkE::tests::{
+            poly_bitshift_wasm_program, poly_divrem32_wasm_program, poly_divrem_wasm_program,
+        },
     };
     use ark_bn254::{Bn254, Fr};
     use itertools::Itertools;
 
     #[test]
     fn test_wasm_bytecode() {
-        let wasm_program = poly_divrem_wasm_program();
+        let wasm_program = poly_bitshift_wasm_program();
         let (wasm_bytecode, _init_memory) = wasm_program.decode();
         let pp = preprocess::<Fr, RV32I>(&wasm_bytecode);
 

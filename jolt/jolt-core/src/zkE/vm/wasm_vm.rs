@@ -127,7 +127,7 @@ mod tests {
     #[ignore]
     fn test_poly_divrem() {
         poly_divrem_wasm_program().print_instructions();
-        // test_wasm_e2e_with(poly_divrem_wasm_program());
+        test_wasm_e2e_with(poly_divrem_wasm_program());
     }
 
     #[test]
