@@ -185,7 +185,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for SRAVirtualSequence<W
         virtual_trace.push(RVTraceRow {
             instruction: ELFInstruction {
                 address: trace_row.instruction.address,
-                opcode: WASM::SLT,
+                opcode: WASM::I32LTS,
                 rs1: trace_row.instruction.rs1,
                 rs2: Some(0), // zero register
                 rd: v3,

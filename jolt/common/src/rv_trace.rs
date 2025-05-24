@@ -121,12 +121,15 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             // i32
             | WASM::I32EQ
             | WASM::I32NE
+            | WASM::I32LTS
+            | WASM::I32LTU
+
             // i64
             | WASM::I64EQ
             | WASM::I64NE
+            | WASM::I64LTS
+            | WASM::I64LTU
 
-            | WASM::SLT
-            | WASM::SLTU
             | WASM::MULH
             | WASM::MULHU
             | WASM::MULHSU
@@ -205,9 +208,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
                 MemoryOp::noop_read(),
             ],
 
-            WASM::BEQ
-            | WASM::BNE
-            | WASM::BLT
+            | WASM::BLT // HACK: Keep this in for now, so when i get to branches i remembeer to add them here, also some code in bytecode.rs gets affected by removing this.
             | WASM::BGE
             | WASM::BLTU
             | WASM::BGEU
@@ -351,7 +352,7 @@ impl ELFInstruction {
 
         flags[CircuitFlags::Branch as usize] = matches!(
             self.opcode,
-            WASM::BEQ | WASM::BNE | WASM::BLT | WASM::BGE | WASM::BLTU | WASM::BGEU,
+            WASM::BLT | WASM::BGE | WASM::BLTU | WASM::BGEU,
         );
 
         // Stores, branches, jumps, and asserts do not store the lookup output to rd (they may update rd in other ways)
@@ -359,8 +360,6 @@ impl ELFInstruction {
             self.opcode,
             WASM::SW
             | WASM::LW
-            | WASM::BEQ
-            | WASM::BNE
             | WASM::BLT
             | WASM::BGE
             | WASM::BLTU
@@ -403,16 +402,22 @@ impl ELFInstruction {
             | WASM::I64SHL
             | WASM::I64SHRU
             | WASM::I64SHRS
+
+            | WASM::I32EQ
+            | WASM::I32NE
+            | WASM::I32LTS
+            | WASM::I32LTU
+
+            | WASM::I64EQ
+            | WASM::I64NE
+            | WASM::I64LTS
+            | WASM::I64LTU
             
             | WASM::SLLI
             | WASM::SRLI
             | WASM::SRAI
-            | WASM::SLT
-            | WASM::SLTU
             | WASM::SLTI
             | WASM::SLTIU
-            | WASM::BEQ
-            | WASM::BNE
             | WASM::BLT
             | WASM::BGE
             | WASM::BLTU
@@ -538,12 +543,14 @@ pub enum WASM {
     // i32
     I32EQ,
     I32NE,
+    I32LTS,
+    I32LTU,
     // i64
     I64EQ,
     I64NE,
+    I64LTS,
+    I64LTU,
 
-    SLT,
-    SLTU,
     SLLI,
     SRLI,
     SRAI,
@@ -557,10 +564,8 @@ pub enum WASM {
     SB,
     SH,
     SW,
-    BEQ,
-    BNE,
     BLT,
-    BGE,
+    BGE, // HACK: Keep in for now, as there is a cascading effect when i rm it
     BLTU,
     BGEU,
     JAL,
@@ -672,14 +677,16 @@ impl FromStr for WASM {
             // i32
             "I32Eq" => Ok(Self::I32EQ), 
             "I32Ne" => Ok(Self::I32NE),
-            "I32LtS" => Ok(Self::UNIMPL), // todo
-            "I32LtU" => Ok(Self::UNIMPL), // todo
+            "I32LtS" => Ok(Self::I32LTS), 
+            "I32LtU" => Ok(Self::I32LTU), 
             // i32 immediates
             "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
             // i64
             "I64Eq" => Ok(Self::I64EQ), 
             "I64Ne" => Ok(Self::I64NE), 
+            "I64LtS" => Ok(Self::I64LTS), 
+            "I64LtU" => Ok(Self::I64LTU),
             // i64 immediates
             "I64EqImm" => Ok(Self::UNIMPL), // todo
 
@@ -731,8 +738,6 @@ impl FromStr for WASM {
             "SB" => Ok(Self::SB),
             "SH" => Ok(Self::SH),
             "SW" => Ok(Self::SW),
-            "BEQ" => Ok(Self::BEQ),
-            "BNE" => Ok(Self::BNE),
             "BLT" => Ok(Self::BLT),
             "BGE" => Ok(Self::BGE),
             "BLTU" => Ok(Self::BLTU),

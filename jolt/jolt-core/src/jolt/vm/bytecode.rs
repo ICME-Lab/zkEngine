@@ -195,14 +195,9 @@ impl BytecodeRow {
         // whereas all other instructions operate on the raw bits
         // of `imm` (via lookup queries).
         let imm = match instruction.opcode {
-            WASM::LW
-            | WASM::SW
-            | WASM::BEQ
-            | WASM::BNE
-            | WASM::BLT
-            | WASM::BGE
-            | WASM::BLTU
-            | WASM::BGEU => instruction.imm.unwrap_or(0),
+            WASM::LW | WASM::SW | WASM::BLT | WASM::BGE | WASM::BLTU | WASM::BGEU => {
+                instruction.imm.unwrap_or(0)
+            }
             _ => instruction.imm.unwrap_or(0) & u32::MAX as i64,
         };
 

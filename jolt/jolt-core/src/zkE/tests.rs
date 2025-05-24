@@ -60,10 +60,6 @@ pub fn divrem_arith_32_wasm_program() -> WASMProgram {
     make_basic_wasm_program("divrem_arith_32.wat")
 }
 
-pub fn lt_wasm_program() -> WASMProgram {
-    make_basic_wasm_program("lt.wat")
-}
-
 pub fn eq_wasm_program() -> WASMProgram {
     make_basic_wasm_program("eq.wat")
 }
@@ -78,6 +74,22 @@ pub fn ne_wasm_program() -> WASMProgram {
 
 pub fn ne_32_wasm_program() -> WASMProgram {
     make_basic_wasm_program("ne_32.wat")
+}
+
+pub fn lt_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("lt.wat")
+}
+
+pub fn lt_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("lt_32.wat")
+}
+
+pub fn gt_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("gt.wat")
+}
+
+pub fn gt_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("gt_32.wat")
 }
 
 pub fn poly_simple_wasm_program() -> WASMProgram {

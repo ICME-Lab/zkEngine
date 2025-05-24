@@ -325,8 +325,6 @@ impl Instruction {
             | Self::I32ShrU { result, lhs, rhs }
             | Self::I32Rotl { result, lhs, rhs }
             | Self::I32Rotr { result, lhs, rhs }
-            | Self::I32LtU { result, lhs, rhs }
-            | Self::I32LtS { result, lhs, rhs }
             | Self::I64Add { result, lhs, rhs }
             | Self::I64Sub { result, lhs, rhs }
             | Self::I64Mul { result, lhs, rhs }
@@ -341,9 +339,7 @@ impl Instruction {
             | Self::I64ShrS { result, lhs, rhs }
             | Self::I64ShrU { result, lhs, rhs }
             | Self::I64Rotl { result, lhs, rhs }
-            | Self::I64Rotr { result, lhs, rhs }
-            | Self::I64LtU { result, lhs, rhs }
-            | Self::I64LtS { result, lhs, rhs } => {
+            | Self::I64Rotr { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
             // i32 Immediates
@@ -387,16 +383,23 @@ impl Instruction {
 
             // --- Comparisons ---
             // i32
-            Self::I32Eq { result, lhs, rhs } | Self::I32Ne { result, lhs, rhs } => {
+            Self::I32Eq { result, lhs, rhs }
+            | Self::I32Ne { result, lhs, rhs }
+            | Self::I32LtS { result, lhs, rhs }
+            | Self::I32LtU { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
             // i32 immediate comparisons
             Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
             // i64
-            Self::I64Eq { result, lhs, rhs } | Self::I64Ne { result, lhs, rhs } => {
+            Self::I64Eq { result, lhs, rhs }
+            | Self::I64Ne { result, lhs, rhs }
+            | Self::I64LtU { result, lhs, rhs }
+            | Self::I64LtS { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
+
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I64NeImm16 { .. } => trace_unimpl(self, instruction_address),
@@ -455,6 +458,25 @@ fn trace_r(inst: &Instruction, result: Reg, lhs: Reg, rhs: Reg, address: u64) ->
         opcode: WASM::from_str(&inst.to_string()).unwrap(),
         rs1: Some(lhs.0 as u16 as u32 as u64),
         rs2: Some(rhs.0 as u16 as u32 as u64),
+        rd: Some(result.0 as u16 as u32 as u64),
+        imm: None,
+        virtual_sequence_remaining: None,
+    }
+}
+
+/// Trace for instructions that swap registers
+fn trace_r_swap(
+    inst: &Instruction,
+    result: Reg,
+    lhs: Reg,
+    rhs: Reg,
+    address: u64,
+) -> ELFInstruction {
+    ELFInstruction {
+        address,
+        opcode: WASM::from_str(&inst.to_string()).unwrap(),
+        rs1: Some(rhs.0 as u16 as u32 as u64),
+        rs2: Some(lhs.0 as u16 as u32 as u64),
         rd: Some(result.0 as u16 as u32 as u64),
         imm: None,
         virtual_sequence_remaining: None,

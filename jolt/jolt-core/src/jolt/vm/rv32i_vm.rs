@@ -145,14 +145,16 @@ instruction_set!(
   // i32
   I32BEQ: BEQInstruction<WORD_SIZE>,
   I32BNE: BNEInstruction<WORD_SIZE>,
+  I32LTS: SLTInstruction<WORD_SIZE>,
+  I32LTU: SLTUInstruction<WORD_SIZE>,
   // i64
   I64BEQ: BEQInstruction<WORD_SIZE_1>,
   I64BNE: BNEInstruction<WORD_SIZE_1>,
+  I64LTS: SLTInstruction<WORD_SIZE_1>,
+  I64LTU: SLTUInstruction<WORD_SIZE_1>,
 
 //   BGE: BGEInstruction<WORD_SIZE>,
 //   BGEU: BGEUInstruction<WORD_SIZE>,
-//   SLT: SLTInstruction<WORD_SIZE>,
-//   SLTU: SLTUInstruction<WORD_SIZE>,
 //   MOVSIGN: MOVSIGNInstruction<WORD_SIZE>,
   MULU: MULUInstruction<WORD_SIZE>,
   VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE>,

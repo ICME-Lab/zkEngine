@@ -35,10 +35,11 @@ mod tests {
                 add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
                 bitwise_arith_32_wasm_program, bitwise_arith_wasm_program,
                 divrem_arith_32_wasm_program, divrem_arith_wasm_program, eq_32_wasm_program,
-                eq_wasm_program, lt_wasm_program, ne_32_wasm_program, ne_wasm_program,
-                poly_bitshift_wasm_program, poly_divrem32_wasm_program, poly_divrem_wasm_program,
-                poly_mixed_wasm_program, poly_rotate_wasm_program, poly_simple_wasm_program,
-                shifts_arith_32_wasm_program, shifts_arith_wasm_program,
+                eq_wasm_program, gt_32_wasm_program, gt_wasm_program, lt_32_wasm_program,
+                lt_wasm_program, ne_32_wasm_program, ne_wasm_program, poly_bitshift_wasm_program,
+                poly_divrem32_wasm_program, poly_divrem_wasm_program, poly_mixed_wasm_program,
+                poly_rotate_wasm_program, poly_simple_wasm_program, shifts_arith_32_wasm_program,
+                shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -155,8 +156,22 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_lt() {
         test_wasm_e2e_with(lt_wasm_program());
+    }
+
+    #[test]
+    fn test_lt_32() {
+        test_wasm_e2e_with(lt_32_wasm_program());
+    }
+
+    #[test]
+    fn test_gt() {
+        test_wasm_e2e_with(gt_wasm_program());
+    }
+
+    #[test]
+    fn test_gt_32() {
+        test_wasm_e2e_with(gt_32_wasm_program());
     }
 }
