@@ -1,5 +1,7 @@
 use super::wasm_host::WASMProgram;
 
+// TODO: use a macro to avoid code duplication in this module
+
 // default entry point and inputs for all of our WASM tests
 const DEFAULT_FUNC: &str = "main";
 const DEFAULT_FILE_DIR: &str = "../wasms/";
