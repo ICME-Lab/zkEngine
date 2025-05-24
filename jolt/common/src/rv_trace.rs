@@ -673,6 +673,7 @@ impl FromStr for WASM {
 
             // --- Conversions ---
             "I32WrapI64" => Ok(Self::UNIMPL), // todo
+            "I64Extend32S" => Ok(Self::UNIMPL), // todo
 
             // --- Store ---
             "Store32Offset16" 

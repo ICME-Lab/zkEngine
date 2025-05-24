@@ -418,6 +418,7 @@ impl Instruction {
 
             // --- Conversions ---
             Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),
+            Self::I64Extend32S { .. } => trace_unimpl(self, instruction_address),
 
             // --- Loads ---
 
@@ -610,6 +611,7 @@ impl ToString for Instruction {
 
             // --- Conversions ---
             Self::I32WrapI64 { .. } => "I32WrapI64".to_string(),
+            Self::I64Extend32S { .. } => "I64Extend32S".to_string(),
 
             // --- Loads ---
 
