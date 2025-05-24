@@ -9,7 +9,10 @@ use ::core::{
     num::{NonZeroI32, NonZeroI64, NonZeroU32, NonZeroU64},
     str::FromStr,
 };
-use std::string::{String, ToString};
+use std::{
+    println,
+    string::{String, ToString},
+};
 
 macro_rules! define_enum {
     (
@@ -384,12 +387,16 @@ impl Instruction {
 
             // --- Comparisons ---
             // i32
-            Self::I32Eq { .. } => trace_unimpl(self, instruction_address),
+            Self::I32Eq { result, lhs, rhs } => {
+                trace_r(self, result, lhs, rhs, instruction_address)
+            }
             Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I32Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
             // i64
-            Self::I64Eq { .. } => trace_unimpl(self, instruction_address),
+            Self::I64Eq { result, lhs, rhs } => {
+                trace_r(self, result, lhs, rhs, instruction_address)
+            }
             Self::I64EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I64Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I64NeImm16 { .. } => trace_unimpl(self, instruction_address),
@@ -516,6 +523,7 @@ fn trace_il(inst: &Instruction, result: Reg, lhs: i64, rhs: Reg, address: u64) -
 }
 
 fn trace_unimpl(inst: &Instruction, address: u64) -> ELFInstruction {
+    println!("\x1b[33mwarning\x1b[0m: unimplemented instruction: {inst:?}"); // TODO: use tracing
     ELFInstruction {
         address,
         opcode: WASM::from_str(&inst.to_string()).unwrap(),

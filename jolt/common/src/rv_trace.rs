@@ -87,6 +87,8 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
 
         // TODO: DOUBLE CHECK THAT ALL INSTRUCTIONS ARE HANDLED HERE.
         match val.instruction.opcode {
+            // --- Binary operations ---
+            // i32
             WASM::I32ADD
             | WASM::I32SUB
             | WASM::I32MUL
@@ -100,7 +102,6 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32SHL
             | WASM::I32SHRU
             | WASM::I32SHRS
-
             // i64
             | WASM::I64ADD
             | WASM::I64SUB
@@ -116,11 +117,18 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64SHRU
             | WASM::I64SHRS
 
+            // --- Comparisons ---
+            // i32
+            | WASM::I32EQ
+            // i64
+            | WASM::I64EQ
+
             | WASM::SLT
             | WASM::SLTU
             | WASM::MULH
             | WASM::MULHU
             | WASM::MULHSU
+            // --- Virtual instructions ---
             | WASM::MULU
             | WASM::I64MULU => [rs1_read(), rs2_read(), rd_write(), MemoryOp::noop_read()],
 
@@ -524,6 +532,12 @@ pub enum WASM {
     I64ANDI,
     I64ORI,
 
+    // --- Comparisons ---
+    // i32
+    I32EQ,
+    // i64
+    I64EQ,
+
     SLT,
     SLTU,
     SLLI,
@@ -652,15 +666,15 @@ impl FromStr for WASM {
 
             // --- Comparisons ---
             // i32
-            "I32Eq" => Ok(Self::UNIMPL), // todo
+            "I32Eq" => Ok(Self::I32EQ), 
             "I32Ne" => Ok(Self::UNIMPL), // todo
             "I32LtS" => Ok(Self::UNIMPL), // todo
             "I32LtU" => Ok(Self::UNIMPL), // todo
-            // i32 Immediates
+            // i32 immediates
             "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
             // i64
-            "I64Eq" => Ok(Self::UNIMPL), // todo
+            "I64Eq" => Ok(Self::I64EQ), 
             // i64 immediates
             "I64EqImm" => Ok(Self::UNIMPL), // todo
 

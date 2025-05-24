@@ -68,6 +68,10 @@ pub fn eq_wasm_program() -> WASMProgram {
     make_basic_wasm_program("eq.wat")
 }
 
+pub fn eq_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("eq_32.wat")
+}
+
 pub fn poly_simple_wasm_program() -> WASMProgram {
     let file_name = "poly-simple.wasm";
     make_poly_wasm_program(file_name)

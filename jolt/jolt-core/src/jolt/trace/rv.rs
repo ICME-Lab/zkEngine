@@ -141,12 +141,18 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I64SHL => Ok(SLLInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64SHRU => Ok(SRLInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64SHRS => Ok(SRAInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
-            // i64 mmediates
+            // i64 immediates
             WASM::I64MULI => Ok(MULInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64ADDI  => Ok(ADDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64XORI  => Ok(XORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64ORI   => Ok(ORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64ANDI  => Ok(ANDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
+
+            // --- Comparisons ---
+            // i32
+            WASM::I32EQ  => Ok(BEQInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            // i64
+            WASM::I64EQ  => Ok(BEQInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             
             // --- Virtual Instructions ---
             // i32
