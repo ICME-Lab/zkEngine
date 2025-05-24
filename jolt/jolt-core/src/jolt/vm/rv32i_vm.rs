@@ -119,6 +119,8 @@ pub const WORD_SIZE_1: usize = 64;
 
 instruction_set!(
   RV32I,
+  // --- Binary ---
+  // i32
   I32ADD: ADDInstruction<WORD_SIZE>,
   I32SUB: SUBInstruction<WORD_SIZE>,
   I32MUL: MULInstruction<WORD_SIZE>,
@@ -128,26 +130,30 @@ instruction_set!(
   I32SHL: SLLInstruction<WORD_SIZE>,
   I32SHRU: SRLInstruction<WORD_SIZE>,
   I32SHRS: SRAInstruction<WORD_SIZE>,
-
+  // i64
   I64ADD: ADDInstruction<WORD_SIZE_1>,
   I64SUB: SUBInstruction<WORD_SIZE_1>,
   I64MUL: MULInstruction<WORD_SIZE_1>,
   I64AND: ANDInstruction<WORD_SIZE_1>,
   I64OR: ORInstruction<WORD_SIZE_1>,
   I64XOR: XORInstruction<WORD_SIZE_1>,
-
   I64SHL: SLLInstruction<WORD_SIZE_1>,
   I64SHRU: SRLInstruction<WORD_SIZE_1>,
   I64SHRS: SRAInstruction<WORD_SIZE_1>,
 
+  // --- Comparison ---
+  // i32
+  I32BEQ: BEQInstruction<WORD_SIZE>,
+  I32BNE: BNEInstruction<WORD_SIZE>,
+  // i64
+  I64BEQ: BEQInstruction<WORD_SIZE_1>,
+  I64BNE: BNEInstruction<WORD_SIZE_1>,
 
 //   BGE: BGEInstruction<WORD_SIZE>,
 //   BGEU: BGEUInstruction<WORD_SIZE>,
-//   BNE: BNEInstruction<WORD_SIZE>,
 //   SLT: SLTInstruction<WORD_SIZE>,
 //   SLTU: SLTUInstruction<WORD_SIZE>,
 //   MOVSIGN: MOVSIGNInstruction<WORD_SIZE>,
-  BEQ: BEQInstruction<WORD_SIZE>,
   MULU: MULUInstruction<WORD_SIZE>,
   VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE>,
   VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE>,
@@ -156,7 +162,6 @@ instruction_set!(
   VIRTUAL_ASSERT_VALID_DIV0: AssertValidDiv0Instruction<WORD_SIZE>,
   VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER: AssertValidSignedRemainderInstruction<WORD_SIZE>,
 
-  I64BEQ: BEQInstruction<WORD_SIZE_1>,
   I64MULU: MULUInstruction<WORD_SIZE_1>,
   I64VIRTUAL_ADVICE: ADVICEInstruction<WORD_SIZE_1>,
   I64VIRTUAL_MOVE: MOVEInstruction<WORD_SIZE_1>,

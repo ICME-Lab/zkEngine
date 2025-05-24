@@ -120,8 +120,10 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             // --- Comparisons ---
             // i32
             | WASM::I32EQ
+            | WASM::I32NE
             // i64
             | WASM::I64EQ
+            | WASM::I64NE
 
             | WASM::SLT
             | WASM::SLTU
@@ -535,8 +537,10 @@ pub enum WASM {
     // --- Comparisons ---
     // i32
     I32EQ,
+    I32NE,
     // i64
     I64EQ,
+    I64NE,
 
     SLT,
     SLTU,
@@ -667,7 +671,7 @@ impl FromStr for WASM {
             // --- Comparisons ---
             // i32
             "I32Eq" => Ok(Self::I32EQ), 
-            "I32Ne" => Ok(Self::UNIMPL), // todo
+            "I32Ne" => Ok(Self::I32NE),
             "I32LtS" => Ok(Self::UNIMPL), // todo
             "I32LtU" => Ok(Self::UNIMPL), // todo
             // i32 immediates
@@ -675,6 +679,7 @@ impl FromStr for WASM {
             "I32NeImm" => Ok(Self::UNIMPL), // todo
             // i64
             "I64Eq" => Ok(Self::I64EQ), 
+            "I64Ne" => Ok(Self::I64NE), 
             // i64 immediates
             "I64EqImm" => Ok(Self::UNIMPL), // todo
 

@@ -151,8 +151,10 @@ impl TryFrom<&RVTraceRow> for RV32I {
             // --- Comparisons ---
             // i32
             WASM::I32EQ  => Ok(BEQInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I32NE  => Ok(BNEInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             // i64
             WASM::I64EQ  => Ok(BEQInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
+            WASM::I64NE  => Ok(BNEInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             
             // --- Virtual Instructions ---
             // i32

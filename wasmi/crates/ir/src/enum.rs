@@ -387,18 +387,18 @@ impl Instruction {
 
             // --- Comparisons ---
             // i32
-            Self::I32Eq { result, lhs, rhs } => {
+            Self::I32Eq { result, lhs, rhs } | Self::I32Ne { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
+            // i32 immediate comparisons
             Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
-            Self::I32Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
             // i64
-            Self::I64Eq { result, lhs, rhs } => {
+            Self::I64Eq { result, lhs, rhs } | Self::I64Ne { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
+            // i64 immediate comparisons
             Self::I64EqImm16 { .. } => trace_unimpl(self, instruction_address),
-            Self::I64Ne { .. } => trace_unimpl(self, instruction_address),
             Self::I64NeImm16 { .. } => trace_unimpl(self, instruction_address),
 
             // --- Branches ---
@@ -593,6 +593,7 @@ impl ToString for Instruction {
             Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
             // i64 comparisons
             Self::I64Eq { .. } => "I64Eq".to_string(),
+            Self::I64Ne { .. } => "I64Ne".to_string(),
             Self::I64LtU { .. } => "I64LtU".to_string(),
             Self::I64LtS { .. } => "I64LtS".to_string(),
             // i64 immediate comparisons
