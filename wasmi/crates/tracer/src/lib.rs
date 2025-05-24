@@ -89,8 +89,7 @@ pub fn decode(wasm_bytecode: &[u8]) -> (Vec<ELFInstruction>, Vec<(u64, u8)>) {
     let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
 
     // Get the `&[Instructions]` using the intialized [`EngineFunc`].
-    let instructions = engine.instructions();
-
+    let instructions = engine.contiguous_code_map().instrs;
     // Keep track of the pc/instruction pointer.
     let mut pc = InstructionPtr::new(instructions.as_ptr());
     let base_addr = InstructionPtr::new(instructions.as_ptr());
@@ -122,9 +121,9 @@ pub fn print_code_map(path: &str) {
     use std::fs;
 
     let wasm_bytecode = fs::read(path).unwrap();
-    let engine = wasmi::Engine::new(&wasmi::Config::default());
+    let mut engine = wasmi::Engine::new(&wasmi::Config::default());
     let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
-    let instructions = engine.instructions();
+    let instructions = engine.contiguous_code_map().instrs;
     let base_ptr = InstructionPtr::new(instructions.as_ptr());
     let mut pc = InstructionPtr::new(instructions.as_ptr());
     println!("Instructions length: {}", instructions.len());
@@ -138,7 +137,6 @@ pub fn print_code_map(path: &str) {
 
 #[cfg(test)]
 pub mod test_lib {
-    use std::fs;
 
     use crate::{
         args::Args,

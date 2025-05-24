@@ -66,7 +66,6 @@ use alloc::{
 };
 use core::sync::atomic::{AtomicU32, Ordering};
 use spin::{Mutex, RwLock};
-use wasmi_ir::Instruction;
 use wasmparser::{FuncToValidate, FuncValidatorAllocations, ValidatorResources};
 
 #[cfg(doc)]
@@ -124,9 +123,9 @@ impl Engine {
         &self.inner.code_map
     }
 
-    /// Returns the Vec<[`Instruction`]> of the [`Engine`].
-    pub fn instructions(&self) -> &[Instruction] {
-        self.inner.contiguous_code_map.instrs()
+    /// Returns the contigous code map of the [`Engine`].
+    pub fn contiguous_code_map(&self) -> ContiguousCodeMap {
+        ContiguousCodeMap::from(&self.inner.code_map)
     }
 }
 
@@ -445,8 +444,6 @@ pub struct EngineInner {
     config: Config,
     /// Stores information about all compiled functions.
     code_map: CodeMap,
-    /// Contiguous code map
-    contiguous_code_map: ContiguousCodeMap,
     /// Deduplicated function types.
     ///
     /// # Note
@@ -569,12 +566,10 @@ impl EngineInner {
     /// Creates a new [`EngineInner`] with the given [`Config`].
     fn new(config: &Config) -> Self {
         let engine_idx = EngineIdx::new();
-        let code_map = CodeMap::new(&config);
-        let contiguous_code_map = (&code_map).into();
+        let code_map = CodeMap::new(config);
         Self {
             config: config.clone(),
             code_map,
-            contiguous_code_map,
             func_types: RwLock::new(FuncTypeRegistry::new(engine_idx)),
             allocs: Mutex::new(ReusableAllocationStack::default()),
             stacks: Mutex::new(EngineStacks::new(config)),

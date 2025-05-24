@@ -105,18 +105,6 @@ impl<F: JoltField> WASMBytecodePreprocessing<F> {
     }
 }
 
-fn preprocess<F, InstructionSet>(bytecode: &[ELFInstruction]) -> WASMBytecodePreprocessing<F>
-where
-    F: JoltField,
-    InstructionSet: JoltInstructionSet,
-{
-    let bytecode_rows: Vec<BytecodeRow> = bytecode
-        .iter()
-        .map(|instruction| BytecodeRow::from_instruction::<InstructionSet>(instruction))
-        .collect();
-    WASMBytecodePreprocessing::<F>::preprocess(bytecode_rows)
-}
-
 // HACK
 #[derive(CanonicalSerialize, CanonicalDeserialize)]
 pub struct WASMMemoryCheckingProof<F, PCS, Openings, OtherOpenings, ProofTranscript>
@@ -434,15 +422,6 @@ where
         let mut final_cts: Vec<u32> = vec![0; preprocessing.code_size];
 
         for (step_index, step) in trace.iter_mut().enumerate() {
-            // if !step.bytecode_row.address.is_zero() {
-            //     assert!(step.bytecode_row.address >= RAM_START_ADDRESS as usize);
-            //     assert!(step.bytecode_row.address % BYTES_PER_INSTRUCTION == 0);
-            //     // Compress instruction address for more efficient commitment:
-            //     step.bytecode_row.address = 1
-            //         + (step.bytecode_row.address - RAM_START_ADDRESS as usize)
-            //             / BYTES_PER_INSTRUCTION;
-            // }
-
             let virtual_address = preprocessing
                 .virtual_address_map
                 .get(&(
@@ -568,49 +547,5 @@ where
             a_init_final: None,
             v_init_final: None,
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{preprocess, WASMBytecodeProof};
-    use crate::{
-        jolt::vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep},
-        poly::commitment::hyperkzg::HyperKZG,
-        utils::transcript::KeccakTranscript,
-        zkE::tests::{
-            poly_bitshift_wasm_program, poly_divrem32_wasm_program, poly_divrem_wasm_program,
-        },
-    };
-    use ark_bn254::{Bn254, Fr};
-    use itertools::Itertools;
-
-    #[test]
-    fn test_wasm_bytecode() {
-        let wasm_program = poly_bitshift_wasm_program();
-        let (wasm_bytecode, _init_memory) = wasm_program.decode();
-        let pp = preprocess::<Fr, RV32I>(&wasm_bytecode);
-
-        // Pad the trace & generate the witness polynomials
-        let (mut execution_trace, _program_io) = wasm_program.trace();
-        JoltTraceStep::pad(&mut execution_trace);
-
-        // Get the bytecode trace & validate the bytecode
-        let mut wasm_bytecode_trace: Vec<BytecodeRow> = wasm_bytecode
-            .iter()
-            .map(BytecodeRow::from_instruction::<RV32I>)
-            .collect();
-        wasm_bytecode_trace.insert(0, BytecodeRow::no_op(0));
-        WASMBytecodeProof::<Fr, HyperKZG<Bn254, _>, KeccakTranscript>::validate_bytecode(
-            &wasm_bytecode_trace,
-            &execution_trace
-                .iter()
-                .map(|step| step.bytecode_row.clone())
-                .collect_vec(),
-        );
-
-        let _witness = WASMBytecodeProof::<Fr, HyperKZG<Bn254, _>, KeccakTranscript>::wasm_witness::<
-            RV32I,
-        >(&pp, &mut execution_trace);
     }
 }

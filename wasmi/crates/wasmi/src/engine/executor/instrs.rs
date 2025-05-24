@@ -2454,6 +2454,7 @@ impl<'engine> Executor<'engine> {
 }
 
 impl Executor<'_> {
+    /// Used to get the local pc offset of the EngineFunc
     fn local_pc_offset(&self) -> usize {
         let compiled_func = self
             .code_map
@@ -2463,6 +2464,7 @@ impl Executor<'_> {
         self.ip.offset_from(base_ptr) as usize
     }
 
+    /// Get the pc from the contiguous code map.
     fn pc(&self) -> usize {
         const ACCOUNT_FOR_NOOP: usize = 1;
         let start_index = *self
@@ -2471,10 +2473,13 @@ impl Executor<'_> {
             .get(&self.func_index)
             .expect("func spans should have an entry for the current function");
         let local_offset = self.local_pc_offset();
+
         // # Note
         //
         // We add `ACCOUNT_FOR_NOOP` to the instruction address to account for the fact that we prepend a NOOP instruction to the bytecode.
-        start_index + local_offset + ACCOUNT_FOR_NOOP
+        let pc = start_index + local_offset + ACCOUNT_FOR_NOOP;
+        debug_assert_eq!(self.contiguous_code_map.instrs[pc - 1], *self.ip.get(),);
+        pc
     }
 }
 
