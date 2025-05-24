@@ -124,13 +124,11 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_poly_divrem() {
         test_wasm_e2e_with(poly_divrem_wasm_program());
     }
 
     #[test]
-    #[ignore]
     fn test_poly_divrem32() {
         test_wasm_e2e_with(poly_divrem32_wasm_program());
     }
