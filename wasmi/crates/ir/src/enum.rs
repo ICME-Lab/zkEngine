@@ -343,8 +343,7 @@ impl Instruction {
             | Self::I64LtS { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
-
-            // i32 immediates
+            // i32 Immediates
             Self::I32MulImm16 { result, lhs, rhs }
             | Self::I32AddImm16 { result, lhs, rhs }
             | Self::I32BitXorImm16 { result, lhs, rhs }
@@ -364,8 +363,7 @@ impl Instruction {
                 rhs.value.inner.0 as i64,
                 instruction_address,
             ),
-
-            // i64 immediates
+            // i64 Immediates
             Self::I64MulImm16 { result, lhs, rhs }
             | Self::I64AddImm16 { result, lhs, rhs }
             | Self::I64BitXorImm16 { result, lhs, rhs }
@@ -374,7 +372,6 @@ impl Instruction {
             | Self::I64EqImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
-
             Self::I64ShlBy { result, lhs, rhs }
             | Self::I64ShrUBy { result, lhs, rhs }
             | Self::I64ShrSBy { result, lhs, rhs }
@@ -395,13 +392,11 @@ impl Instruction {
 
             // --- Branches ---
             Self::Branch { .. } => trace_unimpl(self, instruction_address),
-
-            // fused branches
+            // Fused Branches
             Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
                 trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
             }
-
-            // immediate branches
+            // Immediate Branches
             Self::BranchI32NeImm16 { lhs, rhs, offset } => trace_bi(
                 self,
                 lhs,
@@ -417,6 +412,7 @@ impl Instruction {
                 instruction_address,
             ),
 
+            // --- Conversions ---
             Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),
 
             // --- Loads ---
@@ -431,17 +427,21 @@ impl Instruction {
             Self::GlobalGet { .. } => trace_unimpl(self, instruction_address),
             Self::GlobalSet { .. } => trace_unimpl(self, instruction_address),
 
+            // --- Calls ---
             Self::CallInternal { .. } => trace_unimpl(self, instruction_address),
 
+            // --- Registers ---
             Self::Register { .. } => trace_unimpl(self, instruction_address),
             Self::Register2 { .. } => trace_unimpl(self, instruction_address),
             Self::Register3 { .. } => trace_unimpl(self, instruction_address),
 
+            // --- Returns ---
             Self::Return
             | Self::ReturnImm32 { .. }
             | Self::ReturnReg { .. }
             | Self::ReturnI64Imm32 { .. } => trace_unimpl(self, instruction_address),
 
+            // --- Traps ---
             Self::Trap { .. } => trace_unimpl(self, instruction_address),
 
             _ => todo!("trace instruction: {self:?}"),
