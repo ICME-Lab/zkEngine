@@ -351,7 +351,6 @@ impl Instruction {
             | Self::I32BitOrImm16 { result, lhs, rhs } => {
                 trace_i(self, result, lhs, rhs.inner.0 as i64, instruction_address)
             }
-
             Self::I32ShlBy { result, lhs, rhs }
             | Self::I32ShrUBy { result, lhs, rhs }
             | Self::I32ShrSBy { result, lhs, rhs }
