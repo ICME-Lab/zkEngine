@@ -404,24 +404,12 @@ impl Instruction {
             // --- Branches ---
             Self::Branch { .. } => trace_unimpl(self, instruction_address),
             // Fused Branches
-            Self::BranchI32Ne { lhs, rhs, offset } | Self::BranchI64Ne { lhs, rhs, offset } => {
-                trace_b(self, lhs, rhs, offset.0 as i32 as i64, instruction_address)
+            Self::BranchI32Ne { .. } | Self::BranchI64Ne { .. } => {
+                trace_unimpl(self, instruction_address)
             }
             // Immediate Branches
-            Self::BranchI32NeImm16 { lhs, rhs, offset } => trace_bi(
-                self,
-                lhs,
-                rhs.inner.0 as i64,
-                offset.0 as i32 as i64,
-                instruction_address,
-            ),
-            Self::BranchI64NeImm16 { lhs, rhs, offset } => trace_bi(
-                self,
-                lhs,
-                rhs.inner.0 as i64,
-                offset.0 as i32 as i64,
-                instruction_address,
-            ),
+            Self::BranchI32NeImm16 { .. } => trace_unimpl(self, instruction_address),
+            Self::BranchI64NeImm16 { .. } => trace_unimpl(self, instruction_address),
 
             // --- Conversions ---
             Self::I32WrapI64 { .. } => trace_unimpl(self, instruction_address),

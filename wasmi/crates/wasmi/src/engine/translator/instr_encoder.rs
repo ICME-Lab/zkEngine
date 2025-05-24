@@ -1,5 +1,4 @@
 use super::{
-    comparator::TryIntoCmpSelectInstr,
     relink_result::RelinkResult as _,
     utils::{FromProviders as _, WasmInteger},
     visit_register::VisitInputRegisters as _,
@@ -7,10 +6,7 @@ use super::{
     FuelInfo,
     LabelRef,
     LabelRegistry,
-    LogicalizeCmpInstr,
-    NegateCmpInstr,
     TryIntoCmpBranchFallbackInstr,
-    TryIntoCmpBranchInstr,
     TypedProvider,
 };
 use crate::{
