@@ -121,7 +121,7 @@ pub fn print_code_map(path: &str) {
     use std::fs;
 
     let wasm_bytecode = fs::read(path).unwrap();
-    let mut engine = wasmi::Engine::new(&wasmi::Config::default());
+    let engine = wasmi::Engine::new(&wasmi::Config::default());
     let _module = wasmi::Module::new(&engine, wasm_bytecode).unwrap();
     let instructions = engine.contiguous_code_map().instrs;
     let base_ptr = InstructionPtr::new(instructions.as_ptr());
