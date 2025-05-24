@@ -482,6 +482,8 @@ impl RVTraceRow {
 #[repr(u8)]
 #[allow(non_camel_case_types)]
 pub enum WASM {
+    // --- Binary operations ---
+    // i32
     I32ADD,
     I32SUB,
     I32MUL,
@@ -492,17 +494,16 @@ pub enum WASM {
     I32AND,
     I32OR,
     I32XOR,
-
+    I32SHL,
+    I32SHRU,
+    I32SHRS,
+    // i32 immediates
     I32MULI,
     I32ADDI,
     I32XORI,
     I32ANDI,
     I32ORI,
-
-    I32SHL,
-    I32SHRU,
-    I32SHRS,
-
+    // i64
     I64ADD,
     I64SUB,
     I64MUL,
@@ -516,7 +517,7 @@ pub enum WASM {
     I64SHL,
     I64SHRU,
     I64SHRS,
-
+    // i64 immediates
     I64MULI,
     I64ADDI,
     I64XORI,
@@ -553,13 +554,13 @@ pub enum WASM {
     MULH,
     MULHU,
     MULHSU,
-    MULU,
+
     FENCE,
     UNIMPL,
-
-    I64MULU,
     
-    // Virtual instructions
+    // --- Virtual instructions ---
+    // i32
+    MULU,
     VIRTUAL_MOVE,
     VIRTUAL_ADVICE,
     VIRTUAL_ASSERT_LTE,
@@ -567,7 +568,8 @@ pub enum WASM {
     VIRTUAL_ASSERT_VALID_SIGNED_REMAINDER,
     VIRTUAL_ASSERT_EQ,
     VIRTUAL_ASSERT_VALID_DIV0,
-
+    // i64
+    I64MULU,
     I64VIRTUAL_MOVE,
     I64VIRTUAL_ADVICE,
     I64VIRTUAL_ASSERT_LTE,
@@ -650,14 +652,17 @@ impl FromStr for WASM {
 
             // --- Comparisons ---
             // i32
-            "I32LtS" => Ok(Self::SLT),
-            "I32LtU" => Ok(Self::SLTU),
-            // i64
-            "I64EqImm" => Ok(Self::UNIMPL), // todo
             "I32Eq" => Ok(Self::UNIMPL), // todo
-            "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32Ne" => Ok(Self::UNIMPL), // todo
+            "I32LtS" => Ok(Self::UNIMPL), // todo
+            "I32LtU" => Ok(Self::UNIMPL), // todo
+            // i32 Immediates
+            "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
+            // i64
+            "I64Eq" => Ok(Self::UNIMPL), // todo
+            // i64 immediates
+            "I64EqImm" => Ok(Self::UNIMPL), // todo
 
             // --- Branches ---
             "Branch" => Ok(Self::UNIMPL), // todo

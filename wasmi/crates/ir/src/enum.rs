@@ -530,6 +530,8 @@ fn trace_unimpl(inst: &Instruction, address: u64) -> ELFInstruction {
 impl ToString for Instruction {
     fn to_string(&self) -> String {
         match *self {
+            // --- Binary ---
+            // i32
             Self::I32Add { .. } => "I32Add".to_string(),
             Self::I32Sub { .. } => "I32Sub".to_string(),
             Self::I32Mul { .. } => "I32Mul".to_string(),
@@ -537,17 +539,15 @@ impl ToString for Instruction {
             Self::I32DivU { .. } => "I32DivU".to_string(),
             Self::I32RemS { .. } => "I32RemS".to_string(),
             Self::I32RemU { .. } => "I32RemU".to_string(),
-
             Self::I32BitXor { .. } => "I32BitXor".to_string(),
             Self::I32BitAnd { .. } => "I32BitAnd".to_string(),
             Self::I32BitOr { .. } => "I32BitOr".to_string(),
-
             Self::I32Shl { .. } => "I32Shl".to_string(),
             Self::I32ShrS { .. } => "I32ShrS".to_string(),
             Self::I32ShrU { .. } => "I32ShrU".to_string(),
             Self::I32Rotl { .. } => "I32Rotl".to_string(),
             Self::I32Rotr { .. } => "I32Rotr".to_string(),
-
+            // i32 immediates
             Self::I32MulImm16 { .. } => "I32MulImm".to_string(),
             Self::I32AddImm16 { .. } => "I32AddImm".to_string(),
             Self::I32BitXorImm16 { .. } => "I32BitXorImm".to_string(),
@@ -558,7 +558,7 @@ impl ToString for Instruction {
             Self::I32ShrSBy { .. } => "I32ShrSBy".to_string(),
             Self::I32RotlBy { .. } => "I32RotlBy".to_string(),
             Self::I32RotrBy { .. } => "I32RotrBy".to_string(),
-
+            // i64
             Self::I64Add { .. } => "I64Add".to_string(),
             Self::I64Sub { .. } => "I64Sub".to_string(),
             Self::I64Mul { .. } => "I64Mul".to_string(),
@@ -566,17 +566,15 @@ impl ToString for Instruction {
             Self::I64DivU { .. } => "I64DivU".to_string(),
             Self::I64RemS { .. } => "I64RemS".to_string(),
             Self::I64RemU { .. } => "I64RemU".to_string(),
-
             Self::I64BitXor { .. } => "I64BitXor".to_string(),
             Self::I64BitAnd { .. } => "I64BitAnd".to_string(),
             Self::I64BitOr { .. } => "I64BitOr".to_string(),
-
             Self::I64Shl { .. } => "I64Shl".to_string(),
             Self::I64ShrS { .. } => "I64ShrS".to_string(),
             Self::I64ShrU { .. } => "I64ShrU".to_string(),
             Self::I64Rotl { .. } => "I64Rotl".to_string(),
             Self::I64Rotr { .. } => "I64Rotr".to_string(),
-
+            // i64 immediates
             Self::I64MulImm16 { .. } => "I64MulImm".to_string(),
             Self::I64AddImm16 { .. } => "I64AddImm".to_string(),
             Self::I64BitXorImm16 { .. } => "I64BitXorImm".to_string(),
@@ -590,16 +588,16 @@ impl ToString for Instruction {
 
             // --- Comparisons ---
             Self::I32Eq { .. } => "I32Eq".to_string(),
-            Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
             Self::I32Ne { .. } => "I32Ne".to_string(),
-            Self::I32NeImm16 { .. } => "I32NeImm".to_string(),
-
             Self::I32LtU { .. } => "I32LtU".to_string(),
             Self::I32LtS { .. } => "I32LtS".to_string(),
-
+            // i32 immediate comparisons
+            Self::I32NeImm16 { .. } => "I32NeImm".to_string(),
+            Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
+            // i64 comparisons
+            Self::I64Eq { .. } => "I64Eq".to_string(),
             Self::I64LtU { .. } => "I64LtU".to_string(),
             Self::I64LtS { .. } => "I64LtS".to_string(),
-
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
