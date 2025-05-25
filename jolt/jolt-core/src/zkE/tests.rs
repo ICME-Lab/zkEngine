@@ -68,6 +68,14 @@ pub fn eq_32_wasm_program() -> WASMProgram {
     make_basic_wasm_program("eq_32.wat")
 }
 
+pub fn eqz_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("eqz.wat")
+}
+
+pub fn eqz_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("eqz_32.wat")
+}
+
 pub fn ne_wasm_program() -> WASMProgram {
     make_basic_wasm_program("ne.wat")
 }
