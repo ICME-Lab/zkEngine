@@ -123,12 +123,16 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32NE
             | WASM::I32LTS
             | WASM::I32LTU
+            | WASM::I32GES
+            | WASM::I32GEU
 
             // i64
             | WASM::I64EQ
             | WASM::I64NE
             | WASM::I64LTS
             | WASM::I64LTU
+            | WASM::I64GES
+            | WASM::I64GEU
 
             | WASM::MULH
             | WASM::MULHU
@@ -407,11 +411,15 @@ impl ELFInstruction {
             | WASM::I32NE
             | WASM::I32LTS
             | WASM::I32LTU
+            | WASM::I32GES
+            | WASM::I32GEU
 
             | WASM::I64EQ
             | WASM::I64NE
             | WASM::I64LTS
             | WASM::I64LTU
+            | WASM::I64GES
+            | WASM::I64GEU
             
             | WASM::SLLI
             | WASM::SRLI
@@ -545,11 +553,15 @@ pub enum WASM {
     I32NE,
     I32LTS,
     I32LTU,
+    I32GES,
+    I32GEU,
     // i64
     I64EQ,
     I64NE,
     I64LTS,
     I64LTU,
+    I64GES,
+    I64GEU,
 
     SLLI,
     SRLI,
@@ -679,6 +691,8 @@ impl FromStr for WASM {
             "I32Ne" => Ok(Self::I32NE),
             "I32LtS" => Ok(Self::I32LTS), 
             "I32LtU" => Ok(Self::I32LTU), 
+            "I32GeS" => Ok(Self::I32GES), 
+            "I32GeU" => Ok(Self::I32GEU),
             // i32 immediates
             "I32EqImm" => Ok(Self::UNIMPL), // todo
             "I32NeImm" => Ok(Self::UNIMPL), // todo
@@ -687,6 +701,8 @@ impl FromStr for WASM {
             "I64Ne" => Ok(Self::I64NE), 
             "I64LtS" => Ok(Self::I64LTS), 
             "I64LtU" => Ok(Self::I64LTU),
+            "I64GeS" => Ok(Self::I64GES),
+            "I64GeU" => Ok(Self::I64GEU),
             // i64 immediates
             "I64EqImm" => Ok(Self::UNIMPL), // todo
 

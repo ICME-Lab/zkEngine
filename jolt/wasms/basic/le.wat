@@ -50,24 +50,24 @@
     local.get 2
     i64.shl
     local.get 3
-    i64.ge_s
+    i64.le_s
     i64.extend_i32_s
     local.get 0
     i64.const 100711 ;; random number larger than 2^16
     i64.and
-    i64.ge_u
+    i64.le_u
     i64.extend_i32_s
     local.get 1
     i64.xor
     local.get 2
-    i64.ge_u
+    i64.le_u
     i64.extend_i32_s
     local.get 3
     i64.xor
     local.get 0
     i64.mul
     local.get 1
-    i64.ge_s
+    i64.le_s
     i64.extend_i32_s
   )
   (table (;0;) 1 1 funcref)

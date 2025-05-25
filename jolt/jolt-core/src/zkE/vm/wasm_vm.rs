@@ -35,7 +35,8 @@ mod tests {
                 add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
                 bitwise_arith_32_wasm_program, bitwise_arith_wasm_program,
                 divrem_arith_32_wasm_program, divrem_arith_wasm_program, eq_32_wasm_program,
-                eq_wasm_program, gt_32_wasm_program, gt_wasm_program, lt_32_wasm_program,
+                eq_wasm_program, ge_32_wasm_program, ge_wasm_program, gt_32_wasm_program,
+                gt_wasm_program, le_32_wasm_program, le_wasm_program, lt_32_wasm_program,
                 lt_wasm_program, ne_32_wasm_program, ne_wasm_program, poly_bitshift_wasm_program,
                 poly_divrem32_wasm_program, poly_divrem_wasm_program, poly_mixed_wasm_program,
                 poly_rotate_wasm_program, poly_simple_wasm_program, shifts_arith_32_wasm_program,
@@ -173,5 +174,25 @@ mod tests {
     #[test]
     fn test_gt_32() {
         test_wasm_e2e_with(gt_32_wasm_program());
+    }
+
+    #[test]
+    fn test_ge() {
+        test_wasm_e2e_with(ge_wasm_program());
+    }
+
+    #[test]
+    fn test_ge_32() {
+        test_wasm_e2e_with(ge_32_wasm_program());
+    }
+
+    #[test]
+    fn test_le() {
+        test_wasm_e2e_with(le_wasm_program());
+    }
+
+    #[test]
+    fn test_le_32() {
+        test_wasm_e2e_with(le_32_wasm_program());
     }
 }

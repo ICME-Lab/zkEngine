@@ -92,6 +92,22 @@ pub fn gt_32_wasm_program() -> WASMProgram {
     make_basic_wasm_program("gt_32.wat")
 }
 
+pub fn ge_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("ge.wat")
+}
+
+pub fn ge_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("ge_32.wat")
+}
+
+pub fn le_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("le.wat")
+}
+
+pub fn le_32_wasm_program() -> WASMProgram {
+    make_basic_wasm_program("le_32.wat")
+}
+
 pub fn poly_simple_wasm_program() -> WASMProgram {
     let file_name = "poly-simple.wasm";
     make_poly_wasm_program(file_name)

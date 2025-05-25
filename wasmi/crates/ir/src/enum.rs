@@ -389,6 +389,10 @@ impl Instruction {
             | Self::I32LtU { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
             }
+            Self::I32LeS { result, lhs, rhs } | Self::I32LeU { result, lhs, rhs } => {
+                // Swap the registers for the trace
+                trace_r(self, result, rhs, lhs, instruction_address)
+            }
             // i32 immediate comparisons
             Self::I32EqImm16 { .. } => trace_unimpl(self, instruction_address),
             Self::I32NeImm16 { .. } => trace_unimpl(self, instruction_address),
@@ -398,6 +402,10 @@ impl Instruction {
             | Self::I64LtU { result, lhs, rhs }
             | Self::I64LtS { result, lhs, rhs } => {
                 trace_r(self, result, lhs, rhs, instruction_address)
+            }
+            Self::I64LeS { result, lhs, rhs } | Self::I64LeU { result, lhs, rhs } => {
+                // Swap the registers for the trace
+                trace_r(self, result, rhs, lhs, instruction_address)
             }
 
             // i64 immediate comparisons
@@ -458,25 +466,6 @@ fn trace_r(inst: &Instruction, result: Reg, lhs: Reg, rhs: Reg, address: u64) ->
         opcode: WASM::from_str(&inst.to_string()).unwrap(),
         rs1: Some(lhs.0 as u16 as u32 as u64),
         rs2: Some(rhs.0 as u16 as u32 as u64),
-        rd: Some(result.0 as u16 as u32 as u64),
-        imm: None,
-        virtual_sequence_remaining: None,
-    }
-}
-
-/// Trace for instructions that swap registers
-fn trace_r_swap(
-    inst: &Instruction,
-    result: Reg,
-    lhs: Reg,
-    rhs: Reg,
-    address: u64,
-) -> ELFInstruction {
-    ELFInstruction {
-        address,
-        opcode: WASM::from_str(&inst.to_string()).unwrap(),
-        rs1: Some(rhs.0 as u16 as u32 as u64),
-        rs2: Some(lhs.0 as u16 as u32 as u64),
         rd: Some(result.0 as u16 as u32 as u64),
         imm: None,
         virtual_sequence_remaining: None,
@@ -610,6 +599,9 @@ impl ToString for Instruction {
             Self::I32Ne { .. } => "I32Ne".to_string(),
             Self::I32LtU { .. } => "I32LtU".to_string(),
             Self::I32LtS { .. } => "I32LtS".to_string(),
+            // we swap the registers for the trace
+            Self::I32LeS { .. } => "I32GeS".to_string(),
+            Self::I32LeU { .. } => "I32GeU".to_string(),
             // i32 immediate comparisons
             Self::I32NeImm16 { .. } => "I32NeImm".to_string(),
             Self::I32EqImm16 { .. } => "I32EqImm".to_string(),
@@ -618,6 +610,9 @@ impl ToString for Instruction {
             Self::I64Ne { .. } => "I64Ne".to_string(),
             Self::I64LtU { .. } => "I64LtU".to_string(),
             Self::I64LtS { .. } => "I64LtS".to_string(),
+            // we swap the registers for the trace
+            Self::I64LeS { .. } => "I64GeS".to_string(),
+            Self::I64LeU { .. } => "I64GeU".to_string(),
             // i64 immediate comparisons
             Self::I64EqImm16 { .. } => "I64EqImm".to_string(),
 
