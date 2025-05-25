@@ -33,14 +33,15 @@ mod tests {
         zkE::{
             tests::{
                 add_sub_mul_32_wasm_program, add_sub_mul_wasm_program,
-                bitwise_arith_32_wasm_program, bitwise_arith_wasm_program,
-                divrem_arith_32_wasm_program, divrem_arith_wasm_program, eq_32_wasm_program,
-                eq_wasm_program, eqz_32_wasm_program, eqz_wasm_program, ge_32_wasm_program,
-                ge_wasm_program, gt_32_wasm_program, gt_wasm_program, le_32_wasm_program,
-                le_wasm_program, lt_32_wasm_program, lt_wasm_program, ne_32_wasm_program,
-                ne_wasm_program, poly_bitshift_wasm_program, poly_divrem32_wasm_program,
-                poly_divrem_wasm_program, poly_mixed_wasm_program, poly_rotate_wasm_program,
-                poly_simple_wasm_program, shifts_arith_32_wasm_program, shifts_arith_wasm_program,
+                bitwise_arith_32_wasm_program, bitwise_arith_wasm_program, br_2_wasm_program,
+                branch_eqz_nez_wasm_program, divrem_arith_32_wasm_program,
+                divrem_arith_wasm_program, eq_32_wasm_program, eq_wasm_program,
+                eqz_32_wasm_program, eqz_wasm_program, ge_32_wasm_program, ge_wasm_program,
+                gt_32_wasm_program, gt_wasm_program, le_32_wasm_program, le_wasm_program,
+                lt_32_wasm_program, lt_wasm_program, ne_32_wasm_program, ne_wasm_program,
+                poly_bitshift_wasm_program, poly_divrem32_wasm_program, poly_divrem_wasm_program,
+                poly_mixed_wasm_program, poly_rotate_wasm_program, poly_simple_wasm_program,
+                shifts_arith_32_wasm_program, shifts_arith_wasm_program,
             },
             vm::{JoltProverPreprocessing, JoltWASM},
             wasm_host::WASMProgram,
@@ -204,5 +205,17 @@ mod tests {
     #[test]
     fn test_le_32() {
         test_wasm_e2e_with(le_32_wasm_program());
+    }
+
+    #[test]
+    fn test_branch_eqz_nez() {
+        branch_eqz_nez_wasm_program().print_instructions();
+        // test_wasm_e2e_with(le_32_wasm_program());
+    }
+
+    #[test]
+    fn test_br_2() {
+        br_2_wasm_program().print_instructions();
+        // test_wasm_e2e_with(le_32_wasm_program());
     }
 }

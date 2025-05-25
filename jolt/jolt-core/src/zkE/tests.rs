@@ -145,3 +145,21 @@ pub fn poly_divrem32_wasm_program() -> WASMProgram {
     let file_name = "poly_divrem32.wasm";
     make_poly_wasm_program(file_name)
 }
+
+pub fn branch_eqz_nez_wasm_program() -> WASMProgram {
+    let file_name = "branch_eqz_nez.wasm";
+    WASMProgram {
+        func: DEFAULT_FUNC.to_string(),
+        inputs: vec!["42".to_string(), "17".to_string(), "19".to_string()],
+        file_path: format!("{DEFAULT_FILE_DIR}br/{file_name}"),
+    }
+}
+
+pub fn br_2_wasm_program() -> WASMProgram {
+    let file_name = "br_2.wasm";
+    WASMProgram {
+        func: DEFAULT_FUNC.to_string(),
+        inputs: vec!["42".to_string(), "17".to_string(), "19".to_string()],
+        file_path: format!("{DEFAULT_FILE_DIR}br/{file_name}"),
+    }
+}
