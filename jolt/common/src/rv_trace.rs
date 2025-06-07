@@ -102,6 +102,8 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I32SHL
             | WASM::I32SHRU
             | WASM::I32SHRS
+            | WASM::I32ROTR
+            | WASM::I32ROTL
             // i64
             | WASM::I64ADD
             | WASM::I64SUB
@@ -116,6 +118,8 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64SHL
             | WASM::I64SHRU
             | WASM::I64SHRS
+            | WASM::I64ROTR
+            | WASM::I64ROTL
 
             // --- Comparisons ---
             // i32
@@ -160,6 +164,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
 
             WASM::I32ADDI
             | WASM::I32MULI
+            | WASM::I32SUBILHS
             | WASM::I32XORI
             | WASM::I32ANDI
             | WASM::I32ORI
@@ -174,6 +179,7 @@ impl From<&RVTraceRow> for [MemoryOp; MEMORY_OPS_PER_INSTRUCTION] {
             | WASM::I64VIRTUAL_MOVE
             | WASM::I64MULI
             | WASM::I64ADDI
+            | WASM::I64SUBILHS
             | WASM::I64XORI
             | WASM::I64ANDI
             | WASM::I64ORI

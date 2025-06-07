@@ -3,7 +3,7 @@
 use crate::jolt::{
     instruction::{
         div::DIVInstruction, divu::DIVUInstruction, rem::REMInstruction, remu::REMUInstruction,
-        VirtualInstructionSequence,
+        rotl::ROTLInstruction, rotr::ROTRInstruction, VirtualInstructionSequence,
     },
     vm::{bytecode::BytecodeRow, rv32i_vm::RV32I, JoltTraceStep},
 };
@@ -38,10 +38,14 @@ impl WASMProgram {
                 tracer::WASM::I32DIVS => DIVInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32REMU => REMUInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I32REMS => REMInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I32ROTR => ROTRInstruction::<32>::virtual_trace(row),
+                tracer::WASM::I32ROTL => ROTLInstruction::<32>::virtual_trace(row),
                 tracer::WASM::I64DIVU => DIVUInstruction::<64>::virtual_trace(row),
                 tracer::WASM::I64DIVS => DIVInstruction::<64>::virtual_trace(row),
                 tracer::WASM::I64REMU => REMUInstruction::<64>::virtual_trace(row),
                 tracer::WASM::I64REMS => REMInstruction::<64>::virtual_trace(row),
+                tracer::WASM::I64ROTR => ROTRInstruction::<64>::virtual_trace(row),
+                tracer::WASM::I64ROTL => ROTLInstruction::<64>::virtual_trace(row),
                 _ => vec![row],
             })
             .map(|row| {

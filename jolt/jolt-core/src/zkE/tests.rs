@@ -136,6 +136,11 @@ pub fn poly_rotate_wasm_program() -> WASMProgram {
     make_poly_wasm_program(file_name)
 }
 
+pub fn poly_rot_dynamic_wasm_program() -> WASMProgram {
+    let file_name = "poly_rot_dynamic.wasm";
+    make_poly_wasm_program(file_name)
+}
+
 pub fn poly_divrem_wasm_program() -> WASMProgram {
     let file_name = "poly_divrem.wasm";
     make_poly_wasm_program(file_name)

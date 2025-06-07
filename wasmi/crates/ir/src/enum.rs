@@ -354,13 +354,14 @@ impl Instruction {
             | Self::I32ShrUBy { result, lhs, rhs }
             | Self::I32ShrSBy { result, lhs, rhs }
             | Self::I32RotlBy { result, lhs, rhs }
-            | Self::I32RotrBy { result, lhs, rhs } => trace_i(
-                self,
-                result,
-                lhs,
-                rhs.value.inner.0 as i64,
-                instruction_address,
-            ),
+            | Self::I32RotrBy { result, lhs, rhs } => trace_unimpl(self, instruction_address),
+            // => trace_i(
+            //     self,
+            //     result,
+            //     lhs,
+            //     rhs.value.inner.0 as i64,
+            //     instruction_address,
+            // ),
             // lhs immediate
             Self::I32SubImm16Lhs { result, lhs, rhs } => {
                 trace_il(self, result, lhs.inner.0 as i64, rhs, instruction_address)
@@ -377,13 +378,14 @@ impl Instruction {
             | Self::I64ShrUBy { result, lhs, rhs }
             | Self::I64ShrSBy { result, lhs, rhs }
             | Self::I64RotlBy { result, lhs, rhs }
-            | Self::I64RotrBy { result, lhs, rhs } => trace_i(
-                self,
-                result,
-                lhs,
-                rhs.value.inner.0 as i64,
-                instruction_address,
-            ),
+            | Self::I64RotrBy { result, lhs, rhs } => trace_unimpl(self, instruction_address),
+            // => trace_i(
+            //     self,
+            //     result,
+            //     lhs,
+            //     rhs.value.inner.0 as i64,
+            //     instruction_address,
+            // ),
             // lhs immediate
             Self::I64SubImm16Lhs { result, lhs, rhs } => {
                 trace_il(self, result, lhs.inner.0 as i64, rhs, instruction_address)
