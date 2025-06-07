@@ -521,6 +521,7 @@ pub enum WASM {
     I32SHRU,
     I32SHRS,
     I32ROTR,
+    I32ROTL,
     // i32 immediates
     I32MULI,
     I32ADDI,
@@ -543,6 +544,7 @@ pub enum WASM {
     I64SHRU,
     I64SHRS,
     I64ROTR,
+    I64ROTL,
     // i64 immediates
     I64MULI,
     I64ADDI,
@@ -648,7 +650,7 @@ impl FromStr for WASM {
             "I32Shl" => Ok(Self::I32SHL), 
             "I32ShrU" => Ok(Self::I32SHRU), 
             "I32ShrS" => Ok(Self::I32SHRS), 
-            "I32Rotl" => Ok(Self::UNIMPL), // todo
+            "I32Rotl" => Ok(Self::I32ROTL),
             "I32Rotr" => Ok(Self::I32ROTR), 
             // i32 Immediates
             "I32MulImm" => Ok(Self::I32MULI),
@@ -677,7 +679,7 @@ impl FromStr for WASM {
             "I64Shl" => Ok(Self::I64SHL), 
             "I64ShrU" => Ok(Self::I64SHRU), 
             "I64ShrS" => Ok(Self::I64SHRS), 
-            "I64Rotl" => Ok(Self::UNIMPL), // todo
+            "I64Rotl" => Ok(Self::I64ROTL), 
             "I64Rotr" => Ok(Self::I64ROTR), 
             // i64 Immediates
             "I64MulImm" => Ok(Self::I64MULI),

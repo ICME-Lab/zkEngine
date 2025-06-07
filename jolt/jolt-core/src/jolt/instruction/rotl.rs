@@ -7,18 +7,18 @@ use crate::jolt::instruction::{
     sub::SUBInstruction, JoltInstruction,
 };
 
-/// Perform rotr operation.
-pub struct ROTRInstruction<const WORD_SIZE: usize>;
+/// Perform rotL operation.
+pub struct ROTLInstruction<const WORD_SIZE: usize>;
 
-impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD_SIZE> {
+impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTLInstruction<WORD_SIZE> {
     const SEQUENCE_LENGTH: usize = 5;
 
     fn virtual_trace(trace_row: RVTraceRow) -> Vec<RVTraceRow> {
         assert!(
-            trace_row.instruction.opcode == WASM::I32ROTR
-                || trace_row.instruction.opcode == WASM::I64ROTR,
+            trace_row.instruction.opcode == WASM::I32ROTL
+                || trace_row.instruction.opcode == WASM::I64ROTL,
         );
-        // ROTR source registers
+        // ROTL source registers
         let r_x = trace_row.instruction.rs1;
         let r_y = trace_row.instruction.rs2;
         // Virtual registers used in sequence
@@ -26,15 +26,15 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
         let v_1 = Some(virtual_register_index(1));
         let v_2 = Some(virtual_register_index(2));
         let v_3 = Some(virtual_register_index(3));
-        // ROTR operands
+        // ROTL operands
         let x = trace_row.register_state.rs1_val.unwrap();
         let y = trace_row.register_state.rs2_val.unwrap();
 
         let mut virtual_trace = vec![];
-        let x_shru = SRLInstruction::<WORD_SIZE>(x, y).lookup_entry();
+        let x_shl = SLLInstruction::<WORD_SIZE>(x, y).lookup_entry();
         let opcode = match WORD_SIZE {
-            32 => WASM::I32SHRU,
-            64 => WASM::I64SHRU,
+            32 => WASM::I32SHL,
+            64 => WASM::I64SHL,
             _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
         };
         virtual_trace.push(RVTraceRow {
@@ -50,7 +50,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
             register_state: RegisterState {
                 rs1_val: Some(x),
                 rs2_val: Some(y),
-                rd_post_val: Some(x_shru),
+                rd_post_val: Some(x_shl),
             },
             memory_state: None,
             advice_value: None,
@@ -112,10 +112,10 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
             precompile_output_address: None,
         });
 
-        let x_shl = SLLInstruction::<WORD_SIZE>(x, y_sub).lookup_entry();
+        let x_shru = SRLInstruction::<WORD_SIZE>(x, y_sub).lookup_entry();
         let opcode = match WORD_SIZE {
-            32 => WASM::I32SHL,
-            64 => WASM::I64SHL,
+            32 => WASM::I32SHRU,
+            64 => WASM::I64SHRU,
             _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
         };
         virtual_trace.push(RVTraceRow {
@@ -131,7 +131,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
             register_state: RegisterState {
                 rs1_val: Some(x),
                 rs2_val: Some(y_sub),
-                rd_post_val: Some(x_shl),
+                rd_post_val: Some(x_shru),
             },
             memory_state: None,
             advice_value: None,
@@ -139,7 +139,7 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
             precompile_output_address: None,
         });
 
-        let res = ORInstruction::<WORD_SIZE>(x_shru, x_shl).lookup_entry();
+        let res = ORInstruction::<WORD_SIZE>(x_shl, x_shru).lookup_entry();
         let opcode = match WORD_SIZE {
             32 => WASM::I32OR,
             64 => WASM::I64OR,
@@ -156,8 +156,8 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
                 virtual_sequence_remaining: Some(Self::SEQUENCE_LENGTH - virtual_trace.len() - 1),
             },
             register_state: RegisterState {
-                rs1_val: Some(x_shru),
-                rs2_val: Some(x_shl),
+                rs1_val: Some(x_shl),
+                rs2_val: Some(x_shru),
                 rd_post_val: Some(res),
             },
             memory_state: None,
@@ -174,11 +174,11 @@ impl<const WORD_SIZE: usize> VirtualInstructionSequence for ROTRInstruction<WORD
             32 => {
                 let x = x as u32;
                 let y = (y % 32) as u32;
-                (x.rotate_right(y)) as u64
+                (x.rotate_left(y)) as u64
             }
             64 => {
                 let y = (y % 64) as u32;
-                x.rotate_right(y)
+                x.rotate_left(y)
             }
             _ => panic!("Unsupported WORD_SIZE: {WORD_SIZE}"),
         }
@@ -199,32 +199,32 @@ mod test {
     use super::*;
 
     #[test]
-    fn rotr_virtual_sequence_32() {
-        jolt_virtual_sequence_test::<ROTRInstruction<32>>(WASM::I32ROTR);
+    fn rotl_virtual_sequence_32() {
+        jolt_virtual_sequence_test::<ROTLInstruction<32>>(WASM::I32ROTL);
     }
 
     #[test]
-    fn rotr_virtual_sequence_64() {
-        jolt_virtual_sequence_test::<ROTRInstruction<64>>(WASM::I64ROTR);
+    fn rotl_virtual_sequence_64() {
+        jolt_virtual_sequence_test::<ROTLInstruction<64>>(WASM::I64ROTL);
     }
 
-    fn virtual_rotr<const WORD_SIZE: usize>(x: u64, y: u64) -> u64 {
-        let x_shru = SRLInstruction::<WORD_SIZE>(x, y).lookup_entry();
+    fn virtual_rotl<const WORD_SIZE: usize>(x: u64, y: u64) -> u64 {
+        let x_shl = SLLInstruction::<WORD_SIZE>(x, y).lookup_entry();
         let y_mod = ANDInstruction::<WORD_SIZE>(y, WORD_SIZE as u64 - 1).lookup_entry();
         let y_sub = SUBInstruction::<WORD_SIZE>(WORD_SIZE as u64, y_mod).lookup_entry();
-        let x_shl = SLLInstruction::<WORD_SIZE>(x, y_sub).lookup_entry();
-        ORInstruction::<WORD_SIZE>(x_shru, x_shl).lookup_entry()
+        let x_shru = SRLInstruction::<WORD_SIZE>(x, y_sub).lookup_entry();
+        ORInstruction::<WORD_SIZE>(x_shl, x_shru).lookup_entry()
     }
 
     #[test]
-    fn test_rotr() {
+    fn test_rotl() {
         let mut rng = thread_rng();
         const WORD_SIZE: usize = 64;
         for _ in 0..1000 {
             let x = rng.next_u64();
             let y = rng.next_u64() % WORD_SIZE as u64;
-            let instruction = ROTRInstruction::<WORD_SIZE>::sequence_output(x, y);
-            let expected = virtual_rotr::<WORD_SIZE>(x, y);
+            let instruction = ROTLInstruction::<WORD_SIZE>::sequence_output(x, y);
+            let expected = virtual_rotl::<WORD_SIZE>(x, y);
             assert_eq!(instruction, expected, "x: {x}, y: {y}");
         }
     }
