@@ -131,6 +131,8 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I32XORI  => Ok(XORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             WASM::I32ORI   => Ok(ORInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
             WASM::I32ANDI  => Ok(ANDInstruction::<WORD_SIZE>(row.register_state.rs1_val.unwrap(), row.imm_u32() as u64).into()),
+            // lhs immediate
+            WASM::I32SUBILHS => Ok(SUBInstruction::<WORD_SIZE>(row.imm_u32() as u64, row.register_state.rs1_val.unwrap()).into()),
             // i64
             WASM::I64ADD => Ok(ADDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
             WASM::I64SUB => Ok(SUBInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.register_state.rs2_val.unwrap()).into()),
@@ -147,6 +149,8 @@ impl TryFrom<&RVTraceRow> for RV32I {
             WASM::I64XORI  => Ok(XORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64ORI   => Ok(ORInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
             WASM::I64ANDI  => Ok(ANDInstruction::<WORD_SIZE_1>(row.register_state.rs1_val.unwrap(), row.imm_u64()).into()),
+            // lhs immediate
+            WASM::I64SUBILHS => Ok(SUBInstruction::<WORD_SIZE_1>(row.imm_u64(), row.register_state.rs1_val.unwrap()).into()),
 
             // --- Comparisons ---
             // i32

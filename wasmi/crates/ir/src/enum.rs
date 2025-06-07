@@ -361,6 +361,10 @@ impl Instruction {
                 rhs.value.inner.0 as i64,
                 instruction_address,
             ),
+            // lhs immediate
+            Self::I32SubImm16Lhs { result, lhs, rhs } => {
+                trace_il(self, result, lhs.inner.0 as i64, rhs, instruction_address)
+            }
             // i64 Immediates
             Self::I64MulImm16 { result, lhs, rhs }
             | Self::I64AddImm16 { result, lhs, rhs }
@@ -380,6 +384,10 @@ impl Instruction {
                 rhs.value.inner.0 as i64,
                 instruction_address,
             ),
+            // lhs immediate
+            Self::I64SubImm16Lhs { result, lhs, rhs } => {
+                trace_il(self, result, lhs.inner.0 as i64, rhs, instruction_address)
+            }
 
             // --- Comparisons ---
             // i32
@@ -566,6 +574,8 @@ impl ToString for Instruction {
             Self::I32ShrSBy { .. } => "I32ShrSBy".to_string(),
             Self::I32RotlBy { .. } => "I32RotlBy".to_string(),
             Self::I32RotrBy { .. } => "I32RotrBy".to_string(),
+            // lhs immediate
+            Self::I32SubImm16Lhs { .. } => "I32SubImm16Lhs".to_string(),
             // i64
             Self::I64Add { .. } => "I64Add".to_string(),
             Self::I64Sub { .. } => "I64Sub".to_string(),
@@ -593,6 +603,8 @@ impl ToString for Instruction {
             Self::I64ShrSBy { .. } => "I64ShrSBy".to_string(),
             Self::I64RotlBy { .. } => "I64RotlBy".to_string(),
             Self::I64RotrBy { .. } => "I64RotrBy".to_string(),
+            // lhs immediate
+            Self::I64SubImm16Lhs { .. } => "I64SubImm16Lhs".to_string(),
 
             // --- Comparisons ---
             Self::I32Eq { .. } => "I32Eq".to_string(),

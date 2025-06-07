@@ -229,6 +229,7 @@ pub mod mulu;
 pub mod or;
 pub mod rem;
 pub mod remu;
+pub mod rotr;
 pub mod sb;
 pub mod sh;
 pub mod sll;

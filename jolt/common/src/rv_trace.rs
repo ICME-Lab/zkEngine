@@ -520,9 +520,11 @@ pub enum WASM {
     I32SHL,
     I32SHRU,
     I32SHRS,
+    I32ROTR,
     // i32 immediates
     I32MULI,
     I32ADDI,
+    I32SUBILHS,
     I32XORI,
     I32ANDI,
     I32ORI,
@@ -540,9 +542,11 @@ pub enum WASM {
     I64SHL,
     I64SHRU,
     I64SHRS,
+    I64ROTR,
     // i64 immediates
     I64MULI,
     I64ADDI,
+    I64SUBILHS,
     I64XORI,
     I64ANDI,
     I64ORI,
@@ -645,7 +649,7 @@ impl FromStr for WASM {
             "I32ShrU" => Ok(Self::I32SHRU), 
             "I32ShrS" => Ok(Self::I32SHRS), 
             "I32Rotl" => Ok(Self::UNIMPL), // todo
-            "I32Rotr" => Ok(Self::UNIMPL), // todo
+            "I32Rotr" => Ok(Self::I32ROTR), 
             // i32 Immediates
             "I32MulImm" => Ok(Self::I32MULI),
             "I32AddImm" => Ok(Self::I32ADDI),
@@ -657,6 +661,8 @@ impl FromStr for WASM {
             "I32ShrSBy" => Ok(Self::UNIMPL), // todo
             "I32RotlBy" => Ok(Self::UNIMPL), // todo
             "I32RotrBy" => Ok(Self::UNIMPL), // todo
+            // lhs immediate
+            "I32SubImm16Lhs" => Ok(Self::UNIMPL), // todo
             // i64
             "I64Add" => Ok(Self::I64ADD),
             "I64Sub" => Ok(Self::I64SUB),
@@ -672,7 +678,7 @@ impl FromStr for WASM {
             "I64ShrU" => Ok(Self::I64SHRU), 
             "I64ShrS" => Ok(Self::I64SHRS), 
             "I64Rotl" => Ok(Self::UNIMPL), // todo
-            "I64Rotr" => Ok(Self::UNIMPL), // todo
+            "I64Rotr" => Ok(Self::I64ROTR), 
             // i64 Immediates
             "I64MulImm" => Ok(Self::I64MULI),
             "I64AddImm" => Ok(Self::I64ADDI),
@@ -684,6 +690,8 @@ impl FromStr for WASM {
             "I64ShrSBy" => Ok(Self::UNIMPL), // todo
             "I64RotlBy" => Ok(Self::UNIMPL), // todo
             "I64RotrBy" => Ok(Self::UNIMPL), // todo
+            // lhs immediate
+            "I64SubImm16Lhs" => Ok(Self::UNIMPL), // todo
 
             // --- Comparisons ---
             // i32
