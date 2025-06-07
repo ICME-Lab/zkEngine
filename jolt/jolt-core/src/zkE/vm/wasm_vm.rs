@@ -117,7 +117,6 @@ mod tests {
 
     #[test]
     fn test_poly_rot_dynamic() {
-        poly_rot_dynamic_wasm_program().print_instructions();
         test_wasm_e2e_with(poly_rot_dynamic_wasm_program());
     }
 
